@@ -6,4 +6,6 @@ export default defineConfig({
   resolve: {
     alias: [{ find: "@", replacement: "/src" }],
   },
+
 });
+// Compare this snippet from NEOFEB-CRM/tsconfig.json:

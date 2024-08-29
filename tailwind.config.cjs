@@ -6,5 +6,8 @@ module.exports = withMT({
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+   // require("@material-tailwind/react"),
+    //require("@tailwindcss/typography"),
+  ],
 });
