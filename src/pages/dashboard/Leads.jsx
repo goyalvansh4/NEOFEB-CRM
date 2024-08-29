@@ -74,7 +74,11 @@ export function Leads () {
   } = useTable({ columns, data });
 
   return (
+<<<<<<< HEAD
     <Card className="shadow-lg rounded-lg my-9">
+=======
+    <Card className="shadow-lg rounded-lg my-10">
+>>>>>>> 544b2994c8cf99bff63d5db2e2274d1a448cad0a
       <CardHeader
         className="p-4 border-b flex items-center justify-between"
       >
