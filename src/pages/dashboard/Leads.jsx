@@ -9,7 +9,7 @@ import {
 import { useTable } from "react-table";
 import { Link } from "react-router-dom";
 
-const Leads = () => {
+export function Leads () {
   const data = React.useMemo(
     () => [
       {
@@ -74,7 +74,7 @@ const Leads = () => {
   } = useTable({ columns, data });
 
   return (
-    <Card className="shadow-lg rounded-lg">
+    <Card className="shadow-lg rounded-lg my-9">
       <CardHeader
         className="p-4 border-b flex items-center justify-between"
       >
@@ -90,7 +90,7 @@ const Leads = () => {
           Add Leads
         </Button>
       </CardHeader>
-      <CardBody className="p-4 overflow-x-auto">
+      <CardBody className="p-4 overflow-x-auto my-10">
         <table
           {...getTableProps()}
           className="min-w-full bg-white dark:bg-gray-800"
