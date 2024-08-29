@@ -9,7 +9,7 @@ import {
 import { useTable } from "react-table";
 import { Link } from "react-router-dom";
 
-export function Leads () {
+export function Leads() {
   const data = React.useMemo(
     () => [
       {
@@ -74,15 +74,11 @@ export function Leads () {
   } = useTable({ columns, data });
 
   return (
-<<<<<<< HEAD
-    <Card className="shadow-lg rounded-lg my-9">
-=======
-    <Card className="shadow-lg rounded-lg my-10">
->>>>>>> 544b2994c8cf99bff63d5db2e2274d1a448cad0a
+    <Card className="shadow-lg rounded-lg mt-6">
       <CardHeader
-        className="p-4 border-b flex items-center justify-between"
+        className="p-4 border-b flex items-center justify-between bg-blue-50 dark:bg-gray-800"
       >
-        <Typography variant="h5" className="text-gray-800">
+        <Typography variant="h5" className="text-gray-800 dark:text-gray-100">
           Leads
         </Typography>
         <Button
@@ -94,18 +90,18 @@ export function Leads () {
           Add Leads
         </Button>
       </CardHeader>
-      <CardBody className="p-4 overflow-x-auto my-10">
+      <CardBody className="p-4 overflow-x-auto">
         <table
           {...getTableProps()}
-          className="min-w-full bg-white dark:bg-gray-800"
+          className="min-w-full bg-white dark:bg-gray-900 rounded-lg overflow-hidden"
         >
-          <thead>
+          <thead className="bg-gray-100 dark:bg-gray-700">
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <th
                     {...column.getHeaderProps()}
-                    className="text-left px-4 py-2 text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase"
+                    className="text-left px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase"
                   >
                     {column.render("Header")}
                   </th>
@@ -113,11 +109,11 @@ export function Leads () {
               </tr>
             ))}
           </thead>
-          <tbody {...getTableBodyProps()}>
+          <tbody {...getTableBodyProps()} className="divide-y divide-gray-200 dark:divide-gray-700">
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} className="border-b dark:border-gray-700">
+                <tr {...row.getRowProps()} className="hover:bg-gray-100 dark:hover:bg-gray-800">
                   {row.cells.map((cell) => (
                     <td
                       {...cell.getCellProps()}
@@ -134,6 +130,6 @@ export function Leads () {
       </CardBody>
     </Card>
   );
-};
+}
 
 export default Leads;

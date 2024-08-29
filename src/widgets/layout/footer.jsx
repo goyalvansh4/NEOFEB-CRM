@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Typography } from "@material-tailwind/react";
 import { HeartIcon } from "@heroicons/react/24/solid";
 
-export function Footer({ brandName, brandLink, routes }) {
+export function Footer({ brandLink, routes }) {
   const year = new Date().getFullYear();
 
   return (
@@ -16,9 +16,9 @@ export function Footer({ brandName, brandLink, routes }) {
             target="_blank"
             className="transition-colors hover:text-blue-500 font-bold"
           >
-            {brandName}
+            Developers
           </a>{" "}
-          for a better web.
+          for a better Experince.
         </Typography>
         <ul className="flex items-center gap-4">
           {routes.map(({ name, path }) => (
@@ -41,10 +41,9 @@ export function Footer({ brandName, brandLink, routes }) {
 }
 
 Footer.defaultProps = {
-  brandName: "Creative Tim",
-  brandLink: "https://www.creative-tim.com",
+  brandName: "NEOFEB-CRM",
+  brandLink: "https://www.febtech.in",
   routes: [
-    { name: "Creative Tim", path: "https://www.creative-tim.com" },
     { name: "About Us", path: "https://www.creative-tim.com/presentation" },
     { name: "Blog", path: "https://www.creative-tim.com/blog" },
     { name: "License", path: "https://www.creative-tim.com/license" },

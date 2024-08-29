@@ -6,9 +6,10 @@ import {
   ServerStackIcon,
   RectangleStackIcon,
 } from "@heroicons/react/24/solid";
-import { Home,  Tables, Notifications } from "@/pages/dashboard";
+import { Home,  Deals  } from "@/pages/dashboard";
 import { Leads } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
+import Clients from "./pages/dashboard/Clients";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -34,13 +35,13 @@ export const routes = [
         icon: <TableCellsIcon {...icon} />,
         name: "Deals",
         path: "/deals",
-        element: <Tables />,
+        element: <Deals />,
       },
       {
         icon: <InformationCircleIcon {...icon} />,
         name: "clients",
         path: "/clients",
-        element: <Notifications />,
+        element: <Clients />,
       },
     ],
   },
