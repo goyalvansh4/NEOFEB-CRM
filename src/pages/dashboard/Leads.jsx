@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
@@ -7,59 +7,46 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useTable } from "react-table";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { fetchLeads } from "../../Api/LeadsApi";
 
 export function Leads() {
-  const data = React.useMemo(
-    () => [
-      {
-        sNo: 1,
-        name: "John Doe",
-        email: "john.doe@example.com",
-        address: "123 Main St",
-        mobile: "123-456-7890",
-      },
-      {
-        sNo: 2,
-        name: "Jane Smith",
-        email: "jane.smith@example.com",
-        address: "456 Maple Ave",
-        mobile: "098-765-4321",
-      },
-      // Add more leads as needed
-    ],
-    []
-  );
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetchLeads().then((data) => setData(data));
+  }, []);
 
   const columns = React.useMemo(
     () => [
       {
         Header: "S.No",
-        accessor: "sNo",
+        accessor: "id",
       },
       {
-        Header: "Name",
-        accessor: "name",
-        Cell: ({ value }) => (
-          <Link
-            to={`/leads/${value}`}
-            className="text-blue-500 hover:underline"
-          >
-            {value}
-          </Link>
+        Header: "Lead Name All",
+        accessor: "leadNameAll",
+        Cell: ({ row }) => (
+          <NavLink to={`/dashboard/leads/${row.original.id}`} className="text-blue-500 hover:underline">
+            {row.original.leadNameAll}
+          </NavLink>
         ),
+      },
+      {
+        Header: "Company",
+        accessor: "company",
       },
       {
         Header: "Email",
         accessor: "email",
       },
       {
-        Header: "Address",
-        accessor: "address",
+        Header: "Phone",
+        accessor: "phone",
       },
       {
-        Header: "Mobile No",
-        accessor: "mobile",
+        Header: "Lead Source",
+        accessor: "leadSource",
       },
     ],
     []
@@ -75,9 +62,7 @@ export function Leads() {
 
   return (
     <Card className="shadow-lg rounded-lg mt-6">
-      <CardHeader
-        className="p-4 border-b flex items-center justify-between bg-blue-50 dark:bg-gray-800"
-      >
+      <CardHeader className="p-4 border-b flex items-center justify-between bg-blue-50 dark:bg-gray-800">
         <Typography variant="h5" className="text-gray-800 dark:text-gray-100">
           Leads
         </Typography>
@@ -91,10 +76,7 @@ export function Leads() {
         </Button>
       </CardHeader>
       <CardBody className="p-4 overflow-x-auto">
-        <table
-          {...getTableProps()}
-          className="min-w-full bg-white dark:bg-gray-900 rounded-lg overflow-hidden"
-        >
+        <table {...getTableProps()} className="min-w-full bg-white dark:bg-gray-900 rounded-lg overflow-hidden">
           <thead className="bg-gray-100 dark:bg-gray-700">
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
