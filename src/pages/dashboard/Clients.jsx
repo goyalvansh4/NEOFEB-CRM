@@ -1,67 +1,105 @@
 import React from "react";
 import {
   Typography,
-  Alert,
   Card,
   CardHeader,
   CardBody,
   Button,
 } from "@material-tailwind/react";
-import { InformationCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+} from "@tanstack/react-table";
 
 export function Clients() {
-  const [showAlerts, setShowAlerts] = React.useState({
-    gray: true,
-    green: true,
-    orange: true,
-    red: true,
+  const data = React.useMemo(
+    () => [
+      { id: 1, name: "John Doe", status: "Active", email: "john@example.com" },
+      { id: 2, name: "Jane Smith", status: "Inactive", email: "jane@example.com" },
+      { id: 3, name: "Sam Wilson", status: "Pending", email: "sam@example.com" },
+      { id: 4, name: "Lucy Brown", status: "Active", email: "lucy@example.com" },
+    ],
+    []
+  );
+
+  const columns = React.useMemo(
+    () => [
+      {
+        accessorKey: "id",
+        header: "ID",
+        cell: info => info.getValue(),
+      },
+      {
+        accessorKey: "name",
+        header: "Name",
+        cell: info => info.getValue(),
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
+        cell: info => info.getValue(),
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+        cell: info => info.getValue(),
+      },
+    ],
+    []
+  );
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
   });
-
-  const handleClose = (color) => {
-    setShowAlerts((prev) => ({ ...prev, [color]: false }));
-  };
-
-  const alertsData = [
-    { color: "gray", message: "Client information updated successfully." },
-    { color: "green", message: "New client added to the database." },
-    { color: "orange", message: "Client information needs review." },
-    { color: "red", message: "Client record deletion failed." },
-  ];
 
   return (
     <div className="mx-auto my-20 flex max-w-screen-lg flex-col gap-8">
       <Card className="shadow-lg rounded-lg">
-        <CardHeader variant="gradient" color="blue" className="p-6">
+        <CardHeader variant="gradient" color="blue" className="p-6 flex justify-between items-center">
           <Typography variant="h6" color="white">
-            Client Alerts
+            Client List
           </Typography>
+          <Button color="green" size="sm">
+            Add Client
+          </Button>
         </CardHeader>
         <CardBody className="px-6 py-4">
-          {alertsData.map(
-            (alert, index) =>
-              showAlerts[alert.color] && (
-                <Alert
-                  key={index}
-                  color={alert.color}
-                  className="mb-4 flex justify-between items-center"
-                  icon={<InformationCircleIcon className="h-6 w-6" />}
-                  action={
-                    <Button
-                      variant="text"
-                      size="sm"
-                      className="p-1"
-                      onClick={() => handleClose(alert.color)}
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead>
+              {table.getHeaderGroups().map(headerGroup => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map(header => (
+                    <th
+                      key={header.id}
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      <XMarkIcon className="h-5 w-5" />
-                    </Button>
-                  }
-                >
-                  <Typography variant="small" color="white">
-                    {alert.message}
-                  </Typography>
-                </Alert>
-              )
-          )}
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {table.getRowModel().rows.map(row => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map(cell => (
+                    <td
+                      key={cell.id}
+                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </CardBody>
       </Card>
     </div>
