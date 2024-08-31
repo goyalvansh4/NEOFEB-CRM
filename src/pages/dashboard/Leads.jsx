@@ -6,7 +6,7 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { useTable } from "react-table";
+import { useTable, usePagination } from "react-table";
 import { NavLink } from "react-router-dom";
 import { fetchLeads } from "../../Api/LeadsApi";
 
@@ -56,19 +56,34 @@ export function Leads() {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
     prepareRow,
-  } = useTable({ columns, data });
+    page, // Instead of using rows, use page
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: { pageIndex: 0, pageSize: 10 }, // Set initial page size
+    },
+    usePagination
+  );
 
   return (
-    <Card className="shadow-lg rounded-lg mt-6">
-      <CardHeader className="p-4 border-b flex items-center justify-between bg-blue-50 dark:bg-gray-800">
-        <Typography variant="h5" className="text-gray-800 dark:text-gray-100">
+    <Card className="shadow-lg rounded-lg my-10">
+      <CardHeader className="p-4 border-b flex items-center justify-between bg-[#A05AFF] dark:bg-gray-800">
+        <Typography variant="h5" className="text-[#FFF] dark:text-gray-100">
           Leads
         </Typography>
         <Button
-          color="blue"
-          className="bg-blue-500"
+         style={{ backgroundColor: "#FE9496" }}
           ripple="light"
           onClick={() => console.log("Add Leads")}
         >
@@ -92,7 +107,7 @@ export function Leads() {
             ))}
           </thead>
           <tbody {...getTableBodyProps()} className="divide-y divide-gray-200 dark:divide-gray-700">
-            {rows.map((row) => {
+            {page.map((row) => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()} className="hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -109,6 +124,71 @@ export function Leads() {
             })}
           </tbody>
         </table>
+        {/* Pagination controls */}
+        <div className="flex justify-between items-center mt-4">
+          <div className="flex items-center">
+            <Button
+              onClick={() => gotoPage(0)}
+              disabled={!canPreviousPage}
+              style={{ backgroundColor: "#A05AFF" }}
+              className="mr-2"
+            >
+              {"<<"}
+            </Button>
+            <Button
+              onClick={() => previousPage()}
+              disabled={!canPreviousPage}
+             style={{ backgroundColor: "#A05AFF" }}
+              className="mr-2"
+            >
+              {"<"}
+            </Button>
+            <Button
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+              style={{ backgroundColor: "#A05AFF" }}
+              className="mr-2"
+            >
+              {">"}
+            </Button>
+            <Button
+              onClick={() => gotoPage(pageCount - 1)}
+              disabled={!canNextPage}
+             style={{ backgroundColor: "#A05AFF" }}
+            >
+              {">>"}
+            </Button>
+          </div>
+          <span>
+            Page{" "}
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>{" "}
+          </span>
+          <span>
+            | Go to page:{" "}
+            <input
+              type="number"
+              defaultValue={pageIndex + 1}
+              onChange={(e) => {
+                const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0;
+                gotoPage(pageNumber);
+              }}
+              className="w-16 p-1 border rounded-md"
+            />
+          </span>
+          <select
+            value={pageSize}
+            onChange={(e) => setPageSize(Number(e.target.value))}
+            className="ml-2 p-1 border rounded-md"
+          >
+            {[10, 20, 30, 40, 50].map((size) => (
+              <option key={size} value={size}>
+                Show {size}
+              </option>
+            ))}
+          </select>
+        </div>
       </CardBody>
     </Card>
   );
