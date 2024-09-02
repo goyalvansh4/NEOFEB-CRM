@@ -1,272 +1,201 @@
 import React from "react";
 import {
   Card,
-  CardHeader,
   CardBody,
+  CardHeader,
   Typography,
+  Button,
   Avatar,
   Chip,
   Tooltip,
   Progress,
-  Button,
 } from "@material-tailwind/react";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import {
+  CheckIcon,
+  XMarkIcon,
+  EllipsisVerticalIcon,
+} from "@heroicons/react/24/solid";
 
-export function Deals() {
-  const authorsTableData = [
+export function  Deals () {
+  const dealsData = [
     {
-      img: "https://via.placeholder.com/50",
-      name: "John Doe",
-      email: "john.doe@example.com",
-      job: ["Developer", "Web"],
-      online: true,
-      date: "2023-08-01",
+      stage: "Qualification",
+      percentage: 10,
+      total: "$250,200.00",
+      color: "#A05AFF",
+      deals: [
+        {
+          company: "Benton",
+          description: "Benton (Sample)",
+          users: ["Vansh Gupta", "John Butt"],
+          amount: "$250,000.00",
+          date: "29/08/2024",
+        },
+        {
+          company: "Buckley Miller & Wright",
+          description: "Buckley Miller & Wright",
+          users: ["Vansh Gupta", "Michael Ruta"],
+          amount: "$200.00",
+          date: "28/08/2024",
+        },
+      ],
     },
     {
-      img: "https://via.placeholder.com/50",
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      job: ["Manager", "Sales"],
-      online: false,
-      date: "2023-07-21",
+      stage: "Needs Analysis",
+      percentage: 20,
+      total: "$100,000.00",
+      color: "#1BCFB4",
+      deals: [
+        {
+          company: "Truhlar And Truhlar Attys",
+          description: "Truhlar And Truhlar",
+          users: ["Vansh Gupta", "Sage Wieser"],
+          amount: "$45,000.00",
+          date: "29/08/2024",
+        },
+        {
+          company: "Chanay",
+          description: "Chanay (Sample)",
+          users: ["Vansh Gupta", "Josephine Darakjy"],
+          amount: "$55,000.00",
+          date: "30/08/2024",
+        },
+      ],
     },
-    // Add more authors as needed
+    // Add more stages as needed
   ];
 
-  const projectsTableData = [
-    {
-      img: "https://via.placeholder.com/50",
-      name: "Project A",
-      members: [
-        { img: "https://via.placeholder.com/30", name: "John Doe" },
-        { img: "https://via.placeholder.com/30", name: "Jane Smith" },
-      ],
-      budget: "$10,000",
-      completion: 75,
-    },
-    {
-      img: "https://via.placeholder.com/50",
-      name: "Project B",
-      members: [
-        { img: "https://via.placeholder.com/30", name: "John Doe" },
-      ],
-      budget: "$7,500",
-      completion: 40,
-    },
-    // Add more projects as needed
-  ];
+  const getProgressColor = (completion) => {
+    if (completion >= 75) return "#1BCFB4"; // Teal
+    if (completion >= 50) return "#4BCBEB"; // Light Blue
+    if (completion >= 25) return "#9E58FF"; // Deep Purple
+    return "#FE9496"; // Coral
+  };
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12 p-6 bg-gray-50">
-      <Card className="shadow-lg rounded-lg">
-        <CardHeader variant="gradient" color="blue" className="mb-8 p-6">
-          <Typography variant="h6" color="white">
-            Authors Table
-          </Typography>
-        </CardHeader>
-        <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
-          <table className="w-full min-w-[640px] table-auto">
-            <thead>
-              <tr>
-                {["Author", "Function", "Status", "Employed", ""].map((el) => (
-                  <th
-                    key={el}
-                    className="border-b border-blue-gray-50 py-3 px-5 text-left"
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {dealsData.map((stage, index) => (
+          <Card key={index} className="shadow-lg">
+            <CardHeader
+              style={{ backgroundColor: stage.color }}
+              className="relative h-20"
+            >
+              <div className="absolute inset-0 flex items-center justify-between p-4">
+                <Typography variant="h5" color="white">
+                  {stage.stage}
+                </Typography>
+                <Chip
+                  value={`${stage.deals.length} Deals`}
+                  style={{ backgroundColor: "#FE9496" }}
+                  className="text-white"
+                />
+              </div>
+            </CardHeader>
+            <CardBody className="p-4">
+              <Typography
+                variant="h4"
+                color="blue-gray"
+                className="mb-4 font-semibold"
+              >
+                {stage.total}
+              </Typography>
+              <div className="space-y-4">
+                {stage.deals.map((deal, i) => (
+                  <Card
+                    key={i}
+                    className="border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
                   >
-                    <Typography
-                      variant="small"
-                      className="text-[12px] font-bold uppercase text-blue-gray-600"
-                    >
-                      {el}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {authorsTableData.map(
-                ({ img, name, email, job, online, date }, key) => {
-                  const className = `py-3 px-5 ${
-                    key === authorsTableData.length - 1
-                      ? ""
-                      : "border-b border-blue-gray-50"
-                  }`;
-
-                  return (
-                    <tr key={name}>
-                      <td className={className}>
-                        <div className="flex items-center gap-4">
-                          <Avatar
-                            src={img}
-                            alt={name}
-                            size="sm"
-                            variant="rounded"
-                          />
-                          <div>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-semibold"
-                            >
-                              {name}
-                            </Typography>
-                            <Typography className="text-xs font-normal text-blue-gray-500">
-                              {email}
-                            </Typography>
-                          </div>
-                        </div>
-                      </td>
-                      <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {job[0]}
-                        </Typography>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
-                          {job[1]}
-                        </Typography>
-                      </td>
-                      <td className={className}>
-                        <Chip
-                          variant="gradient"
-                          color={online ? "green" : "blue-gray"}
-                          value={online ? "Online" : "Offline"}
-                          className="py-0.5 px-2 text-[11px] font-medium w-fit"
-                        />
-                      </td>
-                      <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {date}
-                        </Typography>
-                      </td>
-                      <td className={className}>
+                    <div className="p-4">
+                      <div className="flex items-center justify-between mb-2">
                         <Typography
-                          as="a"
-                          href="#"
-                          className="text-xs font-semibold text-blue-gray-600"
-                        >
-                          Edit
-                        </Typography>
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-            </tbody>
-          </table>
-        </CardBody>
-      </Card>
-      <Card className="shadow-lg rounded-lg">
-        <CardHeader variant="gradient" color="blue" className="mb-8 p-6">
-          <Typography variant="h6" color="white">
-            Projects Table
-          </Typography>
-        </CardHeader>
-        <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
-          <table className="w-full min-w-[640px] table-auto">
-            <thead>
-              <tr>
-                {["Companies", "Members", "Budget", "Completion", ""].map(
-                  (el) => (
-                    <th
-                      key={el}
-                      className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                    >
-                      <Typography
-                        variant="small"
-                        className="text-[12px] font-bold uppercase text-blue-gray-600"
-                      >
-                        {el}
-                      </Typography>
-                    </th>
-                  )
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {projectsTableData.map(
-                ({ img, name, members, budget, completion }, key) => {
-                  const className = `py-3 px-5 ${
-                    key === projectsTableData.length - 1
-                      ? ""
-                      : "border-b border-blue-gray-50"
-                  }`;
-
-                  return (
-                    <tr key={name}>
-                      <td className={className}>
-                        <div className="flex items-center gap-4">
-                          <Avatar src={img} alt={name} size="sm" />
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-bold"
-                          >
-                            {name}
-                          </Typography>
-                        </div>
-                      </td>
-                      <td className={className}>
-                        <div className="flex -space-x-3">
-                          {members.map(({ img, name }, key) => (
-                            <Tooltip key={name} content={name}>
-                              <Avatar
-                                src={img}
-                                alt={name}
-                                size="xs"
-                                variant="circular"
-                                className={`cursor-pointer border-2 border-white ${
-                                  key === 0 ? "" : "-ml-2.5"
-                                }`}
-                              />
-                            </Tooltip>
-                          ))}
-                        </div>
-                      </td>
-                      <td className={className}>
-                        <Typography
-                          variant="small"
-                          className="text-xs font-medium text-blue-gray-600"
-                        >
-                          {budget}
-                        </Typography>
-                      </td>
-                      <td className={className}>
-                        <div className="w-10/12">
-                          <Typography
-                            variant="small"
-                            className="mb-1 block text-xs font-medium text-blue-gray-600"
-                          >
-                            {completion}%
-                          </Typography>
-                          <Progress
-                            value={completion}
-                            variant="gradient"
-                            color={completion === 100 ? "green" : "blue-gray"}
-                            className="h-1"
-                          />
-                        </div>
-                      </td>
-                      <td className={className}>
-                        <Button
+                          variant="h6"
                           color="blue-gray"
-                          variant="text"
-                          className="p-0.5 rounded-full"
+                          className="font-medium"
                         >
-                          <EllipsisVerticalIcon
-                            strokeWidth={2}
-                            className="h-5 w-5 text-inherit"
-                          />
+                          {deal.company}
+                        </Typography>
+                        <Button
+                          variant="text"
+                          color="blue-gray"
+                          className="p-0"
+                        >
+                          <EllipsisVerticalIcon className="h-5 w-5" />
                         </Button>
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-            </tbody>
-          </table>
-        </CardBody>
-      </Card>
+                      </div>
+                      <Typography
+                        color="gray"
+                        className="text-sm mb-4 truncate"
+                        title={deal.description}
+                      >
+                        {deal.description}
+                      </Typography>
+                      <div className="flex items-center mb-4">
+                        {deal.users.map((user, idx) => (
+                          <Tooltip key={idx} content={user}>
+                            <Avatar
+                              size="sm"
+                              variant="circular"
+                              className={`border-2 border-white ${
+                                idx !== 0 && "-ml-2"
+                              }`}
+                              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                user
+                              )}&background=9E58FF&color=fff`}
+                              alt={user}
+                            />
+                          </Tooltip>
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <Typography
+                          variant="h5"
+                          color="blue-gray"
+                          className="font-semibold"
+                        >
+                          {deal.amount}
+                        </Typography>
+                        <Typography
+                          color="gray"
+                          className="text-sm"
+                        >
+                          {deal.date}
+                        </Typography>
+                      </div>
+                      <div className="mt-4 flex items-center justify-between">
+                        <Progress
+                          value={stage.percentage}
+                          className="w-full mr-4"
+                          style={{
+                            backgroundColor: "#F0F0F0",
+                            height: "6px",
+                          }}
+                          barProps={{
+                            style: {
+                              backgroundColor: getProgressColor(
+                                stage.percentage
+                              ),
+                            },
+                          }}
+                        />
+                        <Button
+                          variant="filled"
+                          size="sm"
+                          style={{ backgroundColor: "#1BCFB4" }}
+                          className="flex items-center gap-2"
+                        >
+                          <CheckIcon className="h-4 w-4" />
+                          Complete
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </CardBody>
+          </Card>
+        ))}
+      </div>
     </div>
   );
-}
-
-export default Deals;
+};

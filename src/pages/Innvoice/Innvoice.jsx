@@ -36,10 +36,10 @@ const Invoice = () => {
     []
   );
 
-  const [showForm, setShowForm] = useState(false);
+  const [hideForm, setHideForm] = useState(true);
 
   const openForm = () => {
-    setShowForm(false);
+    setHideForm(false);
   };
 
   const columns = React.useMemo(
@@ -92,7 +92,7 @@ const Invoice = () => {
   });
 
   return (
-   <> {showForm ? <div className="min-h-screen text-white p-8">
+   <> {hideForm ? <div className="min-h-screen text-white p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -160,7 +160,7 @@ const Invoice = () => {
       </div>
       
     </div>
-    : <AddInvoice showForm={showForm} setShowForm={setShowForm}  />}
+    : <AddInvoice setHideForm={setHideForm}  />}
     </>
   );
 };

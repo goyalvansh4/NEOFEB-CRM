@@ -1,0 +1,404 @@
+{
+  "leads":[
+    {
+      "id": "1",
+      "leadName": "John Doe",
+      "company": "Tech Solutions",
+      "email": "john.doe@techsolutions.com",
+      "phone": "+1 555-1234",
+      "leadSource": "Website"
+    },
+    {
+      "id": "2",
+      "leadName": "Jane Smith",
+      "company": "Innovative Tech",
+      "email": "jane.smith@innovativetech.com",
+      "phone": "+1 555-5678",
+      "leadSource": "LinkedIn"
+    },
+    {
+      "id": "3",
+      "leadName": "Michael Johnson",
+      "company": "Global Ventures",
+      "email": "michael.johnson@globalventures.com",
+      "phone": "+1 555-8765",
+      "leadSource": "Referral"
+    },
+    {
+      "id": "4",
+      "leadName": "Emily Davis",
+      "company": "Bright Future Inc.",
+      "email": "emily.davis@brightfuture.com",
+      "phone": "+1 555-4321",
+      "leadSource": "Email Campaign"
+    },
+    {
+      "id": "5",
+      "leadName": "James Brown",
+      "company": "Alpha Industries",
+      "email": "james.brown@alphaindustries.com",
+      "phone": "+1 555-9876",
+      "leadSource": "Conference"
+    },
+    {
+      "id": "6",
+      "leadName": "Olivia Wilson",
+      "company": "NextGen Technologies",
+      "email": "olivia.wilson@nextgen.com",
+      "phone": "+1 555-3456",
+      "leadSource": "Cold Call"
+    },
+    {
+      "id": "7",
+      "leadName": "William Taylor",
+      "company": "Synergy Corp.",
+      "email": "william.taylor@synergycorp.com",
+      "phone": "+1 555-6789",
+      "leadSource": "Social Media"
+    },
+    {
+      "id": "8",
+      "leadName": "Sophia Martinez",
+      "company": "Pioneer Solutions",
+      "email": "sophia.martinez@pioneersolutions.com",
+      "phone": "+1 555-6543",
+      "leadSource": "Website"
+    },
+    {
+      "id": "9",
+      "leadName": "Daniel Garcia",
+      "company": "Omega Inc.",
+      "email": "daniel.garcia@omega.com",
+      "phone": "+1 555-1235",
+      "leadSource": "LinkedIn"
+    },
+    {
+      "id": "10",
+      "leadName": "Ava Anderson",
+      "company": "Tech World",
+      "email": "ava.anderson@techworld.com",
+      "phone": "+1 555-5432",
+      "leadSource": "Referral"
+    },
+    {
+      "id": "11",
+      "leadName": "Liam Thomas",
+      "company": "Vertex Global",
+      "email": "liam.thomas@vertexglobal.com",
+      "phone": "+1 555-2345",
+      "leadSource": "Email Campaign"
+    },
+    {
+      "id": "12",
+      "leadName": "Isabella Lee",
+      "company": "Prime Solutions",
+      "email": "isabella.lee@primesolutions.com",
+      "phone": "+1 555-7654",
+      "leadSource": "Conference"
+    },
+    {
+      "id": "13",
+      "leadName": "Noah Walker",
+      "company": "Fusion Tech",
+      "email": "noah.walker@fusiontech.com",
+      "phone": "+1 555-3457",
+      "leadSource": "Cold Call"
+    },
+    {
+      "id": "14",
+      "leadName": "Mia Harris",
+      "company": "Innovatech",
+      "email": "mia.harris@innovatech.com",
+      "phone": "+1 555-6780",
+      "leadSource": "Social Media"
+    },
+    {
+      "id": "15",
+      "leadName": "Ethan Moore",
+      "company": "Quantum Solutions",
+      "email": "ethan.moore@quantumsolutions.com",
+      "phone": "+1 555-4322",
+      "leadSource": "Website"
+    },
+    {
+      "id": "16",
+      "leadName": "Charlotte King",
+      "company": "Future Tech",
+      "email": "charlotte.king@futuretech.com",
+      "phone": "+1 555-9877",
+      "leadSource": "LinkedIn"
+    },
+    {
+      "id": "17",
+      "leadName": "Mason Lewis",
+      "company": "Elite Technologies",
+      "email": "mason.lewis@elitetech.com",
+      "phone": "+1 555-5433",
+      "leadSource": "Referral"
+    },
+    {
+      "id": "18",
+      "leadName": "Amelia White",
+      "company": "Apex Innovations",
+      "email": "amelia.white@apexinnovations.com",
+      "phone": "+1 555-2346",
+      "leadSource": "Email Campaign"
+    },
+    {
+      "id": "19",
+      "leadName": "Lucas Hall",
+      "company": "Infinity Solutions",
+      "email": "lucas.hall@infinitysolutions.com",
+      "phone": "+1 555-7655",
+      "leadSource": "Conference"
+    },
+    {
+      "id": "20",
+      "leadName": "Harper Young",
+      "company": "TechPros",
+      "email": "harper.young@techpros.com",
+      "phone": "+1 555-3458",
+      "leadSource": "Cold Call"
+    },
+    {
+      "id": "21",
+      "leadName": "Logan Allen",
+      "company": "NexTech",
+      "email": "logan.allen@nextech.com",
+      "phone": "+1 555-6781",
+      "leadSource": "Social Media"
+    },
+    {
+      "id": "22",
+      "leadName": "Ella Scott",
+      "company": "AdvanceTech",
+      "email": "ella.scott@advancetech.com",
+      "phone": "+1 555-4323",
+      "leadSource": "Website"
+    },
+    {
+      "id": "23",
+      "leadName": "Jackson Wright",
+      "company": "Mega Corp",
+      "email": "jackson.wright@megacorp.com",
+      "phone": "+1 555-9878",
+      "leadSource": "LinkedIn"
+    },
+    {
+      "id": "24",
+      "leadName": "Avery Green",
+      "company": "TechGenius",
+      "email": "avery.green@techgenius.com",
+      "phone": "+1 555-5434",
+      "leadSource": "Referral"
+    },
+    {
+      "id": "25",
+      "leadName": "Benjamin Adams",
+      "company": "NextWave Solutions",
+      "email": "benjamin.adams@nextwavesolutions.com",
+      "phone": "+1 555-2347",
+      "leadSource": "Email Campaign"
+    },
+    {
+      "id": "26",
+      "leadName": "Abigail Baker",
+      "company": "Prime Tech",
+      "email": "abigail.baker@primetech.com",
+      "phone": "+1 555-7656",
+      "leadSource": "Conference"
+    },
+    {
+      "id": "27",
+      "leadName": "Henry Nelson",
+      "company": "Vanguard Solutions",
+      "email": "henry.nelson@vanguardsolutions.com",
+      "phone": "+1 555-3459",
+      "leadSource": "Cold Call"
+    },
+    {
+      "id": "28",
+      "leadName": "Sofia Carter",
+      "company": "TechNova",
+      "email": "sofia.carter@technova.com",
+      "phone": "+1 555-6782",
+      "leadSource": "Social Media"
+    },
+    {
+      "id": "29",
+      "leadName": "Alexander Perez",
+      "company": "Future Visions",
+      "email": "alexander.perez@futurevisions.com",
+      "phone": "+1 555-4324",
+      "leadSource": "Website"
+    },
+    {
+      "id": "30",
+      "leadName": "Grace Brooks",
+      "company": "NextLevel Solutions",
+      "email": "grace.brooks@nextlevel.com",
+      "phone": "+1 555-9879",
+      "leadSource": "LinkedIn"
+    },
+    {
+      "id": "31",
+      "leadName": "Sebastian Rivera",
+      "company": "TechSphere",
+      "email": "sebastian.rivera@techsphere.com",
+      "phone": "+1 555-5435",
+      "leadSource": "Referral"
+    },
+    {
+      "id": "32",
+      "leadName": "Zoe Sanchez",
+      "company": "Innovative Visions",
+      "email": "zoe.sanchez@innovativevisions.com",
+      "phone": "+1 555-2348",
+      "leadSource": "Email Campaign"
+    },
+    {
+      "id": "33",
+      "leadName": "David Torres",
+      "company": "Prime Visions",
+      "email": "david.torres@primevisions.com",
+      "phone": "+1 555-7657",
+      "leadSource": "Conference"
+    },
+    {
+      "id": "34",
+      "leadName": "Riley Foster",
+      "company": "TechLink",
+      "email": "riley.foster@techlink.com",
+      "phone": "+1 555-3460",
+      "leadSource": "Cold Call"
+    },
+    {
+      "id": "35",
+      "leadName": "Samuel Bennett",
+      "company": "Future Horizons",
+      "email": "samuel.bennett@futurehorizons.com",
+      "phone": "+1 555-6783",
+      "leadSource": "Social Media"
+    },
+    {
+      "id": "36",
+      "leadName": "Victoria Cooper",
+      "company": "TechWorld Innovations",
+      "email": "victoria.cooper@techworld.com",
+      "phone": "+1 555-4325",
+      "leadSource": "Website"
+    },
+    {
+      "id": "37",
+      "leadName": "Elijah Ramirez",
+      "company": "Prime Visionaries",
+      "email": "elijah.ramirez@primevisionaries.com",
+      "phone": "+1 555-9880",
+      "leadSource": "LinkedIn"
+    },
+    {
+      "id": "38",
+      "leadName": "Lily Cox",
+      "company": "Innovate Now",
+      "email": "lily.cox@innovatnow.com",
+      "phone": "+1 555-5436",
+      "leadSource": "Referral"
+    },
+    {
+      "id": "39",
+      "leadName": "Matthew Howard",
+      "company": "Visionary Solutions",
+      "email": "matthew.howard@visionarysolutions.com",
+      "phone": "+1 555-2349",
+      "leadSource": "Email Campaign"
+    },
+    {
+      "id": "40",
+      "leadName": "Aubrey Hughes",
+      "company": "Future Tech Solutions",
+      "email": "aubrey.hughes@futuretechsolutions.com",
+      "phone": "+1 555-7658",
+      "leadSource": "Conference"
+    },
+    {
+      "id": "41",
+      "leadName": "Luke Reed",
+      "company": "NextGen Visions",
+      "email": "luke.reed@nextgenvisions.com",
+      "phone": "+1 555-3461",
+      "leadSource": "Cold Call"
+    },
+    {
+      "id": "42",
+      "leadName": "Hannah Long",
+      "company": "TechnoVision",
+      "email": "hannah.long@technovision.com",
+      "phone": "+1 555-6784",
+      "leadSource": "Social Media"
+    },
+    {
+      "id": "43",
+      "leadName": "Levi Price",
+      "company": "Visionary Innovations",
+      "email": "levi.price@visionaryinnovations.com",
+      "phone": "+1 555-4326",
+      "leadSource": "Website"
+    },
+    {
+      "id": "44",
+      "leadName": "Chloe Hill",
+      "company": "TechPioneers",
+      "email": "chloe.hill@techpioneers.com",
+      "phone": "+1 555-9881",
+      "leadSource": "LinkedIn"
+    },
+    {
+      "id": "45",
+      "leadName": "Julian Scott",
+      "company": "Innovate Tech",
+      "email": "julian.scott@innovate.com",
+      "phone": "+1 555-5437",
+      "leadSource": "Referral"
+    },
+    {
+      "id": "46",
+      "leadName": "Ella Brooks",
+      "company": "Prime Innovations",
+      "email": "ella.brooks@primeinnovations.com",
+      "phone": "+1 555-2350",
+      "leadSource": "Email Campaign"
+    },
+    {
+      "id": "47",
+      "leadName": "Owen Russell",
+      "company": "Future Tech Innovators",
+      "email": "owen.russell@futuretechinnovators.com",
+      "phone": "+1 555-7659",
+      "leadSource": "Conference"
+    },
+    {
+      "id": "48",
+      "leadName": "Nora Parker",
+      "company": "VisionTech",
+      "email": "nora.parker@visiontech.com",
+      "phone": "+1 555-3462",
+      "leadSource": "Cold Call"
+    },
+    {
+      "id": "49",
+      "leadName": "Gabriel Bailey",
+      "company": "TechNexus",
+      "email": "gabriel.bailey@technexus.com",
+      "phone": "+1 555-6785",
+      "leadSource": "Social Media"
+    },
+    {
+      "id": "50",
+      "leadName": "Aria Murphy",
+      "company": "Prime Visions",
+      "email": "aria.murphy@primevisions.com",
+      "phone": "+1 555-4327",
+      "leadSource": "Website"
+    }
+  ]  
+}

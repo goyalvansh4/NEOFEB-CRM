@@ -25,10 +25,10 @@ export function Leads() {
       },
       {
         Header: "Lead Name All",
-        accessor: "leadNameAll",
+        accessor: "leadName",
         Cell: ({ row }) => (
           <NavLink to={`/dashboard/leads/${row.original.id}`} className="text-blue-500 hover:underline">
-            {row.original.leadNameAll}
+            {row.original.leadName}
           </NavLink>
         ),
       },
