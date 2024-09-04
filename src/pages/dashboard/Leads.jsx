@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
+import { useTable, usePagination } from "react-table";
+import { NavLink } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -6,58 +8,46 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { useTable, usePagination } from "react-table";
-import { NavLink } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { fetchLeads } from "../../Api/LeadsApi";
 
 export function Leads() {
-  const [data, setData] = useState([]);
+  const { data: leads, error, isLoading } = useQuery({
+    queryKey: ["leadsData"],
+    queryFn: async () => await fetchLeads(),
+  });
 
-  useEffect(() => {
-    fetchLeads().then((data) => setData(data));
-  }, []);
-
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
+      { Header: "S.No", accessor: "id" },
       {
-        Header: "S.No",
-        accessor: "id",
-      },
-      {
-        Header: "Lead Name All",
+        Header: "Lead Name",
         accessor: "leadName",
         Cell: ({ row }) => (
-          <NavLink to={`/dashboard/leads/${row.original.id}`} className="text-blue-500 hover:underline">
+          <NavLink
+            to={`/dashboard/leads/${row.original.id}`}
+            className="text-[#1BCFB4] hover:underline"
+          >
             {row.original.leadName}
           </NavLink>
         ),
       },
-      {
-        Header: "Company",
-        accessor: "company",
-      },
-      {
-        Header: "Email",
-        accessor: "email",
-      },
-      {
-        Header: "Phone",
-        accessor: "phone",
-      },
-      {
-        Header: "Lead Source",
-        accessor: "leadSource",
-      },
+      { Header: "Company", accessor: "company" },
+      { Header: "Email", accessor: "email" },
+      { Header: "Phone", accessor: "phone" },
+      { Header: "Lead Source", accessor: "leadSource" },
     ],
     []
   );
+
+  const data = useMemo(() => leads || [], [leads]);
 
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    page, // Instead of using rows, use page
+    page,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -71,34 +61,40 @@ export function Leads() {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 10 }, // Set initial page size
+      initialState: { pageIndex: 0, pageSize: 10 },
     },
     usePagination
   );
 
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading leads: {error.message}</div>;
+
   return (
     <Card className="shadow-lg rounded-lg my-10">
-      <CardHeader className="p-4 border-b flex items-center justify-between bg-[#A05AFF] dark:bg-gray-800">
-        <Typography variant="h5" className="text-[#FFF] dark:text-gray-100">
+      <CardHeader className="p-4 border-b flex items-center justify-between bg-[#A05AFF]">
+        <Typography variant="h5" className="text-white">
           Leads
         </Typography>
         <Button
-         style={{ backgroundColor: "#FE9496" }}
-          ripple="light"
+          className="bg-[#FE9496]"
+          ripple={true}
           onClick={() => console.log("Add Leads")}
         >
           Add Leads
         </Button>
       </CardHeader>
       <CardBody className="p-4 overflow-x-auto">
-        <table {...getTableProps()} className="min-w-full bg-white dark:bg-gray-900 rounded-lg overflow-hidden">
-          <thead className="bg-gray-100 dark:bg-gray-700">
+        <table
+          {...getTableProps()}
+          className="min-w-full bg-white rounded-lg overflow-hidden"
+        >
+          <thead className="bg-gray-100">
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <th
                     {...column.getHeaderProps()}
-                    className="text-left px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase"
+                    className="text-left px-4 py-2 text-xs font-semibold text-gray-700 uppercase"
                   >
                     {column.render("Header")}
                   </th>
@@ -106,15 +102,21 @@ export function Leads() {
               </tr>
             ))}
           </thead>
-          <tbody {...getTableBodyProps()} className="divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody
+            {...getTableBodyProps()}
+            className="divide-y divide-gray-200"
+          >
             {page.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} className="hover:bg-gray-100 dark:hover:bg-gray-800">
+                <tr
+                  {...row.getRowProps()}
+                  className="hover:bg-gray-100"
+                >
                   {row.cells.map((cell) => (
                     <td
                       {...cell.getCellProps()}
-                      className="px-4 py-2 text-sm text-gray-800 dark:text-gray-300"
+                      className="px-4 py-2 text-sm text-gray-800"
                     >
                       {cell.render("Cell")}
                     </td>
@@ -124,37 +126,37 @@ export function Leads() {
             })}
           </tbody>
         </table>
-        {/* Pagination controls */}
         <div className="flex justify-between items-center mt-4">
           <div className="flex items-center">
             <Button
               onClick={() => gotoPage(0)}
               disabled={!canPreviousPage}
-              style={{ backgroundColor: "#A05AFF" }}
-              className="mr-2"
+              className="bg-[#A05AFF] mr-2"
+              ripple={true}
             >
               {"<<"}
             </Button>
             <Button
-              onClick={() => previousPage()}
+              onClick={previousPage}
               disabled={!canPreviousPage}
-             style={{ backgroundColor: "#A05AFF" }}
-              className="mr-2"
+              className="bg-[#A05AFF] mr-2"
+              ripple={true}
             >
               {"<"}
             </Button>
             <Button
-              onClick={() => nextPage()}
+              onClick={nextPage}
               disabled={!canNextPage}
-              style={{ backgroundColor: "#A05AFF" }}
-              className="mr-2"
+              className="bg-[#A05AFF] mr-2"
+              ripple={true}
             >
               {">"}
             </Button>
             <Button
               onClick={() => gotoPage(pageCount - 1)}
               disabled={!canNextPage}
-             style={{ backgroundColor: "#A05AFF" }}
+              className="bg-[#A05AFF]"
+              ripple={true}
             >
               {">>"}
             </Button>
@@ -170,10 +172,7 @@ export function Leads() {
             <input
               type="number"
               defaultValue={pageIndex + 1}
-              onChange={(e) => {
-                const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0;
-                gotoPage(pageNumber);
-              }}
+              onChange={(e) => gotoPage(Number(e.target.value) - 1 || 0)}
               className="w-16 p-1 border rounded-md"
             />
           </span>

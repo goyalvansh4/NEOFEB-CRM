@@ -138,25 +138,102 @@ export default function AddInvoice({setHideForm }) {
 
           </div>
         </section>
+        
         <section className="itemList mb-6">
-          <Typography variant="h6" className="mb-4">
-            Item List
-          </Typography>
-          {items.map((item) => (
-            <div key={item.id} className="grid grid-cols-5 gap-6 items-center mb-4">
-              <Input label="Item Name" value={item.itemName} onChange={(e) => handleItemChange(item.id, "itemName", e.target.value)} required />
-              <Input label="Qty" type="number" value={item.qty} onChange={(e) => handleItemChange(item.id, "qty", e.target.value)} required />
-              <Input label="Price" type="number" value={item.price} onChange={(e) => handleItemChange(item.id, "price", e.target.value)} required />
-              <Input label="Total" value={item.qty * item.price} disabled />
-              <IconButton onClick={() => handleDeleteItem(item.id)}>
-                <i className="fas fa-trash"></i>
-              </IconButton>
-            </div>
-          ))}
-          <Button style={{backgroundColor:"#4BCBEB"}} onClick={handleAddItem} className="mt-4">
-            + Add New Item
-          </Button>
-        </section>
+      <Typography variant="h6" className="mb-4" style={{ color: '#A05AFF' }}>
+        Service Details
+      </Typography>
+      {items.map((item) => (
+        <div key={item.id} className="grid grid-cols-10 gap-4 items-center mb-4 p-4 bg-white shadow rounded-lg">
+          <Input
+            label="Item Name"
+            value={item.itemName}
+            onChange={(e) => handleItemChange(item.id, 'itemName', e.target.value)}
+            required
+            className="col-span-2"
+          />
+          <Input
+            label="Description"
+            value={item.description}
+            onChange={(e) => handleItemChange(item.id, 'description', e.target.value)}
+            required
+            className="col-span-2"
+          />
+          <Input
+            label="HSN"
+            value={item.hsn}
+            onChange={(e) => handleItemChange(item.id, 'hsn', e.target.value)}
+            required
+            className="col-span-1"
+          />
+          <Input
+            label="Price"
+            type="number"
+            value={item.price}
+            onChange={(e) => handleItemChange(item.id, 'price', e.target.value)}
+            required
+            className="col-span-1"
+          />
+          <Input
+            label="Qty"
+            type="number"
+            value={item.qty}
+            onChange={(e) => handleItemChange(item.id, 'qty', e.target.value)}
+            required
+            className="col-span-1"
+          />
+          <Input
+            label="CGST%"
+            type="number"
+            value={item.cgst}
+            onChange={(e) => handleItemChange(item.id, 'cgst', e.target.value)}
+            required
+            className="col-span-1"
+          />
+          <Input
+            label="SGST%"
+            type="number"
+            value={item.sgst}
+            onChange={(e) => handleItemChange(item.id, 'sgst', e.target.value)}
+            required
+            className="col-span-1"
+          />
+          <Input
+            label="IGST%"
+            type="number"
+            value={item.igst}
+            onChange={(e) => handleItemChange(item.id, 'igst', e.target.value)}
+            required
+            className="col-span-1"
+          />
+          <Input
+            label="Amount"
+            value={item.qty * item.price + (item.qty * item.price * (item.cgst + item.sgst + item.igst)) / 100}
+            disabled
+            className="col-span-2"
+          />
+          <IconButton
+            onClick={() => handleDeleteItem(item.id)}
+            style={{ color: '#FE9496' }}
+            className="col-span-1"
+          >
+            <i className="fas fa-trash"></i>
+          </IconButton>
+        </div>
+      ))}
+      <Button
+        style={{ backgroundColor: '#4BCBEB', color: 'white' }}
+        onClick={handleAddItem}
+        className="mt-4"
+        fullWidth
+      >
+        + Add New Item
+      </Button>
+    </section>
+
+
+
+
         <div className="flex justify-between mt-6">
           <Button style={{backgroundColor:"#FE9496"}} onClick={() => setHideForm(true)}>
             Discard
