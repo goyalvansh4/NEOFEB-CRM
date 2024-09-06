@@ -1,3 +1,4 @@
+import { Skeleton } from "primereact/skeleton";
 import React, { useMemo } from "react";
 import { useTable, usePagination } from "react-table";
 import { NavLink } from "react-router-dom";
@@ -66,8 +67,71 @@ export function Leads() {
     usePagination
   );
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading leads: {error.message}</div>;
+  if (isLoading) {
+    return (
+      <Card className="shadow-lg rounded-lg my-10">
+        <CardHeader className="p-4 border-b flex items-center justify-between bg-[#A05AFF]">
+          <Typography variant="h5" className="text-white">
+            Leads
+          </Typography>
+          <Button
+            className="bg-[#FE9496]"
+            ripple={true}
+            onClick={() => console.log("Add Leads")}
+          >
+            Add Leads
+          </Button>
+        </CardHeader>
+        <CardBody className="p-4 overflow-x-auto">
+          <table className="min-w-full bg-white rounded-lg overflow-hidden">
+            <thead className="bg-gray-100">
+              <tr>
+                {["S.No", "Lead Name", "Company", "Email", "Phone", "Lead Source"].map(
+                  (header, index) => (
+                    <th
+                      key={index}
+                      className="text-left px-4 py-2 text-xs font-semibold text-gray-700 uppercase"
+                    >
+                      {header}
+                    </th>
+                  )
+                )}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {/* Show skeleton rows */}
+              {Array.from({ length: 10 }).map((_, index) => (
+                <tr key={index} className="hover:bg-gray-100">
+                  <td className="px-4 py-2 text-sm">
+                    <Skeleton width="50px" />
+                  </td>
+                  <td className="px-4 py-2 text-sm">
+                    <Skeleton width="150px" />
+                  </td>
+                  <td className="px-4 py-2 text-sm">
+                    <Skeleton width="100px" />
+                  </td>
+                  <td className="px-4 py-2 text-sm">
+                    <Skeleton width="180px" />
+                  </td>
+                  <td className="px-4 py-2 text-sm">
+                    <Skeleton width="120px" />
+                  </td>
+                  <td className="px-4 py-2 text-sm">
+                    <Skeleton width="100px" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </CardBody>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return <div>Error loading leads: {error.message}</div>;
+  }
 
   return (
     <Card className="shadow-lg rounded-lg my-10">
@@ -107,6 +171,7 @@ export function Leads() {
             className="divide-y divide-gray-200"
           >
             {page.map((row) => {
+              console.log(row);
               prepareRow(row);
               return (
                 <tr

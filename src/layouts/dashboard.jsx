@@ -11,6 +11,7 @@ import routes from "@/routes";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
 import LeadDetails from "../pages/Leads/LeadDetails";
 import AddClient from "../pages/Clients/AddClient";
+import ClientDetails from "../pages/Clients/ClientDetails";
 
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -37,6 +38,7 @@ export function Dashboard() {
           )} 
          <Route path="/leads/:id" element={<LeadDetails />} />
          <Route path="/addClient" element={<AddClient />} />
+         <Route path="/client/:id" element={<ClientDetails />} />
         </Routes>
 
         <div className="text-blue-gray-600">

@@ -9,36 +9,17 @@ import {
   Select,
   Option,
 } from "@material-tailwind/react";
+import { useMutation } from "@tanstack/react-query";
+import GlobalAxios from "../../../Global/GlobalAxios";
+import { GetCountries, GetState, GetCity } from "react-country-state-city";
 import axios from "axios";
-
-const TOKEN = import.meta.env.VITE_API_TOKEN;
-
-const fetchCountries = async () => {
-  const response = await axios.get("https://restfulcountries.com/api/v1/countries", {
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${TOKEN}`,
-    },
-  });
-  return response.data.data;
-};
-
-const fetchStates = async (country) => {
-  const response = await axios.get(`https://restfulcountries.com/api/v1/countries/${country}/states`, {
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${TOKEN}`,
-    },
-  });
-  return response.data.data;
-};
 
 const AddClient = () => {
   const [clientDetails, setClientDetails] = useState({
     name: "",
     companyName: "",
     address: "",
-    country: "India",
+    country: "IN",
     state: "",
     city: "",
     pincode: "",
@@ -57,74 +38,43 @@ const AddClient = () => {
     upiId: "",
   });
 
-  const [countries, setCountries] = useState([]);
-  const [states, setStates] = useState([]);
-  const [countriesLoading, setCountriesLoading] = useState(true);
-  const [statesLoading, setStatesLoading] = useState(false);
-  const [countriesError, setCountriesError] = useState(null);
-  const [statesError, setStatesError] = useState(null);
+  const [countriesList, setCountriesList] = useState([]);
+  const [statesList, setStatesList] = useState([]);
+  const [countryId, setCountryId] = useState("");
+  const [stateId, setStateId] = useState("");
 
-  // Fetch countries on component mount
+  // Fetch all countries on component mount
   useEffect(() => {
-    const fetchCountriesData = async () => {
-      try {
-        const data = await fetchCountries();
-        setCountries(data);
-        setCountriesLoading(false);
-      } catch (error) {
-        setCountriesError(error.message);
-        setCountriesLoading(false);
-      }
+    const fetchCountries = async () => {
+      const result = await GetCountries();
+      setCountriesList(result);
     };
-
-    fetchCountriesData();
+    fetchCountries();
   }, []);
 
-  // Fetch states when the country changes
-  useEffect(() => {
-    const fetchStatesData = async () => {
-      if (!clientDetails.country) return;
-      setStatesLoading(true);
-      try {
-        const data = await fetchStates(clientDetails.country);
-        setStates(data);
-        setStatesLoading(false);
-      } catch (error) {
-        setStatesError(error.message);
-        setStatesLoading(false);
-      }
-    };
+  // Handle country change and fetch states
+  const handleCountryChange = async (value) => {
+    const selectedCountry = countriesList[value];
+    // console.log(selectedCountry.name);
+    setCountryId(selectedCountry.id); // Set the country ID for fetching states
+    setClientDetails((prevDetails) => ({ ...prevDetails, country: selectedCountry.name, state: "" }));
 
-    fetchStatesData();
-  }, [clientDetails.country]);
+    // Fetch states based on the selected country
+    const states = await GetState(selectedCountry.id);
+    setStatesList(states); // Update the states list
+  };
 
-  // Fetch states based on default country (India) on component mount
-  useEffect(() => {
-    const fetchStatesData = async () => {
-      setStatesLoading(true);
-      try {
-        const data = await fetchStates("India");
-        setStates(data);
-        setStatesLoading(false);
-      } catch (error) {
-        setStatesError(error.message);
-        setStatesLoading(false);
-      }
-    };
-
-    fetchStatesData();
-  }, []);
+  // Handle state change and fetch cities
+  const handleStateChange = async (value) => {
+    
+    setClientDetails((prevDetails) => ({ ...prevDetails, state: value}));
+  };
 
   const handleClientChange = (e) => {
     setClientDetails({
       ...clientDetails,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handleCountryChange = (e) => {
-    const newCountry = e;
-    setClientDetails((prevDetails) => ({ ...prevDetails, country: newCountry }));
   };
 
   const handleBankChange = (e) => {
@@ -134,12 +84,41 @@ const AddClient = () => {
     });
   };
 
+  const mutation = useMutation({
+    mutationFn: (formData) => {
+      console.log("Inside Mutation",formData);
+      // return GlobalAxios.post("/clients", formData);
+      return axios.post("http://192.168.43.152:8000/api/v1/admin/clients",formData);
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Client Details:", clientDetails);
-    console.log("Bank Details:", bankDetails);
-    // Add your submission logic here
+    
+    // Map the state fields to the new required field names
+    const formData = {
+      name: clientDetails.name,
+      email: clientDetails.email,
+      company_name: clientDetails.companyName, // Changed to company_name
+      phone: clientDetails.phoneNumber, // Changed to phone
+      country: clientDetails.country,
+      state: clientDetails.state,
+      city: clientDetails.city,
+      address: clientDetails.address,
+      gst_number: clientDetails.gstNumber, // Changed to gst_number
+      pan: clientDetails.pan,
+      tan: clientDetails.tan,
+      cin: clientDetails.cin,
+      bank_name: bankDetails.bankName, // Changed to bank_name
+      bank_account_number: bankDetails.bankAccount, // Changed to bank_account_number
+      bank_ifsc_code: bankDetails.ifscCode, // Changed to bank_ifsc_code
+      upi_id: bankDetails.upiId, // Changed to upi_id
+    };
+    
+    console.log(formData);
+    mutation.mutate(formData); // Submit the form data
   };
+  
 
   return (
     <Card className="shadow-lg rounded-lg mt-6">
@@ -191,24 +170,28 @@ const AddClient = () => {
               label="PAN"
               name="pan"
               value={clientDetails.pan}
+              onChange={handleClientChange}
             />
             <Input
               type="text"
               label="CIN"
               name="cin"
               value={clientDetails.cin}
+              onChange={handleClientChange}
             />
             <Input
               type="text"
               label="GST Number"
               name="gstNumber"
               value={clientDetails.gstNumber}
+              onChange={handleClientChange}
             />
             <Input
               type="text"
               label="TAN"
               name="tan"
               value={clientDetails.tan}
+              onChange={handleClientChange}
             />
           </div>
 
@@ -221,48 +204,38 @@ const AddClient = () => {
             <Select
               label="Country"
               name="country"
-              onChange={handleCountryChange}
+              onChange={(e) => {
+                handleCountryChange(e);
+              }}
               required
-              value={clientDetails.country} // default value set to India
+              // value={clientDetails.country}
             >
-              {countriesLoading ? (
-                <Option>Loading countries...</Option>
-              ) : countriesError ? (
-                <Option>Error loading countries</Option>
-              ) : (
-                countries.map((country) => (
-                  <Option
-                    key={country.name}
-                    value={country.name}
-                  >
-                    {country.name}
-                  </Option>
-                ))
-              )}
+              {countriesList.map((country, index) => (
+                <Option key={country.id} value={index}>
+                  {country.name}
+                </Option>
+              ))}
             </Select>
 
             {/* State Dropdown */}
             <Select
               label="State"
               name="state"
-              value={clientDetails.state}
-              onChange={(e) =>
-                setClientDetails({ ...clientDetails, state: e.target.value })
-              }
+              // value={clientDetails.state}
+              onChange={(e) => {
+                // console.log(e);
+                handleStateChange(e);
+              }}
               required
             >
-              {statesLoading ? (
-                <Option>Loading states...</Option>
-              ) : statesError ? (
-                <Option>Error loading states</Option>
-              ) : (
-                states.map((state) => (
-                  <Option key={state.name} value={state.name}>
-                    {state.name}
-                  </Option>
-                ))
-              )}
+              {statesList.map((state, index) => (
+                <Option key={state.id} value={state.name}>
+                  {state.name}
+                </Option>
+              ))}
             </Select>
+
+            {/* City Dropdown */}
             <Input
               type="text"
               label="City"
@@ -271,6 +244,7 @@ const AddClient = () => {
               onChange={handleClientChange}
               required
             />
+
             <Input
               type="text"
               label="Pincode"
@@ -324,10 +298,42 @@ const AddClient = () => {
             />
           </div>
 
-          {/* Submit Button */}
-          <Button type="submit" style={{ backgroundColor: "#9E58FF" }} className="w-full">
-            Submit
-          </Button>
+          {/* Submit and Discard Buttons */}
+          <div className="flex justify-between">
+            <Button type="submit" color="green" size="lg">
+              Submit
+            </Button>
+            <Button
+              type="button"
+              color="red"
+              size="lg"
+              onClick={() => {
+                setClientDetails({
+                  name: "",
+                  companyName: "",
+                  address: "",
+                  country: "IN",
+                  state: "",
+                  city: "",
+                  pincode: "",
+                  phoneNumber: "",
+                  email: "",
+                  gstNumber: "",
+                  pan: "",
+                  tan: "",
+                  cin: "",
+                });
+                setBankDetails({
+                  bankName: "",
+                  bankAccount: "",
+                  ifscCode: "",
+                  upiId: "",
+                });
+              }}
+            >
+              Discard
+            </Button>
+          </div>
         </form>
       </CardBody>
     </Card>

@@ -14,7 +14,10 @@ function LeadDetails() {
     setError(null);
     try {
       const data = await fetchLeadById(id);
-      setLead(data);
+      const filteredData = data.filter((lead) => parseInt(lead.id) == parseInt(id));
+      // console.log(filteredData);
+      setLead(filteredData[0]);
+      console.log(lead);  
     } catch (error) {
       setError('Failed to fetch lead data');
     } finally {
@@ -23,7 +26,7 @@ function LeadDetails() {
   };
 
   useEffect(() => {
-    fetchLead();
+    fetchLead(id);
   }, [id]);
 
   if (loading)
@@ -55,7 +58,7 @@ function LeadDetails() {
             <h1 className="text-2xl font-semibold mb-6 text-primary">Lead Information</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <p className="mb-4"><span className="font-semibold text-gray-700">Lead Owner:</span> {lead.leadOwner}</p>
+                <p className="mb-4"><span className="font-semibold text-gray-700">Lead Owner:</span> {lead.leadName}</p>
                 <p className="mb-4"><span className="font-semibold text-gray-700">Title:</span> {lead.title}</p>
                 <p className="mb-4 flex items-center">
                   <FaPhone className="mr-2 text-green-500" /> 
@@ -63,7 +66,7 @@ function LeadDetails() {
                 </p>
                 <p className="mb-4 flex items-center">
                   <FaPhone className="mr-2 text-green-500" /> 
-                  <span className="font-semibold text-gray-700">Mobile:</span> {lead.mobile}
+                  <span className="font-semibold text-gray-700">Mobile:</span> {lead.phone}
                 </p>
                 <p className="mb-4"><span className="font-semibold text-gray-700">Lead Source:</span> {lead.leadSource}</p>
                 <p className="mb-4"><span className="font-semibold text-gray-700">Industry:</span> {lead.industry}</p>

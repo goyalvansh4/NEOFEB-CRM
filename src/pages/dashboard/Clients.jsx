@@ -1,67 +1,84 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Typography,
   Card,
   CardHeader,
   CardBody,
   Button,
-  IconButton,
 } from "@material-tailwind/react";
 import {
   useReactTable,
   getCoreRowModel,
-  getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
 import { NavLink } from "react-router-dom";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 
 export function Clients() {
-  const data = React.useMemo(
-    () => [
-      { id: 1, name: "John Doe", status: "Active", email: "john@example.com" },
-      { id: 2, name: "Jane Smith", status: "Inactive", email: "jane@example.com" },
-      { id: 3, name: "Sam Wilson", status: "Pending", email: "sam@example.com" },
-      { id: 4, name: "Lucy Brown", status: "Active", email: "lucy@example.com" },
-      { id: 5, name: "Jake White", status: "Active", email: "jake@example.com" },
-      { id: 6, name: "Emily Davis", status: "Inactive", email: "emily@example.com" },
-      { id: 7, name: "John Doe", status: "Active", email: "john@example.com" },
-      { id: 8, name: "Jane Smith", status: "Inactive", email: "jane@example.com" },
-      { id: 9, name: "Sam Wilson", status: "Pending", email: "sam@example.com" },
-      { id: 10, name: "Lucy Brown", status: "Active", email: "lucy@example.com" },
-      { id: 11, name: "Jake White", status: "Active", email: "jake@example.com" },
-      { id: 12, name: "Emily Davis", status: "Inactive", email: "emily@example.com" },
-      // More data...
-    ],
-    []
-  );
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Set the initial pageIndex from URL, convert from 1-based index to 0-based
+  const initialPageIndex = parseInt(searchParams.get("page")) - 1 || 0;
+
+  const [pagination, setPagination] = useState({
+    pageIndex: initialPageIndex,
+    pageSize: 10,
+  });
+
+  // Sync pagination with URL on pageIndex change (1-based index in URL)
+  useEffect(() => {
+    setSearchParams({ page: pagination.pageIndex + 1 });
+  }, [pagination.pageIndex, setSearchParams]);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["clients", pagination.pageIndex],
+    queryFn: async () => {
+      const response = await axios.get(
+        `http://192.168.43.152:8000/api/v1/admin/clients?page=${
+          pagination.pageIndex + 1
+        }&per_page=${pagination.pageSize}`
+      );
+      return response.data;
+    },
+    keepPreviousData: true,
+  });
 
   const columns = React.useMemo(
     () => [
       {
-        accessorKey: "id",
-        header: "ID",
+        accessorFn: (row, i) => i + 1 + pagination.pageIndex * pagination.pageSize, // S.No with correct pagination
+        header: "S.No",
         cell: (info) => info.getValue(),
       },
       {
         accessorKey: "name",
         header: "Name",
+        cell: (info) => (
+          <NavLink
+            to={`/dashboard/client/${info.row.original.id}`}
+            className="text-indigo-600 hover:text-indigo-900"
+          >
+            {info.getValue()}
+          </NavLink>
+        ),
+      },
+      {
+        accessorKey: "company_name",
+        header: "Company Name",
         cell: (info) => info.getValue(),
       },
       {
-        accessorKey: "status",
-        header: "Status",
+        accessorKey: "phone",
+        header: "Phone Number",
         cell: (info) => (
-          <span
-            className={`px-2 py-1 rounded-full text-xs font-semibold ${
-              info.getValue() === "Active"
-                ? "bg-green-100 text-green-800"
-                : info.getValue() === "Inactive"
-                ? "bg-red-100 text-red-800"
-                : "bg-yellow-100 text-yellow-800"
-            }`}
+          <a
+            href={`tel:${info.getValue()}`}
+            className="text-blue-500 hover:text-blue-700"
           >
             {info.getValue()}
-          </span>
+          </a>
         ),
       },
       {
@@ -76,28 +93,70 @@ export function Clients() {
           </a>
         ),
       },
+      {
+        accessorKey: "status",
+        header: "Status",
+        cell: (info) => (
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-semibold ${
+              info.getValue() === "active"
+                ? "bg-green-100 text-green-800"
+                : info.getValue() === "inactive"
+                ? "bg-red-100 text-red-800"
+                : "bg-yellow-100 text-yellow-800"
+            }`}
+          >
+            {info.getValue()}
+          </span>
+        ),
+      },
     ],
-    []
+    [pagination.pageIndex, pagination.pageSize]
   );
 
   const table = useReactTable({
-    data,
+    data: data?.data || [],
     columns,
+    pageCount: data?.pagination?.total_pages || 1, // Set total pages based on API data
+    manualPagination: true,
+    state: {
+      pagination,
+    },
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    initialState: { pagination: { pageSize: 4 } },
   });
 
+  const handlePreviousPage = () => {
+    setPagination((prev) => ({
+      ...prev,
+      pageIndex: Math.max(0, prev.pageIndex - 1), // Ensure we don't go below 0
+    }));
+  };
+
+  const handleNextPage = () => {
+    if (pagination.pageIndex < data?.pagination?.total_pages - 1) {
+      setPagination((prev) => ({
+        ...prev,
+        pageIndex: prev.pageIndex + 1, // Go to the next page
+      }));
+    }
+  };
+
+  if (isLoading) {
+    return <div className="text-center mt-10">Loading...</div>;
+  }
+  if (isError) {
+    return <div className="text-center mt-10 text-red-500">Error loading data.</div>;
+  }
+
   return (
-    <div className="mx-auto my-20 flex max-w-screen-xl flex-col gap-8">
+    <div className="mx-auto my-20 max-w-screen-xl flex flex-col gap-8">
       <Card className="shadow-lg rounded-lg">
         <CardHeader
           className="p-6 flex justify-between items-center"
           style={{ backgroundColor: "#A05AFF", color: "#FFF" }}
         >
-          <Typography variant="h6">
-            Client List
-          </Typography>
+          <Typography variant="h6">Client List</Typography>
           <NavLink
             to={`/dashboard/addClient`}
             className="inline-block px-4 py-2 rounded-lg bg-[#FE9496] text-white text-sm font-medium hover:bg-[#f97b7d] transition-all duration-300"
@@ -148,8 +207,8 @@ export function Clients() {
                 variant="outlined"
                 size="sm"
                 color="indigo"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
+                onClick={handlePreviousPage}
+                disabled={pagination.pageIndex === 0} // Disable if already on first page
               >
                 Previous
               </Button>
@@ -157,8 +216,8 @@ export function Clients() {
                 variant="outlined"
                 size="sm"
                 color="indigo"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
+                onClick={handleNextPage}
+                disabled={pagination.pageIndex >= data?.pagination?.total_pages - 1} // Disable if already on last page
               >
                 Next
               </Button>
@@ -167,9 +226,9 @@ export function Clients() {
               <span className="text-sm text-gray-600">
                 Page{" "}
                 <strong>
-                  {table.getState().pagination.pageIndex + 1} of{" "}
-                  {table.getPageCount()}
-                </strong>
+                  {pagination.pageIndex + 1} of {data?.pagination?.total_pages}
+                </strong>{" "}
+                | Total Clients: {data?.pagination?.total_rows}
               </span>
             </div>
           </div>
