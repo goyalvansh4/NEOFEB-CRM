@@ -36,10 +36,9 @@ export function Clients() {
     queryKey: ["clients", pagination.pageIndex],
     queryFn: async () => {
       const response = await axios.get(
-        `http://192.168.43.152:8000/api/v1/admin/clients?page=${
-          pagination.pageIndex + 1
-        }&per_page=${pagination.pageSize}`
+        `https://66d7e6d837b1cadd80529ccf.mockapi.io/admin/api/v1/clients?page=${pagination.pageIndex + 1}&limit=${pagination.pageSize}`
       );
+      console.log(response.data);
       return response.data;
     },
     keepPreviousData: true,

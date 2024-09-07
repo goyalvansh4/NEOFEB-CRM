@@ -1,7 +1,7 @@
 import { Skeleton } from "primereact/skeleton";
 import React, { useMemo } from "react";
 import { useTable, usePagination } from "react-table";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -13,6 +13,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchLeads } from "../../Api/LeadsApi";
 
 export function Leads() {
+  const navigate = useNavigate(); // Use the navigate function from react-router-dom
+
   const { data: leads, error, isLoading } = useQuery({
     queryKey: ["leadsData"],
     queryFn: async () => await fetchLeads(),
@@ -77,7 +79,7 @@ export function Leads() {
           <Button
             className="bg-[#FE9496]"
             ripple={true}
-            onClick={() => console.log("Add Leads")}
+            onClick={() => navigate("/dashboard/addLead")} // Navigate to Add Lead route
           >
             Add Leads
           </Button>
@@ -142,7 +144,7 @@ export function Leads() {
         <Button
           className="bg-[#FE9496]"
           ripple={true}
-          onClick={() => console.log("Add Leads")}
+          onClick={() => navigate("/dashboard/addLead")} // Navigate to Add Lead route
         >
           Add Leads
         </Button>
@@ -171,7 +173,6 @@ export function Leads() {
             className="divide-y divide-gray-200"
           >
             {page.map((row) => {
-              console.log(row);
               prepareRow(row);
               return (
                 <tr
