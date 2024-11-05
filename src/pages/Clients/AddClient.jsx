@@ -8,13 +8,17 @@ import {
   Typography,
   Select,
   Option,
+  Spinner,
 } from "@material-tailwind/react";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import GlobalAxios from "../../../Global/GlobalAxios";
-import { GetCountries, GetState, GetCity } from "react-country-state-city";
-import axios from "axios";
+import { GetCountries, GetState } from "react-country-state-city";
 
 const AddClient = () => {
+  const [loading, setLoading] = useState(false);
   const [clientDetails, setClientDetails] = useState({
     name: "",
     companyName: "",
@@ -40,10 +44,10 @@ const AddClient = () => {
 
   const [countriesList, setCountriesList] = useState([]);
   const [statesList, setStatesList] = useState([]);
-  const [countryId, setCountryId] = useState("");
-  const [stateId, setStateId] = useState("");
 
-  // Fetch all countries on component mount
+  const navigate = useNavigate();
+
+  // Fetch countries on component mount
   useEffect(() => {
     const fetchCountries = async () => {
       const result = await GetCountries();
@@ -52,22 +56,16 @@ const AddClient = () => {
     fetchCountries();
   }, []);
 
-  // Handle country change and fetch states
   const handleCountryChange = async (value) => {
     const selectedCountry = countriesList[value];
-    // console.log(selectedCountry.name);
-    setCountryId(selectedCountry.id); // Set the country ID for fetching states
-    setClientDetails((prevDetails) => ({ ...prevDetails, country: selectedCountry.name, state: "" }));
+    setClientDetails((prevDetails) => ({
+      ...prevDetails,
+      country: selectedCountry.name,
+      state: "",
+    }));
 
-    // Fetch states based on the selected country
     const states = await GetState(selectedCountry.id);
-    setStatesList(states); // Update the states list
-  };
-
-  // Handle state change and fetch cities
-  const handleStateChange = async (value) => {
-    
-    setClientDetails((prevDetails) => ({ ...prevDetails, state: value}));
+    setStatesList(states);
   };
 
   const handleClientChange = (e) => {
@@ -86,51 +84,77 @@ const AddClient = () => {
 
   const mutation = useMutation({
     mutationFn: (formData) => {
-      console.log("Inside Mutation",formData);
-      // return GlobalAxios.post("/clients", formData);
-      return axios.post("http://192.168.43.152:8000/api/v1/admin/clients",formData);
+      setLoading(true); // Start loading
+      return GlobalAxios.post("/clients", formData);
+    },
+    onSuccess: () => {
+      setLoading(false);
+      toast.success("Client added successfully!", {
+        position: "bottom-right",
+      });
+      // Clear form after successful submission
+      setClientDetails({
+        name: "",
+        companyName: "",
+        address: "",
+        country: "IN",
+        state: "",
+        city: "",
+        pincode: "",
+        phoneNumber: "",
+        email: "",
+        gstNumber: "",
+        pan: "",
+        tan: "",
+        cin: "",
+      });
+      setBankDetails({
+        bankName: "",
+        bankAccount: "",
+        ifscCode: "",
+        upiId: "",
+      });
+    },
+    onError: () => {
+      setLoading(false);
+      toast.error("Failed to add client.", { position: "bottom-right" });
     },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Map the state fields to the new required field names
     const formData = {
       name: clientDetails.name,
       email: clientDetails.email,
-      company_name: clientDetails.companyName, // Changed to company_name
-      phone: clientDetails.phoneNumber, // Changed to phone
+      company_name: clientDetails.companyName,
+      phone: clientDetails.phoneNumber,
       country: clientDetails.country,
       state: clientDetails.state,
       city: clientDetails.city,
       address: clientDetails.address,
-      gst_number: clientDetails.gstNumber, // Changed to gst_number
+      gst_number: clientDetails.gstNumber,
       pan: clientDetails.pan,
       tan: clientDetails.tan,
       cin: clientDetails.cin,
-      bank_name: bankDetails.bankName, // Changed to bank_name
-      bank_account_number: bankDetails.bankAccount, // Changed to bank_account_number
-      bank_ifsc_code: bankDetails.ifscCode, // Changed to bank_ifsc_code
-      upi_id: bankDetails.upiId, // Changed to upi_id
+      bank_name: bankDetails.bankName,
+      bank_account_number: bankDetails.bankAccount,
+      bank_ifsc_code: bankDetails.ifscCode,
+      upi_id: bankDetails.upiId,
     };
-    
-    console.log(formData);
-    mutation.mutate(formData); // Submit the form data
+    mutation.mutate(formData);
   };
-  
 
   return (
     <Card className="shadow-lg rounded-lg mt-6">
-      <CardHeader className="p-4 border-b bg-gradient-to-r from-[#A05AFF] to-[#9E58FF] dark:bg-gray-800">
-        <Typography variant="h5" className="text-white dark:text-gray-100">
+      <CardHeader className="p-4 border-b bg-gradient-to-r from-[#A05AFF] to-[#9E58FF]">
+        <Typography variant="h5" className="text-white">
           Add Client
         </Typography>
       </CardHeader>
       <CardBody className="p-4">
         <form onSubmit={handleSubmit}>
           {/* Client Details Section */}
-          <Typography variant="h6" className="mb-4 text-[#A05AFF] dark:text-gray-100">
+          <Typography variant="h6" className="mb-4 text-[#A05AFF]">
             Client Details:
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -196,11 +220,10 @@ const AddClient = () => {
           </div>
 
           {/* Address Section */}
-          <Typography variant="h6" className="mb-4 text-[#A05AFF] dark:text-gray-100">
+          <Typography variant="h6" className="mb-4 text-[#A05AFF]">
             Address Details:
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            {/* Country Dropdown */}
             <Select
               label="Country"
               name="country"
@@ -208,7 +231,6 @@ const AddClient = () => {
                 handleCountryChange(e);
               }}
               required
-              // value={clientDetails.country}
             >
               {countriesList.map((country, index) => (
                 <Option key={country.id} value={index}>
@@ -217,25 +239,21 @@ const AddClient = () => {
               ))}
             </Select>
 
-            {/* State Dropdown */}
             <Select
               label="State"
               name="state"
-              // value={clientDetails.state}
               onChange={(e) => {
-                // console.log(e);
-                handleStateChange(e);
+                handleClientChange(e);
               }}
               required
             >
-              {statesList.map((state, index) => (
+              {statesList.map((state) => (
                 <Option key={state.id} value={state.name}>
                   {state.name}
                 </Option>
               ))}
             </Select>
 
-            {/* City Dropdown */}
             <Input
               type="text"
               label="City"
@@ -253,6 +271,7 @@ const AddClient = () => {
               onChange={handleClientChange}
               required
             />
+
             <Input
               type="text"
               label="Address"
@@ -264,7 +283,7 @@ const AddClient = () => {
           </div>
 
           {/* Bank Details Section */}
-          <Typography variant="h6" className="mb-4 text-[#A05AFF] dark:text-gray-100">
+          <Typography variant="h6" className="mb-4 text-[#A05AFF]">
             Bank Details:
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -298,43 +317,29 @@ const AddClient = () => {
             />
           </div>
 
-          {/* Submit and Discard Buttons */}
-          <div className="flex justify-between">
-            <Button type="submit" color="green" size="lg">
-              Submit
+          {/* Submit and Back Buttons */}
+          <div className="flex justify-between mt-6">
+            <Button
+              type="submit"
+              className="bg-gradient-to-r from-[#1BCFB4] to-[#4BCBEB] text-white"
+              size="lg"
+              disabled={loading}
+            >
+              {loading ? <Spinner className="h-5 w-5" /> : "Submit"}
             </Button>
             <Button
               type="button"
-              color="red"
+              className="bg-red-500 text-white"
               size="lg"
               onClick={() => {
-                setClientDetails({
-                  name: "",
-                  companyName: "",
-                  address: "",
-                  country: "IN",
-                  state: "",
-                  city: "",
-                  pincode: "",
-                  phoneNumber: "",
-                  email: "",
-                  gstNumber: "",
-                  pan: "",
-                  tan: "",
-                  cin: "",
-                });
-                setBankDetails({
-                  bankName: "",
-                  bankAccount: "",
-                  ifscCode: "",
-                  upiId: "",
-                });
+                navigate("/dashboard/clients");
               }}
             >
-              Discard
+              Back
             </Button>
           </div>
         </form>
+        <ToastContainer />
       </CardBody>
     </Card>
   );

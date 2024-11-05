@@ -5,6 +5,10 @@ import {
   CardHeader,
   CardBody,
   Button,
+  Spinner, // Import Spinner from Material-Tailwind
+  Input, // Import Input for the search field
+  Select, // Import Select for dropdowns
+  Option, // Import Option for Select dropdown
 } from "@material-tailwind/react";
 import {
   useReactTable,
@@ -12,33 +16,67 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { NavLink } from "react-router-dom";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
+import GlobalAxios from "../../../Global/GlobalAxios";
 
 export function Clients() {
   const [searchParams, setSearchParams] = useSearchParams();
-  
-  // Set the initial pageIndex from URL, convert from 1-based index to 0-based
+
+  // Get initial values from search params
   const initialPageIndex = parseInt(searchParams.get("page")) - 1 || 0;
+  const initialSearch = searchParams.get("search") || "";
+  const initialOrderBy = searchParams.get("order_by") || "new_first";
+  const initialPerPage = parseInt(searchParams.get("per_page")) || 10;
+  const [isEmpty,setISEmpty] = useState(true);
 
   const [pagination, setPagination] = useState({
     pageIndex: initialPageIndex,
-    pageSize: 10,
+    pageSize: initialPerPage,
   });
 
-  // Sync pagination with URL on pageIndex change (1-based index in URL)
+  const [search, setSearch] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
+  const [orderBy, setOrderBy] = useState(initialOrderBy);
+  const [perPage, setPerPage] = useState(initialPerPage);
+
+  // Debouncing the search input
   useEffect(() => {
-    setSearchParams({ page: pagination.pageIndex + 1 });
-  }, [pagination.pageIndex, setSearchParams]);
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 1000); // Delay of 1000ms
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
+
+  // Sync pagination, debounced search, order_by, and per_page with URL
+  useEffect(() => {
+    setSearchParams({
+      page: pagination.pageIndex + 1,
+      search: debouncedSearch,
+      order_by: orderBy,
+      per_page: perPage,
+    });
+  }, [pagination.pageIndex, debouncedSearch, orderBy, perPage, setSearchParams]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["clients", pagination.pageIndex],
+    queryKey: ["clients", pagination.pageIndex, debouncedSearch, orderBy, perPage],
     queryFn: async () => {
-      const response = await axios.get(
-        `https://66d7e6d837b1cadd80529ccf.mockapi.io/admin/api/v1/clients?page=${pagination.pageIndex + 1}&limit=${pagination.pageSize}`
+      const response = await GlobalAxios.get(
+        `/clients`, {
+          params: {
+            page: pagination.pageIndex + 1,
+            per_page: perPage,
+            search: debouncedSearch,
+            order_by: orderBy,
+          },
+        }
       );
-      console.log(response.data);
+      if(response.data.data.length > 0){
+        setISEmpty(false);
+      }
       return response.data;
     },
     keepPreviousData: true,
@@ -47,9 +85,9 @@ export function Clients() {
   const columns = React.useMemo(
     () => [
       {
-        accessorFn: (row, i) => i + 1 + pagination.pageIndex * pagination.pageSize, // S.No with correct pagination
-        header: "S.No",
-        cell: (info) => info.getValue(),
+        accessorKey: "id",
+        header: "Client Id",
+        cell: (info) => "#" + info.getValue(),
       },
       {
         accessorKey: "name",
@@ -116,7 +154,7 @@ export function Clients() {
   const table = useReactTable({
     data: data?.data || [],
     columns,
-    pageCount: data?.pagination?.total_pages || 1, // Set total pages based on API data
+    pageCount: data?.pagination?.total_pages || 1,
     manualPagination: true,
     state: {
       pagination,
@@ -128,7 +166,7 @@ export function Clients() {
   const handlePreviousPage = () => {
     setPagination((prev) => ({
       ...prev,
-      pageIndex: Math.max(0, prev.pageIndex - 1), // Ensure we don't go below 0
+      pageIndex: Math.max(0, prev.pageIndex - 1),
     }));
   };
 
@@ -136,17 +174,25 @@ export function Clients() {
     if (pagination.pageIndex < data?.pagination?.total_pages - 1) {
       setPagination((prev) => ({
         ...prev,
-        pageIndex: prev.pageIndex + 1, // Go to the next page
+        pageIndex: prev.pageIndex + 1,
       }));
     }
   };
 
   if (isLoading) {
-    return <div className="text-center mt-10">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-96">
+        <Spinner className="h-12 w-12 text-indigo-500" />
+      </div>
+    );
   }
   if (isError) {
-    return <div className="text-center mt-10 text-red-500">Error loading data.</div>;
+    return (
+      <div className="text-center mt-10 text-red-500">Error loading data.</div>
+    );
   }
+
+
 
   return (
     <div className="mx-auto my-20 max-w-screen-xl flex flex-col gap-8">
@@ -164,6 +210,42 @@ export function Clients() {
           </NavLink>
         </CardHeader>
         <CardBody className="px-6 py-4">
+          {/* Search and Filter Section */}
+          <div className="flex justify-between items-center mb-6">
+            <Input
+              label="Search Client"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="mr-4 w-1/3"
+            />
+            <Select
+              label="Order By"
+              value={orderBy}
+              onChange={(e) => setOrderBy(e)}
+              className="mr-4 w-full"
+            >
+              <Option value="old_first">Old First</Option>
+              <Option value="new_first">New First</Option>
+            </Select>
+            <Select
+              label="Per Page"
+              value={perPage}
+              onChange={(e) => setPerPage(parseInt(e))}
+              className="w-full"
+            >
+              <Option value={10}>10</Option>
+              <Option value={20}>20</Option>
+              <Option value={30}>30</Option>
+              <Option value={40}>40</Option>
+              <Option value={50}>50</Option>
+            </Select>
+          </div>
+
+
+          {isEmpty 
+          ? 
+          <div className="text-center text-gray-500">No Clients found.</div>
+          :
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -190,16 +272,15 @@ export function Clients() {
                       key={cell.id}
                       className="px-6 py-4 whitespace-nowrap text-sm text-gray-600"
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
                 </tr>
               ))}
             </tbody>
           </table>
+          }
+          {/* Pagination */}
           <div className="flex justify-between items-center mt-4">
             <div className="flex gap-2">
               <Button
@@ -207,7 +288,7 @@ export function Clients() {
                 size="sm"
                 color="indigo"
                 onClick={handlePreviousPage}
-                disabled={pagination.pageIndex === 0} // Disable if already on first page
+                disabled={pagination.pageIndex === 0}
               >
                 Previous
               </Button>
@@ -216,7 +297,7 @@ export function Clients() {
                 size="sm"
                 color="indigo"
                 onClick={handleNextPage}
-                disabled={pagination.pageIndex >= data?.pagination?.total_pages - 1} // Disable if already on last page
+                disabled={pagination.pageIndex >= data?.pagination?.total_pages - 1}
               >
                 Next
               </Button>
