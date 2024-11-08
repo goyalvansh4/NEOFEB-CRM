@@ -1,5 +1,5 @@
 import { Skeleton } from "primereact/skeleton";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useTable, usePagination } from "react-table";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
@@ -12,9 +12,11 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { fetchLeads } from "../../Api/LeadsApi";
 
+
+
 export function Leads() {
   const navigate = useNavigate(); // Use the navigate function from react-router-dom
-
+   
   const { data: leads, error, isLoading } = useQuery({
     queryKey: ["leadsData"],
     queryFn: async () => await fetchLeads(),
@@ -24,7 +26,7 @@ export function Leads() {
     () => [
       { Header: "S.No", accessor: "id" },
       {
-        Header: "Lead Name",
+        Header: "Name",
         accessor: "leadName",
         Cell: ({ row }) => (
           <NavLink
@@ -69,13 +71,19 @@ export function Leads() {
     usePagination
   );
 
+
+  
+
+
   if (isLoading) {
     return (
+      <>
       <Card className="shadow-lg rounded-lg my-10">
         <CardHeader className="p-4 border-b flex items-center justify-between bg-[#A05AFF]">
           <Typography variant="h5" className="text-white">
             Leads
           </Typography>
+          
           <Button
             className="bg-[#FE9496]"
             ripple={true}
@@ -128,6 +136,7 @@ export function Leads() {
           </table>
         </CardBody>
       </Card>
+      </>
     );
   }
 
@@ -136,11 +145,13 @@ export function Leads() {
   }
 
   return (
+    <>
     <Card className="shadow-lg rounded-lg my-10">
       <CardHeader className="p-4 border-b flex items-center justify-between bg-[#A05AFF]">
         <Typography variant="h5" className="text-white">
           Leads
         </Typography>
+        
         <Button
           className="bg-[#FE9496]"
           ripple={true}
@@ -256,6 +267,7 @@ export function Leads() {
         </div>
       </CardBody>
     </Card>
+    </>
   );
 }
 
