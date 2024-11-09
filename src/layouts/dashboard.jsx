@@ -13,6 +13,7 @@ import LeadDetails from "../pages/Leads/LeadDetails";
 import AddClient from "../pages/Clients/AddClient";
 import ClientDetails from "../pages/Clients/ClientDetails";
 import AddLead from "../pages/Leads/AddLead";
+import ManageSource from "../pages/Leads/ManageSource";
 
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -41,6 +42,7 @@ export function Dashboard() {
          <Route path="/addlead" element={<AddLead />} />
          <Route path="/addClient" element={<AddClient />} />
          <Route path="/client/:id" element={<ClientDetails />} />
+         <Route path="/addlead/add-source" element={<ManageSource/>} />
         </Routes>
 
         <div className="text-blue-gray-600">

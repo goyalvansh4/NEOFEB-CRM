@@ -4,6 +4,7 @@ import { Button, Input, Card, CardBody, Typography, Tooltip } from "@material-ta
 import { MdOutlineFileDownload } from "react-icons/md";
 import { MdEdit, MdDelete } from "react-icons/md";
 import GlobalAxios from "../../../Global/GlobalAxios";
+import { useNavigate } from "react-router-dom";
 
 const addLead = async (leadData) => {
   const response = await GlobalAxios.post("/leads", leadData);
@@ -16,6 +17,7 @@ export function AddLead() {
   const [sendStatus, setSendStatus] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [editingStatusId, setEditingStatusId] = useState(null);
+  const navigate = useNavigate();
 
   // State for form data
   const [formData, setFormData] = useState({
@@ -102,6 +104,10 @@ export function AddLead() {
     setEditingStatusId(statusItem.id);
     setShowModal(true);
   };
+
+  const handleNavigate = () => {
+    navigate("add-source");
+  }
 
   return (
     <>
@@ -243,6 +249,7 @@ export function AddLead() {
               />
             </div>
             <div className="mb-4">
+              <button onClick={handleNavigate} className="px-2 py-1 text-[12px] bg-[#FE9496] text-white mb-2 rounded-lg">Add Source</button>
               <Input
                 label="Lead Source"
                 name="leadSource"
