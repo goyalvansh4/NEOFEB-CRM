@@ -1,5 +1,5 @@
 import { Skeleton } from "primereact/skeleton";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTable, usePagination } from "react-table";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
@@ -17,7 +17,7 @@ import { fetchLeads } from "../../Api/LeadsApi";
 export function Leads() {
   const navigate = useNavigate(); // Use the navigate function from react-router-dom
    
-  const { data: leads, error, isLoading } = useQuery({
+  const { data: leads, error, isLoading,refetch } = useQuery({
     queryKey: ["leadsData"],
     queryFn: async () => await fetchLeads(),
   });
@@ -33,19 +33,23 @@ export function Leads() {
             to={`/dashboard/leads/${row.original.id}`}
             className="text-[#1BCFB4] hover:underline"
           >
-            {row.original.leadName}
+            {row.original.name}
           </NavLink>
         ),
       },
-      { Header: "Company", accessor: "company" },
+      { Header: "Company", accessor: "company_name" },
       { Header: "Email", accessor: "email" },
-      { Header: "Phone", accessor: "phone" },
-      { Header: "Lead Source", accessor: "leadSource" },
+      { Header: "Phone", accessor: "mobile" },
+      { Header: "Lead Source", accessor: "lead_source_name" },
+      { Header: "Status", accessor: "lead_status_name" },
     ],
     []
   );
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
-  const data = useMemo(() => leads || [], [leads]);
+  const data = leads?.leads.data || [];
 
   const {
     getTableProps,
@@ -151,7 +155,13 @@ export function Leads() {
         <Typography variant="h5" className="text-white">
           Leads
         </Typography>
-        
+        <div className="flex gap-2">
+        <Button
+            className="bg-[#02f1b9] text-[11px]"
+            onClick={() => navigate("/dashboard/followUp")} // Navigate to Add Lead route
+          >
+            Follow Up : {leads.follow_up_count}
+          </Button>
         <Button
           className="bg-[#FE9496]"
           ripple={true}
@@ -159,6 +169,7 @@ export function Leads() {
         >
           Add Leads
         </Button>
+        </div>
       </CardHeader>
       <CardBody className="p-4 overflow-x-auto">
         <table

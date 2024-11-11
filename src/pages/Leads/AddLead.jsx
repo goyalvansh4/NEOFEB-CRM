@@ -18,38 +18,39 @@ export function AddLead() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingStatusId, setEditingStatusId] = useState(null);
   const navigate = useNavigate();
+  const [sources, setSources] = useState([]);
 
-  // State for form data
   const [formData, setFormData] = useState({
-    leadName: "",
-    company: "",
+    name: "",
+    company_name: "",
     email: "",
-    phone: "",
-    leadSource: "",
+    mobile: "",
+    source_id: "",
+    notes: "",
+    moreAboutSource: "",
   });
 
-  // Fetch statuses using useQuery (updated for React Query v5)
-  const { data: statusData, isLoading: isFetchingStatuses, refetch } = useQuery({
-    queryKey: ["leadStatuses"],
-    queryFn: async () => {
-      const response = await GlobalAxios.get("/lead-statuses");
-      return response.data.data;
-    },
-  });
+  useEffect(() => {
+    const fetchSources = async () => {
+      const response = await GlobalAxios.get("/lead-sources");
+      setSources(response.data.data);
+    };
+    fetchSources();
+  }, []);
 
-  // Mutation to add lead
-  const leadMutation = useMutation({
-    mutationFn: addLead,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["leadsData"]);
-      setFormData({ leadName: "", company: "", email: "", phone: "", leadSource: "" });
-    },
-  });
+    // Fetch statuses using useQuery (updated for React Query v5)
+    const { data: statusData, isLoading: isFetchingStatuses, refetch } = useQuery({
+      queryKey: ["leadStatuses"],
+      queryFn: async () => {
+        const response = await GlobalAxios.get("/lead-statuses");
+        return response.data.data;
+      },
+    });
 
-  // Mutation to manage statuses
+     // Mutation to manage statuses
   const statusMutation = useMutation({
     mutationFn: async (status) => {
-      const url = isEditing ? `/lead-statuses/${editingStatusId}` : "/lead-statuses";
+      const url = `isEditing ? /lead-statuses/${editingStatusId} : "/lead-statuses"`;
       return isEditing
         ? await GlobalAxios.put(url, status)
         : await GlobalAxios.post(url, status);
@@ -69,11 +70,25 @@ export function AddLead() {
       refetch();
     }
   };
+  
+  const leadMutation = useMutation({
+    mutationFn: addLead,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["leadsData"]);
+      setFormData({ name: "", company_name: "", email: "", mobile: "", source_id: "", notes: "", moreAboutSource: "" });
+    },
+  });
 
-  // Handle input change for lead form
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleLeadSubmit = (e) => {
+    e.preventDefault();
+    const { notes, ...requiredData } = formData;
+    const payload = notes ? { ...requiredData, notes } : requiredData;
+    leadMutation.mutate(payload);
   };
 
   // Handle status form input change
@@ -82,14 +97,8 @@ export function AddLead() {
     setSendStatus({ ...sendStatus, [name]: value });
   };
 
-  // Handle lead form submission
-  const handleLeadSubmit = (e) => {
-    e.preventDefault();
-    leadMutation.mutate(formData);
-  };
-
-  // Handle status form submission
-  const handleStatusSubmit = (e) => {
+   // Handle status form submission
+   const handleStatusSubmit = (e) => {
     e.preventDefault();
     statusMutation.mutate(sendStatus);
   };
@@ -116,12 +125,14 @@ export function AddLead() {
           <MdOutlineFileDownload size={20} color="#1BCFB4" />
         </button>
         <button
-          onClick={handleModal}
+          onClick={() => setShowModal(true)}
           className="bg-[#1BCFB4] text-[12px] text-white py-1 px-2 rounded-md"
         >
           Manage Status
         </button>
       </div>
+
+
 
       {showModal && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
@@ -213,18 +224,18 @@ export function AddLead() {
           <form onSubmit={handleLeadSubmit}>
             <div className="mb-4">
               <Input
-                label="Lead Name *"
-                name="leadName"
-                value={formData.leadName}
+                label="Lead Name"
+                name="name"
+                value={formData.name}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="mb-4">
               <Input
-                label="Company"
-                name="company"
-                value={formData.company}
+                label="Company_name"
+                name="company_name"
+                value={formData.company_name}
                 onChange={handleInputChange}
                 required
               />
@@ -242,20 +253,43 @@ export function AddLead() {
             <div className="mb-4">
               <Input
                 label="Phone"
-                name="phone"
-                value={formData.phone}
+                name="mobile"
+                value={formData.mobile}
                 onChange={handleInputChange}
                 required
               />
             </div>
-            <div className="mb-4">
-              <button onClick={handleNavigate} className="px-2 py-1 text-[12px] bg-[#FE9496] text-white mb-2 rounded-lg">Add Source</button>
-              <Input
-                label="Lead Source"
-                name="leadSource"
-                value={formData.leadSource}
+            <div className="mb-4 flex gap-2 items-center">
+              <button
+                onClick={() => navigate("add-source")}
+                className="w-[20%] px-2 py-1 text-[12px] bg-[#FE9496] text-white mb-2 rounded-lg"
+              >
+                Add Source
+              </button>
+              <select
+                name="source_id"
+                value={formData.source_id}
                 onChange={handleInputChange}
+                className="p-2 rounded-md border border-gray-300 w-full"
                 required
+              >
+                <option value="">Select Source</option>
+                {sources?.map((source) => (
+                  <option key={source.id} value={source.id}>
+                    {source.name}
+                  </option>
+                ))}
+              </select>
+              <input type="text" name="moreAboutSource" value={formData.moreAboutSource} onChange={handleInputChange} className="p-2 rounded-md border border-gray-300 w-full" placeholder="More About Source (Optional)" />
+            </div>
+            <div className="mb-4">
+              <textarea
+                className="border-2 px-2 py-1 w-full rounded-md"
+                rows={5}
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+                placeholder="Any Notes (Optional)"
               />
             </div>
             <Button

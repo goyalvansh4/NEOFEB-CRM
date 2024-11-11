@@ -1,8 +1,9 @@
 import GlobalAxios from "../../Global/GlobalAxios";
 
 export const fetchLeads = async () => {
+  console.log("fetchLeads");
   const response = await GlobalAxios.get(`/leads`);
-  const data = response.data.data.data;
+  const data = response.data.data;
   console.log(data);
   return data;
 };
