@@ -19,6 +19,7 @@ import { NavLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import GlobalAxios from "../../../Global/GlobalAxios";
+import axios from "axios";
 
 export function Clients() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -64,8 +65,8 @@ export function Clients() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["clients", pagination.pageIndex, debouncedSearch, orderBy, perPage],
     queryFn: async () => {
-      const response = await GlobalAxios.get(
-        `/clients`, {
+      const response = await axios.get(
+        `https://neofeb.onrender.com/client`, {
           params: {
             page: pagination.pageIndex + 1,
             per_page: perPage,
@@ -82,10 +83,14 @@ export function Clients() {
     keepPreviousData: true,
   });
 
+  // const data=[];
+  // const isLoading=false;
+  // const isError=false;
+
   const columns = React.useMemo(
     () => [
       {
-        accessorKey: "id",
+        accessorKey: "_id",
         header: "Client Id",
         cell: (info) => "#" + info.getValue(),
       },
@@ -107,7 +112,7 @@ export function Clients() {
         cell: (info) => info.getValue(),
       },
       {
-        accessorKey: "phone",
+        accessorKey: "phone_number",
         header: "Phone Number",
         cell: (info) => (
           <a
@@ -192,8 +197,6 @@ export function Clients() {
     );
   }
 
-
-
   return (
     <div className="mx-auto my-20 max-w-screen-xl flex flex-col gap-8">
       <Card className="shadow-lg rounded-lg">
@@ -261,6 +264,9 @@ export function Clients() {
                       )}
                     </th>
                   ))}
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               ))}
             </thead>
@@ -275,6 +281,14 @@ export function Clients() {
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm flex gap-2">
+                    <button onClick={handleEdit} className="px-2 py-1 bg-blue-500 text-white rounded-sm">
+                      Edit
+                    </button>
+                    <button onClick={handleDelete} className="px-2 py-1 bg-red-500 text-white rounded-sm">
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

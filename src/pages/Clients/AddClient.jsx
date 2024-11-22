@@ -16,6 +16,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import GlobalAxios from "../../../Global/GlobalAxios";
 import { GetCountries, GetState } from "react-country-state-city";
+import axios from "axios";
 
 const AddClient = () => {
   const [loading, setLoading] = useState(false);
@@ -30,6 +31,7 @@ const AddClient = () => {
     phoneNumber: "",
     email: "",
     gstNumber: "",
+    status: "",
     pan: "",
     tan: "",
     cin: "",
@@ -85,7 +87,7 @@ const AddClient = () => {
   const mutation = useMutation({
     mutationFn: (formData) => {
       setLoading(true); // Start loading
-      return GlobalAxios.post("/clients", formData);
+      return axios.post("https://neofeb.onrender.com/client", formData);
     },
     onSuccess: () => {
       setLoading(false);
@@ -103,6 +105,7 @@ const AddClient = () => {
         pincode: "",
         phoneNumber: "",
         email: "",
+        status: "",
         gstNumber: "",
         pan: "",
         tan: "",
@@ -127,7 +130,8 @@ const AddClient = () => {
       name: clientDetails.name,
       email: clientDetails.email,
       company_name: clientDetails.companyName,
-      phone: clientDetails.phoneNumber,
+      phone_number: clientDetails.phoneNumber,
+      status: clientDetails.status,
       country: clientDetails.country,
       state: clientDetails.state,
       city: clientDetails.city,
@@ -189,6 +193,14 @@ const AddClient = () => {
               value={clientDetails.companyName}
               onChange={handleClientChange}
             />
+            <select
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+            name="status"
+            onChange={handleClientChange}>
+              <option value="">Select Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
             <Input
               type="text"
               label="PAN"
@@ -239,20 +251,19 @@ const AddClient = () => {
               ))}
             </Select>
 
-            <Select
+            <select
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3c3c3c]"
               label="State"
               name="state"
-              onChange={(e) => {
-                handleClientChange(e);
-              }}
+              onChange={handleClientChange}
               required
             >
               {statesList.map((state) => (
-                <Option key={state.id} value={state.name}>
+                <option key={state.id} value={state.name}>
                   {state.name}
-                </Option>
+                </option>
               ))}
-            </Select>
+            </select>
 
             <Input
               type="text"

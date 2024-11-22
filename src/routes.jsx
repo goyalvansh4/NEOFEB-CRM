@@ -7,11 +7,13 @@ import {
   RectangleStackIcon,
 } from "@heroicons/react/24/solid";
 import { FaReceipt, FaPeopleLine  } from "react-icons/fa6";
+import { FaUsers } from "react-icons/fa";
 import { Home,  Deals  } from "@/pages/dashboard";
 import { Leads } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 import Clients from "./pages/dashboard/Clients";
 import Innvoice from "./pages/Innvoice/Innvoice";
+import Employees from "./pages/employees/Employees";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -50,6 +52,13 @@ export const routes = [
         name: "innvoice",
         path: "/innvoice",
         element: <Innvoice />,
+        
+      },
+      {
+        icon: <FaUsers {...icon} />,
+        name: "employees",
+        path: "/employees",
+        element: <Employees />,
         
       },
     ],
