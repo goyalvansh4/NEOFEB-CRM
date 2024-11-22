@@ -184,6 +184,30 @@ export function Clients() {
     }
   };
 
+  const handleEdit = async (id) => {
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
+
+  const handleDelete = async (id) => {
+    // console.log(id);
+    try {
+      const response = await axios.delete(`https://neofeb.onrender.com/client/${id}`);
+      if(response.data.status === "success") {
+        console.log(response.data);
+        setPagination((prev) => ({
+          ...prev,
+          pageIndex: Math.max(0, prev.pageIndex - 1),
+        }));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-96">
@@ -285,7 +309,7 @@ export function Clients() {
                     <button onClick={handleEdit} className="px-2 py-1 bg-blue-500 text-white rounded-sm">
                       Edit
                     </button>
-                    <button onClick={handleDelete} className="px-2 py-1 bg-red-500 text-white rounded-sm">
+                    <button onClick={()=>{handleDelete(row.original._id)}} className="px-2 py-1 bg-red-500 text-white rounded-sm">
                       Delete
                     </button>
                   </td>
