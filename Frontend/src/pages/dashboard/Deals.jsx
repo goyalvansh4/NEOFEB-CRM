@@ -165,7 +165,7 @@ export function  Deals () {
                       <div className="mt-4 flex items-center justify-between">
                         <Progress
                           value={stage.percentage}
-                          className="w-full mr-4"
+                          className="w-full mr-2"
                           style={{
                             backgroundColor: "#F0F0F0",
                             height: "6px",
@@ -182,9 +182,8 @@ export function  Deals () {
                           variant="filled"
                           size="sm"
                           style={{ backgroundColor: "#1BCFB4" }}
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 px-1"
                         >
-                          <CheckIcon className="h-4 w-4" />
                           Complete
                         </Button>
                       </div>

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 
+
 const Employees = () => {
   const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,10 +29,6 @@ const Employees = () => {
     }
     fetchEmployees();
   }, []);
-
-
-
-
 
 
   const handleAdd = () => {
@@ -72,7 +69,7 @@ const Employees = () => {
       if(response.data.status === "success") {
        setEmployees([...employees, newEmp]);
        setNewEmployee({ name: "", position: "", email: "", status: "" });
-       setIsModalOpen(false);
+       setIsModalOpen(false)
       }
     } catch (error) {
       console.error(error);
@@ -93,7 +90,7 @@ const Employees = () => {
   } catch (error) {
     console.error(error);
   } 
-  };
+};
 
   return (
     <>
