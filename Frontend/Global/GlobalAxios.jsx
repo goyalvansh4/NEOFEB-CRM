@@ -1,11 +1,12 @@
 import axios from "axios";
-
+import Cookies from "js-cookie";
 // Base URL setup
-const apiUrl = "http://192.168.174.152:8000/api/v1/admin";
+const apiUrl = "https://neofeb-crm.onrender.com/api/v1";
 
 const GlobalAxios = axios.create({
   baseURL: apiUrl,
   headers: {
+    Authorization: `Bearer ${Cookies.get("token")}`, 
     Accept: "application/json",
     "Content-Type": "application/json", // Ensuring JSON content type
   },

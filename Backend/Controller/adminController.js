@@ -36,7 +36,7 @@ const handleLogin = async (req, res) => {
         const token = jwt.sign({ userId: admin._id }, secret_key, {
             expiresIn: '1h'
         });
-        res.status(200).json({ token: token, message: 'Admin logged in successfully' });
+        res.status(200).json({ status:"success",token: token, message: 'Admin logged in successfully' });
     }
     catch (error) {
         res.status(400).json({ message: 'Something went wrong' });

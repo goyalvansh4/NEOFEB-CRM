@@ -65,8 +65,8 @@ export function Clients() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["clients", pagination.pageIndex, debouncedSearch, orderBy, perPage],
     queryFn: async () => {
-      const response = await axios.get(
-        `https://neofeb.onrender.com/client`, {
+      const response = await GlobalAxios.get(
+        `/client`, {
           params: {
             page: pagination.pageIndex + 1,
             per_page: perPage,
@@ -148,7 +148,7 @@ export function Clients() {
                 : "bg-yellow-100 text-yellow-800"
             }`}
           >
-            {info.getValue()}
+            {info.getValue().toUpperCase()}
           </span>
         ),
       },
@@ -195,7 +195,7 @@ export function Clients() {
   const handleDelete = async (id) => {
     // console.log(id);
     try {
-      const response = await axios.delete(`https://neofeb.onrender.com/client/${id}`);
+      const response = await GlobalAxios.delete(`client/${id}`);
       if(response.data.status === "success") {
         console.log(response.data);
         setPagination((prev) => ({

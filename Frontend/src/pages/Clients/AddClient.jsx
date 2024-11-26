@@ -87,7 +87,7 @@ const AddClient = () => {
   const mutation = useMutation({
     mutationFn: (formData) => {
       setLoading(true); // Start loading
-      return axios.post("https://neofeb.onrender.com/client", formData);
+      return GlobalAxios.post("/client", formData);
     },
     onSuccess: () => {
       setLoading(false);
