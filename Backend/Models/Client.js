@@ -1,8 +1,5 @@
 const mongoose = require("../Connection")
-
-
 const schema=new mongoose.Schema({
-
     "name":{type:String,require:true},
     "email" : {type:String, require:true,unique:true},
     "phone_number" : {type:String,require:true},
@@ -23,8 +20,5 @@ const schema=new mongoose.Schema({
     "status" : {type:String,require:true},
 })
 
-
-
 const Client =mongoose.model("Client",schema)
-
 module.exports=Client;
