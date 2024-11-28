@@ -192,8 +192,7 @@ export function Clients() {
     }
   }
 
-  const handleDelete = async (id) => {
-    // console.log(id);
+  const handleDelete = async (id) => {// console.log(id);
     try {
       const response = await GlobalAxios.delete(`client/${id}`);
       if(response.data.status === "success") {
@@ -267,8 +266,6 @@ export function Clients() {
               <Option value={50}>50</Option>
             </Select>
           </div>
-
-
           {isEmpty 
           ? 
           <div className="text-center text-gray-500">No Clients found.</div>

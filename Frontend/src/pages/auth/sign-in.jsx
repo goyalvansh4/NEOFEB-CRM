@@ -26,12 +26,13 @@ export function SignIn() {
         console.log(response.data);
         Cookies.set("token", response.data.token);
       }
+      if(Cookies.get("token")) {
+        window.location.href = "/dashboard/home";
+       }
     } catch (error) {
       console.log(error);
-      
     }
   }
-
   return (
     <section className="m-8 flex justify-center gap-4">
       <div className="w-full lg:w-3/5 mt-24">
@@ -89,23 +90,11 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
-          <Button className="mt-6" fullWidth>
+          <Button type="submit" className="mt-6" fullWidth>
             Sign In
           </Button>
 
           <div className="flex items-center justify-between gap-2 mt-6">
-            <Checkbox
-              label={
-                <Typography
-                  variant="small"
-                  color="gray"
-                  className="flex items-center justify-start font-medium"
-                >
-                  Subscribe me to newsletter
-                </Typography>
-              }
-              containerProps={{ className: "-ml-2.5" }}
-            />
             <Typography variant="small" className="font-medium text-gray-900">
               <a href="#">
                 Forgot Password

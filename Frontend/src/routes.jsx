@@ -10,7 +10,7 @@ import { FaReceipt, FaPeopleLine  } from "react-icons/fa6";
 import { FaUsers } from "react-icons/fa";
 import { Home,  Deals  } from "@/pages/dashboard";
 import { Leads } from "@/pages/dashboard";
-import { SignIn, SignUp } from "@/pages/auth";
+import { SignIn} from "@/pages/auth";
 import Clients from "./pages/dashboard/Clients";
 import Innvoice from "./pages/Innvoice/Innvoice";
 import Employees from "./pages/employees/Employees";

@@ -13,6 +13,7 @@ const baseURL = process.env.BASE_URL;
 const EmployeeRoute = require("./Routes/EmployeeRoute");
 const ClientRoute=require("./Routes/ClientRoute")
 const adminRoute = require("./Routes/adminRoute");
+const LeadRoute=require("./Routes/leadRoute");
 
 
 // middleware
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(`${baseURL}/employee`, EmployeeRoute);
 app.use(`${baseURL}/client`,ClientRoute);
 app.use(`${baseURL}/admin`, adminRoute);
+app.use(`${baseURL}/lead`,LeadRoute);
 
 
 app.listen(PORT, () => {

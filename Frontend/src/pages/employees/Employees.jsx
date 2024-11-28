@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import GlobalAxios from "../../../Global/GlobalAxios";
 
 
 const Employees = () => {
@@ -20,8 +21,8 @@ const Employees = () => {
     const fetchEmployees = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("https://neofeb.onrender.com/employee");
-        setEmployees(response.data);
+        const response = await GlobalAxios.get("/employee");
+        setEmployees(response.data.data);
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -42,7 +43,7 @@ const Employees = () => {
 
   const handleDelete = async(id) => {
     try {
-    const response = await axios.delete(`https://neofeb.onrender.com/employee/${id}`);
+    const response = await GlobalAxios.delete(`/employee/${id}`);
       if(response.data.status === "success") {
         setEmployees(employees.filter((emp) => emp._id !== id));
         console.log(response.data);
@@ -64,7 +65,7 @@ const Employees = () => {
   const handleSubmit = async() => {
     const newEmp = { ...newEmployee};
     try{
-      const response = await axios.post("https://neofeb.onrender.com/employee", newEmp);
+      const response = await GlobalAxios.post("/employee", newEmp);
       console.log(response.data);
       if(response.data.status === "success") {
        setEmployees([...employees, newEmp]);
@@ -78,7 +79,7 @@ const Employees = () => {
 
   const handleEditSubmit = async() => {
   try {
-    const response = await axios.put(`https://neofeb.onrender.com/employee/${selectedEmployee._id}`, selectedEmployee);
+    const response = await GlobalAxios.put(`/employee/${selectedEmployee._id}`, selectedEmployee);
     if(response.data.status === "success") {
       console.log(response.data);
       setEmployees(
@@ -119,7 +120,7 @@ const Employees = () => {
             </tr>
           </thead>
           <tbody>
-            {employees.map((employee) => (
+            {employees?.map((employee) => (
               <tr key={employee.id} className="hover:bg-gray-100">
                 <td className="border border-gray-300 p-2">{employee.name}</td>
                 <td className="border border-gray-300 p-2">{employee.position}</td>
