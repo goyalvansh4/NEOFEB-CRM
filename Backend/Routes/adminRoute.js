@@ -1,5 +1,5 @@
 const express = require('express');
-const { handleLogin, handleRegister, handleVerifyOTP } = require('../Controller/adminController');
+const { handleLogin, handleRegister, handleVerifyOTP } = require('../Controller/AdminController');
 const router = express.Router();
 
 

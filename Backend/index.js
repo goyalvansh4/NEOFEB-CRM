@@ -10,10 +10,10 @@ const baseURL = process.env.BASE_URL;
 
 
 // Routes import
+const adminRoute = require("./Routes/AdminRoute");
 const EmployeeRoute = require("./Routes/EmployeeRoute");
 const ClientRoute=require("./Routes/ClientRoute")
-const adminRoute = require("./Routes/adminRoute");
-const LeadRoute=require("./Routes/leadRoute");
+const LeadRoute=require("./Routes/LeadRoute");
 
 
 // middleware

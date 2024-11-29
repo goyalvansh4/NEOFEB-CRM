@@ -1,5 +1,5 @@
 const express = require('express');
-const { getLeads, addLead, updateLead, deleteLead } = require('../Controller/leadController');
+const { getLeads, addLead, updateLead, deleteLead } = require('../Controller/LeadController');
 const router = express.Router();
 
 // Lead Routes
