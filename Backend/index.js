@@ -25,6 +25,6 @@ app.use(`${baseURL}/client`, ClientRoute);
 app.use(`${baseURL}/admin`, adminRoute);
 app.use(`${baseURL}/lead`, leadRoute);
 
-app.listen(PORT, () => {
+app.listen(PORT,'0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
 });

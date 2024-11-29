@@ -1,10 +1,10 @@
-const leads = require("../Models/leads");
+const Leads = require("../Models/Leads");
 
 
 // Get all leads
 const getLeads = async (req, res) => {
   try {
-    const leads = await leads.find().sort({ createdAt: -1 }); // Sorted by most recent
+    const leads = await Leads.find().sort({ createdAt: -1 }); // Sorted by most recent
     res.status(200).json(leads);
   } catch (error) {
     res.status(500).json({ message: 'Error retrieving leads', error });
@@ -21,7 +21,7 @@ const addLead = async (req, res) => {
   }
 
   try {
-    const newLead = new Lead({
+    const newLead = new Leads({
       leadName,
       companyName,
       email,
@@ -43,7 +43,7 @@ const updateLead = async (req, res) => {
   const { leadName, companyName, email, phone, source, sourceDetails, notes } = req.body;
 
   try {
-    const updatedLead = await Lead.findByIdAndUpdate(
+    const updatedLead = await Leads.findByIdAndUpdate(
       id,
       { leadName, companyName, email, phone, source, sourceDetails, notes },
       { new: true }
@@ -60,7 +60,7 @@ const deleteLead = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const deletedLead = await Lead.findByIdAndDelete(id);
+    const deletedLead = await Leads.findByIdAndDelete(id);
     if (!deletedLead) return res.status(404).json({ message: 'Lead not found' });
     res.status(200).json({ message: 'Lead deleted successfully' });
   } catch (error) {
