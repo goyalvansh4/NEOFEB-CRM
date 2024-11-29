@@ -11,4 +11,5 @@ const leadSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },   
 });
 
-module.exports = mongoose.model('Lead', leadSchema);
+const Leads = mongoose.model('Lead', leadSchema);
+module.exports = Leads;
