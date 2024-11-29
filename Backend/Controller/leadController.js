@@ -68,5 +68,4 @@ const deleteLead = async (req, res) => {
   }
 };
 
-
 module.exports = { getLeads, addLead, updateLead, deleteLead };
