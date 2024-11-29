@@ -11,7 +11,7 @@ const baseURL = process.env.BASE_URL;
 
 const EmployeeRoute = require("./Routes/EmployeeRoute");
 const ClientRoute = require("./Routes/ClientRoute");
-const leadRoute = require("./Routes/LeadRoute");
+const leadRoute = require("./Routes/leadRoute");
 const adminRoute = require("./Routes/AdminRoute");
 
 // middleware
