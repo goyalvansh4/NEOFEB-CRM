@@ -1,6 +1,5 @@
 const {Schema, model} = require('mongoose');
 
-
 const adminSchema = new Schema({
     email:{
         type: String,
@@ -14,5 +13,5 @@ const adminSchema = new Schema({
 },{timestamps: true});
 
 
-const Admin = model('Admin', adminSchema);
-module.exports = Admin;
+const adminModel = model('Admin', adminSchema);
+module.exports = adminModel;

@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const htmlTemplate = require("../Utils/EmialOTP");
-const Admin = require("../Models/Admin");
+const adminModel = require("../Models/Admin");
 
 // Constants
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -32,7 +32,7 @@ const handleRegister = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Create admin in the database
-    const admin = await Admin.create({ email, password: hashedPassword });
+    const admin = await adminModel.create({ email, password: hashedPassword });
 
     res.status(201).json({
       status: "success",
@@ -58,7 +58,7 @@ const handleLogin = async (req, res) => {
 
   try {
     // Find admin by email
-    const admin = await Admin.findOne({ email });
+    const admin = await adminModel.findOne({ email });
     if (!admin) {
       return res.status(404).json({ message: "Admin not found." });
     }
@@ -111,7 +111,7 @@ const handleVerifyOTP = async (req, res) => {
   }
 
   // Find admin to generate token
-  const admin = await Admin.findOne({ email });
+  const admin = await adminModel.findOne({ email });
   if (!admin) {
     return res.status(404).json({ message: "Admin not found." });
   }
