@@ -11,7 +11,7 @@ const baseURL = process.env.BASE_URL;
 
 const EmployeeRoute = require("./Routes/EmployeeRoute");
 const ClientRoute = require("./Routes/ClientRoute");
-const LeadRoute = require("./Routes/LeadRoute");
+const leadRoute = require("./Routes/LeadRoute");
 const adminRoute = require("./Routes/AdminRoute");
 
 // middleware
@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(`${baseURL}/employee`, EmployeeRoute);
 app.use(`${baseURL}/client`, ClientRoute);
 app.use(`${baseURL}/admin`, adminRoute);
-app.use(`${baseURL}/lead`, LeadRoute);
+app.use(`${baseURL}/lead`, leadRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
