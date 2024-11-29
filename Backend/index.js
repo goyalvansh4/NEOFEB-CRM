@@ -1,5 +1,5 @@
-require('dotenv').config();
-const express = require('express');
+require("dotenv").config();
+const express = require("express");
 const app = express();
 const cors = require("cors");
 
@@ -7,14 +7,12 @@ const cors = require("cors");
 const PORT = process.env.PORT || 8000;
 const baseURL = process.env.BASE_URL;
 
-
-
 // Routes import
-const adminRoute = require("./Routes/AdminRoute");
-const EmployeeRoute = require("./Routes/EmployeeRoute");
-const ClientRoute=require("./Routes/ClientRoute")
-const LeadRoute=require("./Routes/LeadRoute");
 
+const EmployeeRoute = require("./Routes/EmployeeRoute");
+const ClientRoute = require("./Routes/ClientRoute");
+const LeadRoute = require("./Routes/LeadRoute");
+const adminRoute = require("./Routes/AdminRoute");
 
 // middleware
 app.use(cors());
@@ -23,10 +21,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use(`${baseURL}/employee`, EmployeeRoute);
-app.use(`${baseURL}/client`,ClientRoute);
+app.use(`${baseURL}/client`, ClientRoute);
 app.use(`${baseURL}/admin`, adminRoute);
-app.use(`${baseURL}/lead`,LeadRoute);
-
+app.use(`${baseURL}/lead`, LeadRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

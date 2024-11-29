@@ -1,10 +1,11 @@
 require("dotenv").config();
-
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const htmlTemplate = require("../Utils/EmialOTP");
 const adminModel = require("../Models/Admin");
+
+
 
 // Constants
 const SECRET_KEY = process.env.SECRET_KEY;
