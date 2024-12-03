@@ -1,15 +1,15 @@
-import GlobalAxios from "../../Global/GlobalAxios";
+import GlobalAxios from './../../Global/GlobalAxios';
 
 export const fetchLeads = async () => {
   console.log("fetchLeads");
-  const response = await GlobalAxios.get(`/leads`);
+  const response = await GlobalAxios.get(`/lead`);
   const data = response.data.data;
   console.log(data);
   return data;
 };
 
 export const fetchLeadById = async (id) => {
-const response = await fetch(`https://66d7e6d837b1cadd80529ccf.mockapi.io/admin/api/v1/leads?id=${id}`);
+const response = await GlobalAxios.get(`/lead${id}`);
 const data = await response.json();
 // console.log(data);
 return data;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardBody,
@@ -13,6 +13,8 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import AddInvoice from './AddInnvoice';
+import GlobalAxios from '../../../Global/GlobalAxios';
+
 
 const Invoice = () => {
   const data = React.useMemo(
@@ -36,7 +38,11 @@ const Invoice = () => {
     []
   );
 
+  
+
   const [hideForm, setHideForm] = useState(true);
+  
+
 
   const openForm = () => {
     setHideForm(false);
@@ -84,6 +90,9 @@ const Invoice = () => {
     ],
     []
   );
+
+
+
 
   const table = useReactTable({
     data,

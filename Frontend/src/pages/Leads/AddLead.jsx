@@ -7,7 +7,7 @@ import GlobalAxios from "../../../Global/GlobalAxios";
 import { useNavigate } from "react-router-dom";
 
 const addLead = async (leadData) => {
-  const response = await GlobalAxios.post("/leads", leadData);
+  const response = await GlobalAxios.post("/lead", leadData);
   return response.data;
 };
 
@@ -19,30 +19,40 @@ export function AddLead() {
   const [editingStatusId, setEditingStatusId] = useState(null);
   const navigate = useNavigate();
   const [sources, setSources] = useState([]);
+  const [statuses, setStatuses] = useState([]);
 
   const [formData, setFormData] = useState({
-    name: "",
-    company_name: "",
+    leadName: "",
+    companyName: "",
     email: "",
-    mobile: "",
-    source_id: "",
+    phone: "",
+    source: "",
+    sourceDetails: "",
     notes: "",
     moreAboutSource: "",
   });
 
   useEffect(() => {
     const fetchSources = async () => {
-      const response = await GlobalAxios.get("/lead-sources");
+      const response = await GlobalAxios.get("/source");
       setSources(response.data.data);
     };
     fetchSources();
   }, []);
 
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      const response = await GlobalAxios.get("/status");
+      setStatuses(response.data.data);
+    };
+    fetchStatus();
+  }, []);
     // Fetch statuses using useQuery (updated for React Query v5)
     const { data: statusData, isLoading: isFetchingStatuses, refetch } = useQuery({
       queryKey: ["leadStatuses"],
       queryFn: async () => {
-        const response = await GlobalAxios.get("/lead-statuses");
+        const response = await GlobalAxios.get("/status");
         return response.data.data;
       },
     });
@@ -50,10 +60,8 @@ export function AddLead() {
      // Mutation to manage statuses
   const statusMutation = useMutation({
     mutationFn: async (status) => {
-      const url = `isEditing ? /lead-statuses/${editingStatusId} : "/lead-statuses"`;
-      return isEditing
-        ? await GlobalAxios.put(url, status)
-        : await GlobalAxios.post(url, status);
+      const url = `/status`;
+      return await GlobalAxios.post(url, status);
     },
     onSuccess: () => {
       refetch(); // Refetch statuses
@@ -66,7 +74,7 @@ export function AddLead() {
 
   const deleteStatus = async (id) => {
     if (window.confirm("This action is not reversible. Are you sure you want to delete?")) {
-      await GlobalAxios.delete(`/lead-statuses/${id}`);
+      await GlobalAxios.delete(`/status/${id}`);
       refetch();
     }
   };
@@ -75,7 +83,7 @@ export function AddLead() {
     mutationFn: addLead,
     onSuccess: () => {
       queryClient.invalidateQueries(["leadsData"]);
-      setFormData({ name: "", company_name: "", email: "", mobile: "", source_id: "", notes: "", moreAboutSource: "" });
+      setFormData({ name: "", companyName: "", email: "", phone: "", source: "", notes: "", moreAboutSource: "" });
     },
   });
 
@@ -225,17 +233,17 @@ export function AddLead() {
             <div className="mb-4">
               <Input
                 label="Lead Name"
-                name="name"
-                value={formData.name}
+                name="leadName"
+                value={formData.leadName}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="mb-4">
               <Input
-                label="Company_name"
-                name="company_name"
-                value={formData.company_name}
+                label="Company Name"
+                name="companyName"
+                value={formData.companyName}
                 onChange={handleInputChange}
                 required
               />
@@ -253,8 +261,8 @@ export function AddLead() {
             <div className="mb-4">
               <Input
                 label="Phone"
-                name="mobile"
-                value={formData.mobile}
+                name="phone"
+                value={formData.phone}
                 onChange={handleInputChange}
                 required
               />
@@ -267,7 +275,7 @@ export function AddLead() {
                 Add Source
               </button>
               <select
-                name="source_id"
+                name="source"
                 value={formData.source_id}
                 onChange={handleInputChange}
                 className="p-2 rounded-md border border-gray-300 w-full"
@@ -281,6 +289,23 @@ export function AddLead() {
                 ))}
               </select>
               <input type="text" name="moreAboutSource" value={formData.moreAboutSource} onChange={handleInputChange} className="p-2 rounded-md border border-gray-300 w-full" placeholder="More About Source (Optional)" />
+            </div>
+            <div className="mb-4 flex flex-col gap-2 justify-center">
+              <label className="text-gray-700">Status:</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+                className="p-2 rounded-md border border-gray-300 w-full"
+                required
+              >
+                <option value="">Select Status</option>
+                {statuses?.map((status) => (
+                  <option key={status._id} value={status._id}>
+                    {status.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="mb-4">
               <textarea

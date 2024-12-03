@@ -2,7 +2,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
-const htmlTemplate = require("../Utils/EmialOTP");
+const htmlTemplate = require("../Utils/EmailOTP");
 const adminModel = require("../Models/Admin");
 
 

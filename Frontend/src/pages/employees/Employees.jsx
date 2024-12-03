@@ -95,7 +95,7 @@ const Employees = () => {
 
   return (
     <>
-    {loading && <p className="text-xl text-center text-gray-500">Loading...</p>}
+    
     <div className="space-y-6 my-4">
       <div className="w-full flex justify-between px-3">
         <h1 className="text-2xl font-semibold text-[#4BCBEB]">Employees</h1>
@@ -106,7 +106,8 @@ const Employees = () => {
           <FaPlus className="mr-2" /> Add New
         </button>
       </div>
-      {employees.length === 0 ? (
+      {loading ? <p className="text-xl text-center text-gray-500">Loading...</p> :
+       employees.length === 0 ? (
         <p className="text-xl text-center text-gray-500">No Data Found</p>
       ) : (
         <table className="w-full border-collapse border border-gray-300">
@@ -144,7 +145,8 @@ const Employees = () => {
             ))}
           </tbody>
         </table>
-      )}
+      )
+    }
       {isModalOpen && (
         <EmployeeModal
           employee={newEmployee}

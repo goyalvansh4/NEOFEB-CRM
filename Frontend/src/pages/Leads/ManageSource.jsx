@@ -21,7 +21,7 @@ const ManageSource = () => {
   const fetchSources = async () => {
     setLoading(true);
     try {
-      const response = await GlobalAxios.get('/lead-sources');
+      const response = await GlobalAxios.get('/source');
       setSources(response.data.data);
     } catch (error) {
       console.error('Error fetching sources:', error);
@@ -36,11 +36,11 @@ const ManageSource = () => {
     setLoading(true);
     try {
       if (editingSource) {
-        await GlobalAxios.put(`/lead-sources/${editingSource.id}`, { name: sourceName });
+        await GlobalAxios.put(`/source/${editingSource._id}`, { name: sourceName });
         toast.success("Source updated successfully!");
         setEditingSource(null);
       } else {
-        await GlobalAxios.post('/lead-sources', { name: sourceName });
+        await GlobalAxios.post('/source', { name: sourceName });
         toast.success("Source added successfully!");
       }
       setSourceName('');
@@ -61,7 +61,7 @@ const ManageSource = () => {
   const handleDeleteSource = async (sourceId) => {
     setLoading(true);
     try {
-      await GlobalAxios.delete(`/lead-sources/${sourceId}`);
+      await GlobalAxios.delete(`/source/${sourceId}`);
       toast.success("Source deleted successfully!");
       fetchSources();
     } catch (error) {
@@ -115,7 +115,7 @@ const ManageSource = () => {
       {loading && <p className="text-center text-blue-500">Loading...</p>}
       <div className="space-y-4">
         {sources.map((source) => (
-          <Card key={source.id} shadow={false} className="p-4 flex justify-between items-center border border-gray-200 rounded-lg">
+          <Card key={source._id} shadow={false} className="p-4 flex justify-between items-center border border-gray-200 rounded-lg">
             <Typography variant="h5" className="text-gray-800">
               {source.name}
             </Typography>
@@ -123,7 +123,7 @@ const ManageSource = () => {
               <IconButton color="blue" onClick={() => handleEditSource(source)} variant="outlined" disabled={loading}>
                 <PencilSquareIcon className="h-5 w-5" />
               </IconButton>
-              <IconButton color="red" onClick={() => handleDeleteSource(source.id)} variant="outlined" disabled={loading}>
+              <IconButton color="red" onClick={() => handleDeleteSource(source._id)} variant="outlined" disabled={loading}>
                 <TrashIcon className="h-5 w-5" />
               </IconButton>
             </div>

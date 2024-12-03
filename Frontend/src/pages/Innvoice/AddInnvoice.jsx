@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState,useEffect} from "react";
+import GlobalAxios from '../../../Global/GlobalAxios';
+
 import {
   Button,
   Input,
@@ -30,6 +32,24 @@ export default function AddInvoice({ setHideForm }) {
   });
 
   const [items, setItems] = useState([]);
+  const [client,setClient] = useState([]);
+  const [clientDetails,setClientDetails] = useState({
+     email:'',
+     address:'',
+     country:'',
+     city:'',
+     pincode:'',
+  });
+
+  
+useEffect(()=>{
+  const fetchClients = async()=>{
+    const response = await GlobalAxios.get("/client");
+    console.log(response.data);
+    setClient(response.data.data);  
+  }
+  fetchClients();
+},[]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -38,6 +58,23 @@ export default function AddInvoice({ setHideForm }) {
       [name]: value,
     });
   };
+
+  const handleClientChange = (e) => {
+    console.log(e);
+    const selectedClient = client.filter((c) => c.name === e);
+    console.log(selectedClient[0]);
+    if (selectedClient) {
+      setClientDetails({
+        email: selectedClient[0].email,
+        address: selectedClient[0].address,
+        country: selectedClient[0].country,
+        city: selectedClient[0].city,
+        pincode: selectedClient[0].pincode,
+      });
+    }
+  };
+  
+  
 
   const handleAddItem = () => {
     setItems([
@@ -71,6 +108,8 @@ export default function AddInvoice({ setHideForm }) {
       )
     );
   };
+
+ 
 
   const handleDeleteItem = (id) => {
     setItems(items.filter((item) => item.id !== id));
@@ -169,26 +208,34 @@ export default function AddInvoice({ setHideForm }) {
           Bill To
         </Typography>
         <div className="grid grid-cols-3 gap-4 mt-4">
-        <Input
+        <Select
           label="Client's Name"
           name="clientName"
-          value={formValues.clientName}
-          onChange={handleInputChange}
+          value={formValues.clientName} 
+          onChange={handleClientChange} 
           required
-        />
+        >
+          {client.map((Client) => (
+            <Option key={Client._id} value={Client.name}> 
+              {Client.name}
+            </Option>
+          ))}
+        </Select>
+
+
         <Input
           label="Client's Email"
           name="clientEmail"
           type="email"
-          value={formValues.clientEmail}
-          onChange={handleInputChange}
+          value={clientDetails.email}
+          onChange={handleClientChange}
           required
         />
         <Input
           label="Client's Street Address"
           name="clientStreet"
-          value={formValues.clientStreet}
-          onChange={handleInputChange}
+          value={clientDetails.address}
+          onChange={handleClientChange}
           required
         />
         </div>
@@ -196,22 +243,22 @@ export default function AddInvoice({ setHideForm }) {
           <Input
             label="Client's City"
             name="clientCity"
-            value={formValues.clientCity}
-            onChange={handleInputChange}
+            value={clientDetails.city}
+            onChange={handleClientChange}
             required
           />
           <Input
             label="Client's Post Code"
             name="clientPost"
-            value={formValues.clientPost}
-            onChange={handleInputChange}
+            value={clientDetails.pincode}
+            onChange={handleClientChange}
             required
           />
           <Input
             label="Client's Country"
             name="clientCountry"
-            value={formValues.clientCountry}
-            onChange={handleInputChange}
+            value={clientDetails.country}
+            onChange={handleClientChange}
             required
           />
         </div>

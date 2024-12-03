@@ -144,6 +144,7 @@ const AddClient = () => {
       bank_account_number: bankDetails.bankAccount,
       bank_ifsc_code: bankDetails.ifscCode,
       upi_id: bankDetails.upiId,
+      pincode: clientDetails.pincode,
     };
     mutation.mutate(formData);
   };
