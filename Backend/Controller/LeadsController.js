@@ -4,8 +4,8 @@ const Leads = require("../Models/Leads");
 // Get all leads
 const getLeads = async (req, res) => {
   try {
-    const leads = await Leads.find().sort({ createdAt: -1 }); // Sorted by most recent
-    res.status(200).json(leads);
+    const leads = await Leads.find().sort({ createdAt: -1 }).populate('status'); // Sorted by most recent
+    res.status(200).json({status:"success",data:leads});
   } catch (error) {
     res.status(500).json({ message: 'Error retrieving leads', error });
   }
@@ -13,7 +13,7 @@ const getLeads = async (req, res) => {
 
 // Add a new lead
 const addLead = async (req, res) => {
-  const { leadName, companyName, email, phone, source, sourceDetails, notes } = req.body;
+  const { leadName, companyName, email, phone, source, sourceDetails, notes,status } = req.body;
 
   // Validation
   if (!leadName || !companyName || !email || !phone || !source) {
@@ -29,6 +29,7 @@ const addLead = async (req, res) => {
       source,
       sourceDetails,
       notes,
+      status,
     });
     await newLead.save();
     res.status(201).json({ message: 'Lead created successfully', newLead });

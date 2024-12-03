@@ -8,7 +8,8 @@ const leadSchema = new mongoose.Schema({
   source: { type: String, required: true },       
   sourceDetails: { type: String },                 
   notes: { type: String },                         
-  createdAt: { type: Date, default: Date.now },   
+  createdAt: { type: Date, default: Date.now }, 
+  status:{type:mongoose.Schema.Types.ObjectId,ref:'Status', required : true},
 });
 
 const Leads = mongoose.model('Lead', leadSchema);

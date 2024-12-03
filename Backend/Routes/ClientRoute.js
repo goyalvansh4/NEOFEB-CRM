@@ -1,15 +1,16 @@
 const express = require('express');
 const control = require('../Controller/ClientController')
-const authMiddleware = require('../Middleware/authMiddleware')
+const authmiddleware= require("../Middleware/authMiddleware")
+
 
 
 const ClientRoute = express.Router();
 
-ClientRoute.post("/",authMiddleware,control.addClient)
-ClientRoute.get("/",authMiddleware,control.getClient)
-ClientRoute.get("/:id",authMiddleware,control.getClientbyid)
-ClientRoute.delete("/:id",authMiddleware,control.Clientdelete)
-ClientRoute.put("/:id",authMiddleware,control.Clientupdate)
+ClientRoute.post("/",authmiddleware,control.addClient)
+ClientRoute.get("/",authmiddleware,control.getClient)
+ClientRoute.get("/:id",authmiddleware,control.getClientbyid)
+ClientRoute.delete("/:id",authmiddleware,control.Clientdelete)
+ClientRoute.put("/:id",authmiddleware,control.Clientupdate)
 
 
 module.exports = ClientRoute;

@@ -1,29 +1,32 @@
-require("dotenv").config();
-const express = require("express");
+require('dotenv').config();
+const express = require('express');
 const app = express();
 const cors = require("cors");
+const PORT=process.env.PORT || 3000
 
-// env variables
-const PORT = process.env.PORT || 8000;
+
 const baseURL = process.env.BASE_URL;
 
-// Routes import
-
 const EmployeeRoute = require("./Routes/EmployeeRoute");
-const ClientRoute = require("./Routes/ClientRoute");
-const leadRoute = require("./Routes/leadRoute");
+const ClientRoute=require("./Routes/ClientRoute")
 const adminRoute = require("./Routes/AdminRoute");
+const LeadRoute = require("./Routes/LeadsRoute")
+const SourceRoute = require("./Routes/SourceRoute")
+const StatusRoute = require("./Routes/StatusRoute")
 
-// middleware
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
+
 app.use(`${baseURL}/employee`, EmployeeRoute);
-app.use(`${baseURL}/client`, ClientRoute);
+app.use(`${baseURL}/client`,ClientRoute)
 app.use(`${baseURL}/admin`, adminRoute);
-app.use(`${baseURL}/lead`, leadRoute);
+app.use(`${baseURL}/lead`, LeadRoute);
+app.use(`${baseURL}/source`,SourceRoute)
+app.use(`${baseURL}/status`,StatusRoute)
+
 
 app.listen(PORT,'0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
