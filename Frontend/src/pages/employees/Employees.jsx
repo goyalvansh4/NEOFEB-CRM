@@ -1,7 +1,7 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa"; // Import the icons
 import GlobalAxios from "../../../Global/GlobalAxios";
+import Swal from 'sweetalert2';
 
 
 const Employees = () => {
@@ -41,10 +41,10 @@ const Employees = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleDelete = async(id) => {
+  const handleDelete = async (id) => {
     try {
-    const response = await GlobalAxios.delete(`/employee/${id}`);
-      if(response.data.status === "success") {
+      const response = await GlobalAxios.delete(`/employee/${id}`);
+      if (response.data.status === "success") {
         setEmployees(employees.filter((emp) => emp._id !== id));
         console.log(response.data);
       }
@@ -62,108 +62,111 @@ const Employees = () => {
     }
   };
 
-  const handleSubmit = async() => {
-    const newEmp = { ...newEmployee};
-    try{
+  const handleSubmit = async () => {
+    const newEmp = { ...newEmployee };
+    try {
       const response = await GlobalAxios.post("/employee", newEmp);
       console.log(response.data);
-      if(response.data.status === "success") {
-       setEmployees([...employees, newEmp]);
-       setNewEmployee({ name: "", position: "", email: "", status: "" });
-       setIsModalOpen(false)
+      if (response.data.status === "success") {
+        setEmployees([...employees, newEmp]);
+        setNewEmployee({ name: "", position: "", email: "", status: "" });
+        setIsModalOpen(false)
       }
     } catch (error) {
       console.error(error);
-    } 
+    }
   };
 
-  const handleEditSubmit = async() => {
-  try {
-    const response = await GlobalAxios.put(`/employee/${selectedEmployee._id}`, selectedEmployee);
-    if(response.data.status === "success") {
-      console.log(response.data);
-      setEmployees(
-        employees.map((emp) => (emp._id === selectedEmployee._id ? selectedEmployee : emp))
-      );
-      setIsEditModalOpen(false);
-      setSelectedEmployee(null);
+  const handleEditSubmit = async () => {
+    try {
+      const response = await GlobalAxios.put(`/employee/${selectedEmployee._id}`, selectedEmployee);
+      if (response.data.status === "success") {
+        console.log(response.data);
+        setEmployees(
+          employees.map((emp) => (emp._id === selectedEmployee._id ? selectedEmployee : emp))
+        );
+        setIsEditModalOpen(false);
+        setSelectedEmployee(null);
+      }
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  } 
-};
+  };
 
   return (
     <>
-    
-    <div className="space-y-6 my-4">
-      <div className="w-full flex justify-between px-3">
-        <h1 className="text-2xl font-semibold text-[#4BCBEB]">Employees</h1>
-        <button
-          onClick={handleAdd}
-          className="px-4 py-2 bg-[#A05AFF] text-white rounded-lg hover:bg-[#9E58FF] flex items-center"
-        >
-          <FaPlus className="mr-2" /> Add New
-        </button>
+
+      <div className="space-y-6 my-4">
+        <div className="w-full flex justify-between px-3">
+          <h1 className="text-2xl font-semibold text-[#4BCBEB]">Employees</h1>
+          <button
+            onClick={handleAdd}
+            className="px-4 py-2 bg-[#A05AFF] text-white rounded-lg hover:bg-[#9E58FF] flex items-center"
+          >
+            <FaPlus className="mr-2" /> Add New
+          </button>
+        </div>
+        {loading ? <p className="text-xl text-center text-gray-500">Loading...</p> :
+          employees.length === 0 ? (
+            <p className="text-xl text-center text-gray-500">No Data Found</p>
+          ) : (
+            <table className="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr className="bg-[#1BCFB4] text-white">
+                  <th className="border border-gray-300 p-2">Name</th>
+                  <th className="border border-gray-300 p-2">Position</th>
+                  <th className="border border-gray-300 p-2">Email</th>
+                  <th className="border border-gray-300 p-2">Status</th>
+                  <th className="border border-gray-300 p-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {employees?.map((employee) => (
+                  <tr key={employee.id} className="hover:bg-gray-100">
+                    <td className="border border-gray-300 p-2">{employee.name}</td>
+                    <td className="border border-gray-300 p-2">{employee.position}</td>
+                    <td className="border border-gray-300 p-2">{employee.email}</td>
+                    <td className="border border-gray-300 p-2">{employee.status}</td>
+                    <td className="border border-gray-300 p-2 text-center">
+                      <button
+                        onClick={() => handleEdit(employee)}
+                        className="text-[#A05AFF] hover:text-[#9E58FF] text-xl mr-2"
+                        aria-label="Edit"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(employee._id)}
+                        className="text-[#FE9496] hover:text-red-700 text-xl"
+                        aria-label="Delete"
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )
+        }
+        {isModalOpen && (
+          <EmployeeModal
+            employee={newEmployee}
+            onClose={() => setIsModalOpen(false)}
+            onSubmit={handleSubmit}
+            onChange={handleModalChange}
+          />
+        )}
+        {isEditModalOpen && (
+          <EmployeeModal
+            employee={selectedEmployee}
+            onClose={() => setIsEditModalOpen(false)}
+            onSubmit={handleEditSubmit}
+            onChange={handleModalChange}
+          />
+        )}
       </div>
-      {loading ? <p className="text-xl text-center text-gray-500">Loading...</p> :
-       employees.length === 0 ? (
-        <p className="text-xl text-center text-gray-500">No Data Found</p>
-      ) : (
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-[#1BCFB4] text-white">
-              <th className="border border-gray-300 p-2">Name</th>
-              <th className="border border-gray-300 p-2">Position</th>
-              <th className="border border-gray-300 p-2">Email</th>
-              <th className="border border-gray-300 p-2">Status</th>
-              <th className="border border-gray-300 p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {employees?.map((employee) => (
-              <tr key={employee.id} className="hover:bg-gray-100">
-                <td className="border border-gray-300 p-2">{employee.name}</td>
-                <td className="border border-gray-300 p-2">{employee.position}</td>
-                <td className="border border-gray-300 p-2">{employee.email}</td>
-                <td className="border border-gray-300 p-2">{employee.status}</td>
-                <td className="border border-gray-300 p-2 text-center">
-                  <button
-                    onClick={() => handleEdit(employee)}
-                    className="px-2 py-1 bg-[#FE9496] text-white rounded-lg mr-2 hover:bg-red-400"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(employee._id)}
-                    className="px-2 py-1 bg-[#A05AFF] text-white rounded-lg hover:bg-[#9E58FF]"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )
-    }
-      {isModalOpen && (
-        <EmployeeModal
-          employee={newEmployee}
-          onClose={() => setIsModalOpen(false)}
-          onSubmit={handleSubmit}
-          onChange={handleModalChange}
-        />
-      )}
-      {isEditModalOpen && (
-        <EmployeeModal
-          employee={selectedEmployee}
-          onClose={() => setIsEditModalOpen(false)}
-          onSubmit={handleEditSubmit}
-          onChange={handleModalChange}
-        />
-      )}
-    </div>
     </>
   );
 };

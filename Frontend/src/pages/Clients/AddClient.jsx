@@ -141,8 +141,8 @@ const AddClient = () => {
       tan: clientDetails.tan,
       cin: clientDetails.cin,
       bank_name: bankDetails.bankName,
-      bank_account_number: bankDetails.bankAccount,
-      bank_ifsc_code: bankDetails.ifscCode,
+      bank_account: bankDetails.bankAccount,
+      ifsc_code: bankDetails.ifscCode,
       upi_id: bankDetails.upiId,
       pincode: clientDetails.pincode,
     };

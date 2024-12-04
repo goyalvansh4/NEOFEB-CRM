@@ -19,7 +19,6 @@ import { NavLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import GlobalAxios from "../../../Global/GlobalAxios";
-import axios from "axios";
 
 export function Clients() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -78,6 +77,7 @@ export function Clients() {
       if(response.data.data.length > 0){
         setISEmpty(false);
       }
+      console.log(response.data);
       return response.data;
     },
     keepPreviousData: true,
@@ -99,7 +99,7 @@ export function Clients() {
         header: "Name",
         cell: (info) => (
           <NavLink
-            to={`/dashboard/client/${info.row.original.id}`}
+            to={`/dashboard/client/${info.row.original._id}`}
             className="text-indigo-600 hover:text-indigo-900"
           >
             {info.getValue()}
@@ -184,19 +184,10 @@ export function Clients() {
     }
   };
 
-  const handleEdit = async (id) => {
-    try {
-      
-    } catch (error) {
-      
-    }
-  }
-
   const handleDelete = async (id) => {// console.log(id);
     try {
       const response = await GlobalAxios.delete(`client/${id}`);
       if(response.data.status === "success") {
-        console.log(response.data);
         setPagination((prev) => ({
           ...prev,
           pageIndex: Math.max(0, prev.pageIndex - 1),
@@ -221,6 +212,7 @@ export function Clients() {
   }
 
   return (
+    <>
     <div className="mx-auto my-20 max-w-screen-xl flex flex-col gap-8">
       <Card className="shadow-lg rounded-lg">
         <CardHeader
@@ -285,16 +277,15 @@ export function Clients() {
                       )}
                     </th>
                   ))}
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    Actions
-                  </th>
                 </tr>
               ))}
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {table.getRowModel().rows.map((row) => (
+                // console.log("Row:->",row),
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => (
+                    // console.log("cell:->",cell),
                     <td
                       key={cell.id}
                       className="px-6 py-4 whitespace-nowrap text-sm text-gray-600"
@@ -302,14 +293,6 @@ export function Clients() {
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm flex gap-2">
-                    <button onClick={handleEdit} className="px-2 py-1 bg-blue-500 text-white rounded-sm">
-                      Edit
-                    </button>
-                    <button onClick={()=>{handleDelete(row.original._id)}} className="px-2 py-1 bg-red-500 text-white rounded-sm">
-                      Delete
-                    </button>
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -350,6 +333,7 @@ export function Clients() {
         </CardBody>
       </Card>
     </div>
+    </>
   );
 }
 
