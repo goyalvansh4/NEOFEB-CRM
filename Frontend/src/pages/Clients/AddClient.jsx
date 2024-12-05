@@ -180,9 +180,11 @@ const AddClient = () => {
               required
             />
             <Input
-              type="tel"
+              type="number"
               label="Phone Number"
               name="phoneNumber"
+              maxLength={10} // Restrict to 10 characters
+              pattern="[0-9]{9}"
               value={clientDetails.phoneNumber}
               onChange={handleClientChange}
               required
@@ -276,7 +278,7 @@ const AddClient = () => {
             />
 
             <Input
-              type="text"
+              type="number"
               label="Pincode"
               name="pincode"
               value={clientDetails.pincode}
@@ -307,7 +309,7 @@ const AddClient = () => {
               onChange={handleBankChange}
             />
             <Input
-              type="text"
+              type="number"
               label="Bank Account"
               name="bankAccount"
               value={bankDetails.bankAccount}

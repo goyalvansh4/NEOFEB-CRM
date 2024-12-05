@@ -43,15 +43,37 @@ const Employees = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await GlobalAxios.delete(`/employee/${id}`);
-      if (response.data.status === "success") {
-        setEmployees(employees.filter((emp) => emp._id !== id));
-        console.log(response.data);
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#1BCFB4',
+        cancelButtonColor: '#FE9496',
+        confirmButtonText: 'Yes, delete it!',
+      });
+  
+      if (result.isConfirmed) {
+        const response = await GlobalAxios.delete(`/employee/${id}`);
+        if (response.data.status === "success") {
+          setEmployees(employees.filter((emp) => emp._id !== id));
+          Swal.fire({
+            title: 'Deleted!',
+            text: 'The employee has been deleted.',
+            icon: 'success',
+            confirmButtonColor: '#1BCFB4',
+          });
+        }
       }
     } catch (error) {
       console.error(error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong while deleting the employee.',
+        icon: 'error',
+      });
     }
-  };
+  };  
 
   const handleModalChange = (e) => {
     const { name, value } = e.target;
@@ -176,10 +198,10 @@ const EmployeeModal = ({ employee, onClose, onSubmit, onChange }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg space-y-4 max-w-lg w-full">
         <h2 className="text-xl font-semibold text-[#4BCBEB]">
-          {employee.id ? "Edit Employee" : "Add New Employee"}
+          {employee._id ? "Edit Employee" : "Add New Employee"}
         </h2>
         <div className="space-y-3">
-          {["name", "position", "email", "status"].map((field) => (
+          {["name", "position", "email"].map((field) => (
             <input
               key={field}
               type="text"
@@ -190,6 +212,15 @@ const EmployeeModal = ({ employee, onClose, onSubmit, onChange }) => {
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
             />
           ))}
+          <select
+            name="status"
+            value={employee.status || ""}
+            onChange={onChange}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#A05AFF]">
+            <option value="" disabled>Select Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            </select>
         </div>
         <div className="flex justify-end space-x-3">
           <button

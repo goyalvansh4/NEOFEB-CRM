@@ -1,4 +1,4 @@
-import { useState,useEffect} from "react";
+import { useState, useEffect } from "react";
 import GlobalAxios from '../../../Global/GlobalAxios';
 
 import {
@@ -32,24 +32,24 @@ export default function AddInvoice({ setHideForm }) {
   });
 
   const [items, setItems] = useState([]);
-  const [client,setClient] = useState([]);
-  const [clientDetails,setClientDetails] = useState({
-     email:'',
-     address:'',
-     country:'',
-     city:'',
-     pincode:'',
+  const [client, setClient] = useState([]);
+  const [clientDetails, setClientDetails] = useState({
+    email: '',
+    address: '',
+    country: '',
+    city: '',
+    pincode: '',
+    gstNumber: '',
   });
 
-  
-useEffect(()=>{
-  const fetchClients = async()=>{
-    const response = await GlobalAxios.get("/client");
-    console.log(response.data);
-    setClient(response.data.data);  
-  }
-  fetchClients();
-},[]);
+  useEffect(() => {
+    const fetchClients = async () => {
+      const response = await GlobalAxios.get("/client");
+      console.log(response.data);
+      setClient(response.data.data);
+    }
+    fetchClients();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -70,11 +70,28 @@ useEffect(()=>{
         country: selectedClient[0].country,
         city: selectedClient[0].city,
         pincode: selectedClient[0].pincode,
+        gstNumber: selectedClient[0].gst_number || "",
       });
     }
   };
-  
-  
+
+  const calculateItemTotal = (item) => {
+    let cgst = 0, sgst = 0, igst = 0;
+    console.log(clientDetails.gstNumber);
+    if (clientDetails.gstNumber.startsWith("05")) {
+      sgst = 2.5;
+      igst = 0;
+    } else {
+      cgst = 2.5;
+      igst = 5;
+    }
+    const total = item.qty * item.price * (1 + (cgst + sgst + igst) / 100);
+    return { ...item, cgst, sgst, igst, total };
+  };
+
+  const updateAllItemTotals = (items) => {
+    return items.map((item) => calculateItemTotal(item));
+  };
 
   const handleAddItem = () => {
     setItems([
@@ -95,35 +112,33 @@ useEffect(()=>{
   };
 
   const handleItemChange = (id, field, value) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              [field]: value,
-              total:
-                (item.qty * item.price * (1 + (item.cgst + item.sgst + item.igst) / 100)) || 0,
-            }
-          : item
-      )
+    const updatedItems = items.map((item) =>
+      item.id === id
+        ? calculateItemTotal({ ...item, [field]: value })
+        : item
     );
+    setItems(updatedItems);
   };
-
- 
 
   const handleDeleteItem = (id) => {
     setItems(items.filter((item) => item.id !== id));
   };
 
+  const calculateGrandTotal = () => {
+    return items.reduce((sum, item) => sum + item.total, 0);
+  };
+
   const handleSubmit = (status) => {
-    const grandTotal = items.reduce((sum, item) => sum + item.total, 0);
+    const grandTotal = calculateGrandTotal();
     const invoiceData = {
       ...formValues,
       id: Date.now(),
-      items,
+      items: updateAllItemTotals(items),
       grandTotal,
       status,
     };
+    console.log("Invoice Data:", invoiceData); // Debugging purposes
+
     setFormValues({
       id: "",
       street: "",
@@ -157,6 +172,7 @@ useEffect(()=>{
         Create Invoice
       </Typography>
 
+      {/* Bill From and Bill To Sections */}
       {/* Bill From Section */}
       <section className="mb-10">
         <Typography
@@ -166,6 +182,31 @@ useEffect(()=>{
         >
           Bill From
         </Typography>
+        <div className="grid grid-cols-3 gap-4 mt-4">
+          <Input
+            label="Company Name"
+            name="comp_name"
+            value={formValues.comp_name}
+            onChange={handleInputChange}
+            required
+          />
+          <Input
+            label="Company Email"
+            name="comp_email"
+            value={formValues.comp_email}
+            onChange={handleInputChange}
+            required
+          />
+          <Input
+            label="Mobile Number"
+            type="number"
+            name="comp_number"
+            value={formValues.comp_number}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="grid grid-cols-3 gap-4 mt-4">
         <Input
           label="Street Address"
           name="street"
@@ -173,7 +214,6 @@ useEffect(()=>{
           onChange={handleInputChange}
           required
         />
-        <div className="grid grid-cols-3 gap-4 mt-4">
           <Input
             label="City"
             name="city"
@@ -183,6 +223,7 @@ useEffect(()=>{
           />
           <Input
             label="Post Code"
+            type="number"
             name="post"
             value={formValues.post}
             onChange={handleInputChange}
@@ -288,6 +329,12 @@ useEffect(()=>{
         </div>
       </section>
 
+
+
+
+
+      {/* No changes to these sections */}
+      
       {/* Service Details Section */}
       <section className="mb-10">
         <Typography
@@ -348,33 +395,24 @@ useEffect(()=>{
               label="CGST%"
               type="number"
               value={item.cgst}
-              onChange={(e) =>
-                handleItemChange(item.id, "cgst", e.target.value)
-              }
-              required
+              readOnly
             />
             <Input
               label="SGST%"
               type="number"
               value={item.sgst}
-              onChange={(e) =>
-                handleItemChange(item.id, "sgst", e.target.value)
-              }
-              required
+              readOnly
             />
             <Input
               label="IGST%"
               type="number"
               value={item.igst}
-              onChange={(e) =>
-                handleItemChange(item.id, "igst", e.target.value)
-              }
-              required
+              readOnly
             />
             <Input
               label="Amount"
               value={item.total.toFixed(2)}
-              disabled
+              readOnly
             />
             <IconButton
               onClick={() => handleDeleteItem(item.id)}

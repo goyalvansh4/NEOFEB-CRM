@@ -10,37 +10,33 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useQuery } from "@tanstack/react-query";
-import { MdDelete,MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { fetchLeads } from "../../Api/LeadsApi";
 import GlobalAxios from "../../../Global/GlobalAxios";
+import Swal from "sweetalert2";
 
 export function Leads() {
-  
+
   const navigate = useNavigate();
-  const [leads,setLeads] = useState([]);
+  const [leads, setLeads] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
 
-  useEffect(()=>{
-    const fetchLeads = async()=>{
+  useEffect(() => {
+    const fetchLeads = async () => {
       const response = await GlobalAxios.get("/lead");
       setIsLoading(true);
-      if(response.data.status==="success"){
+      if (response.data.status === "success") {
         setIsLoading(false);
         setLeads(response.data.data);
-      }else{
+      } else {
         setIsLoading(false);
         setError(response.data.message);
       }
     }
     fetchLeads();
-  },[]);
-
-
- 
-
-  
+  }, []);
 
   // Memoize columns to prevent unnecessary re-renders
   const columns = useMemo(
@@ -183,11 +179,11 @@ export function Leads() {
                     className="text-left px-4 py-2 text-xs font-semibold text-gray-700 uppercase"
                   >
                     {column.render("Header")}
-                  </th> 
+                  </th>
                 ))}
                 <th className="text-left px-4 py-2 text-xs font-semibold text-gray-700 uppercase">
-                    Actions
-                  </th>
+                  Actions
+                </th>
               </tr>
             ))}
           </thead>
@@ -212,15 +208,54 @@ export function Leads() {
                       className="text-[18px] text-blue-500 px-2 py-1 rounded-lg"
                       onClick={() => navigate(`/dashboard/editLead/${row.original._id}`)}
                     >
-                     <MdEdit />
+                      <MdEdit />
                     </button>
-                    <button className="text-[18px] text-red-500 px-2 py-1 rounded-lg"
-                      onClick={async()=>{
-                        const response = await GlobalAxios.delete(`/lead/${row.original._id}`);
-                        console.log(response,row.original._id);
-                      }}>
+                    <button
+                      className="text-[18px] text-red-500 px-2 py-1 rounded-lg"
+                      onClick={async () => {
+                        const result = await Swal.fire({
+                          title: "Are you sure?",
+                          text: "This action cannot be undone!",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonColor: "#1BCFB4",
+                          cancelButtonColor: "#FE9496",
+                          confirmButtonText: "Yes, delete it!",
+                        });
+
+                        if (result.isConfirmed) {
+                          try {
+                            const response = await GlobalAxios.delete(`/lead/${row.original._id}`);
+                            if (response.data.status === "success") {
+                              Swal.fire({
+                                title: "Deleted!",
+                                text: "The lead has been deleted.",
+                                icon: "success",
+                              });
+                              setLeads((prevLeads) =>
+                                prevLeads.filter((lead) => lead._id !== row.original._id)
+                              );
+                            } else {
+                              Swal.fire({
+                                title: "Error!",
+                                text: "Failed to delete the lead. Please try again.",
+                                icon: "error",
+                              });
+                            }
+                          } catch (error) {
+                            console.error("Error deleting lead:", error);
+                            Swal.fire({
+                              title: "Error!",
+                              text: "Something went wrong while deleting the lead.",
+                              icon: "error",
+                            });
+                          }
+                        }
+                      }}
+                    >
                       <MdDelete />
                     </button>
+
                   </td>
                 </tr>
               );

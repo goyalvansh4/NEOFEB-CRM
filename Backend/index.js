@@ -13,6 +13,7 @@ const adminRoute = require("./Routes/AdminRoute");
 const LeadRoute = require("./Routes/LeadsRoute")
 const SourceRoute = require("./Routes/SourceRoute")
 const StatusRoute = require("./Routes/StatusRoute")
+const InvoiceRoute = require("./Routes/InvoiceRoute");
 
 
 app.use(cors());
@@ -24,8 +25,9 @@ app.use(`${baseURL}/employee`, EmployeeRoute);
 app.use(`${baseURL}/client`,ClientRoute)
 app.use(`${baseURL}/admin`, adminRoute);
 app.use(`${baseURL}/lead`, LeadRoute);
-app.use(`${baseURL}/source`,SourceRoute)
-app.use(`${baseURL}/status`,StatusRoute)
+app.use(`${baseURL}/source`,SourceRoute);
+app.use(`${baseURL}/status`,StatusRoute);
+app.use(`${baseURL}/invoice`, InvoiceRoute);
 
 
 app.listen(PORT,'0.0.0.0', () => {
