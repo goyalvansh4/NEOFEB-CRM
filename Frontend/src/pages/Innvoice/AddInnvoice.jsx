@@ -12,6 +12,7 @@ import {
 } from "@material-tailwind/react";
 
 export default function AddInvoice({ setHideForm }) {
+  const [invoiceStatus, setInvoiceStatus] = useState([]);
   const [formValues, setFormValues] = useState({
     company_name: "",
     company_email: "",
@@ -30,6 +31,7 @@ export default function AddInvoice({ setHideForm }) {
     payment_terms: "",
     items: [],
     total: 0,
+    status: "",
   });
 
   const [items, setItems] = useState([]);
@@ -53,6 +55,21 @@ export default function AddInvoice({ setHideForm }) {
     fetchClients();
   }, []);
 
+  useEffect(() => {
+    const fetchInvoiceStatus = async () => {
+      try {
+        const response = await GlobalAxios.get("/invoiceStatus");
+      console.log(response.data.data);
+      if(response.data.status === 'success') {
+        setInvoiceStatus(response.data.data);
+      }
+      } catch (error) {
+        console.log(error); 
+      }
+    }
+    fetchInvoiceStatus();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({
@@ -67,6 +84,7 @@ export default function AddInvoice({ setHideForm }) {
     console.log(selectedClient[0]);
     if (selectedClient) {
       setClientDetails({
+        name: selectedClient[0].name,
         email: selectedClient[0].email,
         address: selectedClient[0].address,
         country: selectedClient[0].country,
@@ -172,6 +190,7 @@ export default function AddInvoice({ setHideForm }) {
       payment_terms: "",
       items: [],
       total: 0,
+      status: "",
     });
     setItems([]);
     setHideForm(true);
@@ -269,7 +288,7 @@ export default function AddInvoice({ setHideForm }) {
             label="Client's Name"
             name="client_name"
             color="lightBlue"
-            value={formValues.client_name}
+            value={clientDetails.client_name}
             onChange={handleClientChange}
             required
           >
@@ -447,6 +466,21 @@ export default function AddInvoice({ setHideForm }) {
         >
           + Add New Item
         </Button>
+      </section>
+
+      {/* Total Section */}
+      <section className="mb-10 flex flex-col gap-4">
+        <label className="text-lg font-medium" style={{ color: "#A05AFF" }}>
+          Status</label>
+        <select
+          value={formValues.status}
+          onChange={(e) => setFormValues({ ...formValues, status: e.target.value })}
+         className="border border-gray-500 p-2 rounded-lg">
+          <option value="">Select Status</option>
+          {invoiceStatus.map((status) => {
+            return <option key={status._id} value={status._id}>{status.invoiceStatus}</option>
+          })}
+        </select>
       </section>
 
       {/* Action Buttons */}

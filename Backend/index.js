@@ -1,5 +1,4 @@
 require('dotenv').config();
-import Invoice from './../Frontend/src/pages/Innvoice/Innvoice';
 const express = require('express');
 const app = express();
 const cors = require("cors");

@@ -12,8 +12,8 @@ const createInvoiceStatus = async (req, res) => {
 
 const getInvoiceStatus = async (req, res) => {
     try {
-        const invoice = await invoiceStatusModel.find();
-        res.status(200).json({status:"success",msg:"Fetch Invoice Successfully",data:invoice});
+      const invoices = await invoiceStatusModel.find();
+        res.status(200).json({status:"success",msg:"Fetch Invoice Successfully",data:invoices});
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
