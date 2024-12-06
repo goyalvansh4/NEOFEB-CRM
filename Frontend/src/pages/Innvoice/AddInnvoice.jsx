@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast, Toaster } from 'react-hot-toast';
 import GlobalAxios from '../../../Global/GlobalAxios';
 
 import {
@@ -12,23 +13,23 @@ import {
 
 export default function AddInvoice({ setHideForm }) {
   const [formValues, setFormValues] = useState({
-    id: "",
-    street: "",
-    city: "",
-    post: "",
-    country: "",
-    clientName: "",
-    clientEmail: "",
-    clientStreet: "",
-    clientCity: "",
-    clientPost: "",
-    clientCountry: "",
-    date: "",
-    payment: "1",
-    description: "",
+    company_name: "",
+    company_email: "",
+    company_mobile_number: "",
+    company_address: "",
+    company_city: "",
+    company_post_code: "",
+    company_country: "",
+    client_name: "",
+    client_email: "",
+    client_postcode: "",
+    client_address: "",
+    client_city: "",
+    client_country: "",
+    invoice_date: "",
+    payment_terms: "",
     items: [],
-    grandTotal: 0,
-    status: "Pending",
+    total: 0,
   });
 
   const [items, setItems] = useState([]);
@@ -41,6 +42,7 @@ export default function AddInvoice({ setHideForm }) {
     pincode: '',
     gstNumber: '',
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -72,12 +74,17 @@ export default function AddInvoice({ setHideForm }) {
         pincode: selectedClient[0].pincode,
         gstNumber: selectedClient[0].gst_number || "",
       });
+      formValues.client_name = selectedClient[0].name;
+      formValues.client_email = selectedClient[0].email;
+      formValues.client_postcode = selectedClient[0].pincode;
+      formValues.client_address = selectedClient[0].address;
+      formValues.client_city = selectedClient[0].city;
+      formValues.client_country = selectedClient[0].country;
     }
   };
 
   const calculateItemTotal = (item) => {
     let cgst = 0, sgst = 0, igst = 0;
-    console.log(clientDetails.gstNumber);
     if (clientDetails.gstNumber.startsWith("05")) {
       sgst = 2.5;
       igst = 0;
@@ -128,35 +135,43 @@ export default function AddInvoice({ setHideForm }) {
     return items.reduce((sum, item) => sum + item.total, 0);
   };
 
-  const handleSubmit = (status) => {
-    const grandTotal = calculateGrandTotal();
+  const handleSubmit = async () => {
+    console.log(formValues);
+    const total = calculateGrandTotal();
     const invoiceData = {
       ...formValues,
-      id: Date.now(),
       items: updateAllItemTotals(items),
-      grandTotal,
-      status,
+      total,
     };
-    console.log("Invoice Data:", invoiceData); // Debugging purposes
-
+    setLoading(true);
+    try {
+      const response = await GlobalAxios.post("/invoice", invoiceData);
+      if (response.data.success) {
+        setLoading(false);
+        toast.success(response.data.msg);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
     setFormValues({
-      id: "",
-      street: "",
-      city: "",
-      post: "",
-      country: "",
-      clientName: "",
-      clientEmail: "",
-      clientStreet: "",
-      clientCity: "",
-      clientPost: "",
-      clientCountry: "",
-      date: "",
-      payment: "1",
-      description: "",
+      company_name: "",
+      company_email: "",
+      company_mobile_number: "",
+      company_address: "",
+      company_city: "",
+      company_post_code: "",
+      company_country: "",
+      client_name: "",
+      client_email: "",
+      client_postcode: "",
+      client_address: "",
+      client_city: "",
+      client_country: "",
+      invoice_date: "",
+      payment_terms: "",
       items: [],
-      grandTotal: 0,
-      status: "Pending",
+      total: 0,
     });
     setItems([]);
     setHideForm(true);
@@ -164,6 +179,7 @@ export default function AddInvoice({ setHideForm }) {
 
   return (
     <div className="p-6 bg-white rounded shadow-lg">
+      <Toaster />
       <Typography
         variant="h1"
         style={{ color: "#9E58FF" }}
@@ -185,54 +201,54 @@ export default function AddInvoice({ setHideForm }) {
         <div className="grid grid-cols-3 gap-4 mt-4">
           <Input
             label="Company Name"
-            name="comp_name"
-            value={formValues.comp_name}
+            name="company_name"
+            value={formValues.company_name}
             onChange={handleInputChange}
             required
           />
           <Input
             label="Company Email"
-            name="comp_email"
-            value={formValues.comp_email}
+            name="company_email"
+            value={formValues.company_email}
             onChange={handleInputChange}
             required
           />
           <Input
             label="Mobile Number"
             type="number"
-            name="comp_number"
-            value={formValues.comp_number}
+            name="company_mobile_number"
+            value={formValues.company_mobile_number}
             onChange={handleInputChange}
             required
           />
         </div>
         <div className="grid grid-cols-3 gap-4 mt-4">
-        <Input
-          label="Street Address"
-          name="street"
-          value={formValues.street}
-          onChange={handleInputChange}
-          required
-        />
+          <Input
+            label="Street Address"
+            name="company_address"
+            value={formValues.company_address}
+            onChange={handleInputChange}
+            required
+          />
           <Input
             label="City"
-            name="city"
-            value={formValues.city}
+            name="company_city"
+            value={formValues.company_city}
             onChange={handleInputChange}
             required
           />
           <Input
             label="Post Code"
             type="number"
-            name="post"
-            value={formValues.post}
+            name="company_post_code"
+            value={formValues.company_post_code}
             onChange={handleInputChange}
             required
           />
           <Input
             label="Country"
-            name="country"
-            value={formValues.country}
+            name="company_country"
+            value={formValues.company_country}
             onChange={handleInputChange}
             required
           />
@@ -249,36 +265,37 @@ export default function AddInvoice({ setHideForm }) {
           Bill To
         </Typography>
         <div className="grid grid-cols-3 gap-4 mt-4">
-        <Select
-          label="Client's Name"
-          name="clientName"
-          value={formValues.clientName} 
-          onChange={handleClientChange} 
-          required
-        >
-          {client.map((Client) => (
-            <Option key={Client._id} value={Client.name}> 
-              {Client.name}
-            </Option>
-          ))}
-        </Select>
+          <Select
+            label="Client's Name"
+            name="client_name"
+            color="lightBlue"
+            value={formValues.client_name}
+            onChange={handleClientChange}
+            required
+          >
+            {client.map((Client) => (
+              <Option key={Client._id} value={Client.name}>
+                {Client.name}
+              </Option>
+            ))}
+          </Select>
 
 
-        <Input
-          label="Client's Email"
-          name="clientEmail"
-          type="email"
-          value={clientDetails.email}
-          onChange={handleClientChange}
-          required
-        />
-        <Input
-          label="Client's Street Address"
-          name="clientStreet"
-          value={clientDetails.address}
-          onChange={handleClientChange}
-          required
-        />
+          <Input
+            label="Client's Email"
+            name="client_email"
+            type="email"
+            value={clientDetails.email}
+            onChange={handleClientChange}
+            required
+          />
+          <Input
+            label="Client's Street Address"
+            name="clientStreet"
+            value={clientDetails.address}
+            onChange={handleClientChange}
+            required
+          />
         </div>
         <div className="grid grid-cols-3 gap-4 mt-4">
           <Input
@@ -306,19 +323,18 @@ export default function AddInvoice({ setHideForm }) {
         <div className="grid grid-cols-2 gap-6 mt-6">
           <Input
             label="Invoice Date"
-            name="date"
+            name="invoice_date"
             type="date"
-            value={formValues.date}
+            value={formValues.invoice_date}
             onChange={handleInputChange}
             required
           />
           <Select
             label="Payment Terms"
-            name="payment"
-            value={formValues.payment}
-            onChange={(e) =>
-              setFormValues({ ...formValues, payment: e.target.value })
-            }
+            name="payment_terms"
+            color="lightBlue"
+            value={formValues.payment_terms}
+            onChange={(value) => setFormValues({ ...formValues, payment_terms: value })}
             required
           >
             <Option value="1">Net 1 Day</Option>
@@ -326,6 +342,7 @@ export default function AddInvoice({ setHideForm }) {
             <Option value="14">Net 14 Days</Option>
             <Option value="30">Net 30 Days</Option>
           </Select>
+
         </div>
       </section>
 
@@ -334,7 +351,7 @@ export default function AddInvoice({ setHideForm }) {
 
 
       {/* No changes to these sections */}
-      
+
       {/* Service Details Section */}
       <section className="mb-10">
         <Typography
@@ -447,12 +464,14 @@ export default function AddInvoice({ setHideForm }) {
           >
             Save as Draft
           </Button>
-          <Button
-            style={{ backgroundColor: "#4BCBEB" }}
-            onClick={() => handleSubmit("Pending")}
-          >
-            Save & Send
-          </Button>
+          {loading ? <i className="fas fa-spinner fa-spin"></i> :
+            <Button
+              style={{ backgroundColor: "#4BCBEB" }}
+              onClick={() => handleSubmit()}
+            >
+              Save & Send
+            </Button>
+          }
         </div>
       </div>
     </div>

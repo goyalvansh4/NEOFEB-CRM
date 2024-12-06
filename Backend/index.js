@@ -1,4 +1,5 @@
 require('dotenv').config();
+import Invoice from './../Frontend/src/pages/Innvoice/Innvoice';
 const express = require('express');
 const app = express();
 const cors = require("cors");
@@ -14,6 +15,7 @@ const LeadRoute = require("./Routes/LeadsRoute")
 const SourceRoute = require("./Routes/SourceRoute")
 const StatusRoute = require("./Routes/StatusRoute")
 const InvoiceRoute = require("./Routes/InvoiceRoute");
+const InvoiceStatusRoute = require("./Routes/InvoiceStatusRoute");
 
 
 app.use(cors());
@@ -28,6 +30,7 @@ app.use(`${baseURL}/lead`, LeadRoute);
 app.use(`${baseURL}/source`,SourceRoute);
 app.use(`${baseURL}/status`,StatusRoute);
 app.use(`${baseURL}/invoice`, InvoiceRoute);
+app.use(`${baseURL}/invoiceStatus`, InvoiceStatusRoute);
 
 
 app.listen(PORT,'0.0.0.0', () => {

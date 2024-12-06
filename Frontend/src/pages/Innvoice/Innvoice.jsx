@@ -38,6 +38,20 @@ const Invoice = () => {
     []
   );
 
+  const [invoices, setInvoices] = useState([]);
+
+  useEffect(() => {
+    const fetchInvoices = async () => {
+      try {
+        const response = await GlobalAxios.get('/invoice');
+        setInvoices(response.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchInvoices();
+  }, []);
+
   
 
   const [hideForm, setHideForm] = useState(true);

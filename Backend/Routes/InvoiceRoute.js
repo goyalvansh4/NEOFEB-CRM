@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 
-router.post('/invoice', createInvoice);
-router.get('/invoice', getAllInvoices);
-router.get('/invoice/:id', getInvoice);
+router.post('/', createInvoice);
+router.get('/', getAllInvoices);
+router.get('/:id', getInvoice);
 
 module.exports = router;

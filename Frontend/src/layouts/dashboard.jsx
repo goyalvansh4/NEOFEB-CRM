@@ -15,6 +15,8 @@ import ClientDetails from "../pages/Clients/ClientDetails";
 import AddLead from "../pages/Leads/AddLead";
 import ManageSource from "../pages/Leads/ManageSource";
 import FollowUp from "../pages/Leads/FollowUp";
+import { ProtectedRoute } from "../../ProtectedRoute/ProtectedRoute";
+
 
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -32,19 +34,29 @@ export function Dashboard() {
         <DashboardNavbar />
         <Configurator />
         <Routes>
-          {routes.map(
-            ({ layout, pages }) =>
-              layout === "dashboard" &&
-              pages.map(({ path, element }) => (
-                <Route exact path={path} element={element} />
-              ))
-          )} 
-         <Route path="/leads/:id" element={<LeadDetails />} />
-         <Route path="/addlead" element={<AddLead />} />
-         <Route path="/followUp" element={<FollowUp />} />
-         <Route path="/addClient" element={<AddClient />} />
-         <Route path="/client/:id" element={<ClientDetails />} />
-         <Route path="/addlead/add-source" element={<ManageSource/>} />
+          {/* Wrap all protected routes inside ProtectedRoute */}
+          <Route
+            path="/*"
+            element={
+              <ProtectedRoute>
+                <Routes>
+                  {routes.map(
+                    ({ layout, pages }) =>
+                      layout === "dashboard" &&
+                      pages.map(({ path, element }) => (
+                        <Route exact path={path} element={element} />
+                      ))
+                  )}
+                  <Route path="/leads/:id" element={<LeadDetails />} />
+                  <Route path="/addlead" element={<AddLead />} />
+                  <Route path="/followUp" element={<FollowUp />} />
+                  <Route path="/addClient" element={<AddClient />} />
+                  <Route path="/client/:id" element={<ClientDetails />} />
+                  <Route path="/addlead/add-source" element={<ManageSource />} />
+                </Routes>
+              </ProtectedRoute>
+            }
+          />
         </Routes>
 
         <div className="text-blue-gray-600">
