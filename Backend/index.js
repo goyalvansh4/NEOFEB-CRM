@@ -27,7 +27,7 @@ app.use(`${baseURL}/client`,ClientRoute)
 app.use(`${baseURL}/admin`, adminRoute);
 app.use(`${baseURL}/lead`, LeadRoute);
 app.use(`${baseURL}/source`,SourceRoute);
-app.use(`${baseURL}/status`,StatusRoute);
+app.use(`${baseURL}/leadStatus`,StatusRoute);
 app.use(`${baseURL}/invoice`, InvoiceRoute);
 app.use(`${baseURL}/invoiceStatus`, InvoiceStatusRoute);
 

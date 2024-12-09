@@ -43,7 +43,8 @@ export function AddLead() {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      const response = await GlobalAxios.get("/status");
+      const response = await GlobalAxios.get("/leadStatus");
+      console.log(response.data.data);
       setStatuses(response.data.data);
     };
     fetchStatus();
@@ -52,7 +53,7 @@ export function AddLead() {
     const { data: statusData, isLoading: isFetchingStatuses, refetch } = useQuery({
       queryKey: ["leadStatuses"],
       queryFn: async () => {
-        const response = await GlobalAxios.get("/status");
+        const response = await GlobalAxios.get("/leadStatus");
         return response.data.data;
       },
     });
@@ -60,7 +61,7 @@ export function AddLead() {
      // Mutation to manage statuses
   const statusMutation = useMutation({
     mutationFn: async (status) => {
-      const url = `/status`;
+      const url = `/leadStatus`;
       return await GlobalAxios.post(url, status);
     },
     onSuccess: () => {
@@ -74,7 +75,7 @@ export function AddLead() {
 
   const deleteStatus = async (id) => {
     if (window.confirm("This action is not reversible. Are you sure you want to delete?")) {
-      await GlobalAxios.delete(`/status/${id}`);
+      await GlobalAxios.delete(`/leadStatus/${id}`);
       refetch();
     }
   };
@@ -116,9 +117,9 @@ export function AddLead() {
 
   // Enter edit mode with selected status
   const handleEditStatus = (statusItem) => {
-    setSendStatus({ name: statusItem.name, description: statusItem.description });
+    setSendStatus({ leadStatus: statusItem.name, description: statusItem.description });
     setIsEditing(true);
-    setEditingStatusId(statusItem.id);
+    setEditingStatusId(statusItem._id);
     setShowModal(true);
   };
 
@@ -151,10 +152,10 @@ export function AddLead() {
             <form onSubmit={handleStatusSubmit} className="space-y-4">
               <label className="block text-gray-700">Status Name *</label>
               <Input
-                name="name"
+                name="leadStatus"
                 placeholder="Status Name *"
                 required
-                value={sendStatus.name || ""}
+                value={sendStatus.leadStatus || ""}
                 onChange={handleStatusChange}
                 className="p-2 rounded-sm border border-gray-300"
               />
@@ -196,9 +197,9 @@ export function AddLead() {
             ) : (
               <div className="space-y-2">
                 {statusData?.map((status) => (
-                  <div key={status.id} className="flex items-center justify-between p-2 border-b">
+                  <div key={status._id} className="flex items-center justify-between p-2 border-b">
                     <Tooltip content={status.description}>
-                      <p className="uppercase text-gray-700">{status.name}</p>
+                      <p className="uppercase text-gray-700">{status.leadStatus}</p>
                     </Tooltip>
                     <div className="flex items-center gap-2">
                       {status.is_deletable ? (
@@ -208,7 +209,7 @@ export function AddLead() {
                             className="text-blue-500 cursor-pointer"
                           />
                           <MdDelete
-                            onClick={() => deleteStatus(status.id)}
+                            onClick={() => deleteStatus(status._id)}
                             className="text-red-500 cursor-pointer"
                           />
                         </>
@@ -293,8 +294,8 @@ export function AddLead() {
             <div className="mb-4 flex flex-col gap-2 justify-center">
               <label className="text-gray-700">Status:</label>
               <select
-                name="status"
-                value={formData.status}
+                name="leadStatus"
+                value={formData.leadStatus}
                 onChange={handleInputChange}
                 className="p-2 rounded-md border border-gray-300 w-full"
                 required
@@ -302,7 +303,7 @@ export function AddLead() {
                 <option value="">Select Status</option>
                 {statuses?.map((status) => (
                   <option key={status._id} value={status._id}>
-                    {status.name}
+                    {status.leadStatus}
                   </option>
                 ))}
               </select>

@@ -31,7 +31,7 @@ export default function AddInvoice({ setHideForm }) {
     payment_terms: "",
     items: [],
     total: 0,
-    status: "",
+    invoiceStatus: "",
   });
 
   const [items, setItems] = useState([]);
@@ -150,7 +150,7 @@ export default function AddInvoice({ setHideForm }) {
   };
 
   const calculateGrandTotal = () => {
-    return items.reduce((sum, item) => sum + item.total, 0);
+    return Math.round(items.reduce((sum, item) => sum + item.total, 0));
   };
 
   const handleSubmit = async () => {
@@ -164,34 +164,34 @@ export default function AddInvoice({ setHideForm }) {
     setLoading(true);
     try {
       const response = await GlobalAxios.post("/invoice", invoiceData);
-      if (response.data.success) {
+      if (response.data.status === "success") {
         setLoading(false);
         toast.success(response.data.msg);
+        setFormValues({
+          company_name: "",
+          company_email: "",
+          company_mobile_number: "",
+          company_address: "",
+          company_city: "",
+          company_post_code: "",
+          company_country: "",
+          client_name: "",
+          client_email: "",
+          client_postcode: "",
+          client_address: "",
+          client_city: "",
+          client_country: "",
+          invoice_date: "",
+          payment_terms: "",
+          items: [],
+          total: 0,
+          invoiceStatus: "",
+        });
       }
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
-    setFormValues({
-      company_name: "",
-      company_email: "",
-      company_mobile_number: "",
-      company_address: "",
-      company_city: "",
-      company_post_code: "",
-      company_country: "",
-      client_name: "",
-      client_email: "",
-      client_postcode: "",
-      client_address: "",
-      client_city: "",
-      client_country: "",
-      invoice_date: "",
-      payment_terms: "",
-      items: [],
-      total: 0,
-      status: "",
-    });
     setItems([]);
     setHideForm(true);
   };
@@ -447,7 +447,7 @@ export default function AddInvoice({ setHideForm }) {
             />
             <Input
               label="Amount"
-              value={item.total.toFixed(2)}
+              value={Math.round(item.total)}
               readOnly
             />
             <IconButton
@@ -473,8 +473,8 @@ export default function AddInvoice({ setHideForm }) {
         <label className="text-lg font-medium" style={{ color: "#A05AFF" }}>
           Status</label>
         <select
-          value={formValues.status}
-          onChange={(e) => setFormValues({ ...formValues, status: e.target.value })}
+          value={formValues.invoiceStatus}
+          onChange={(e) => setFormValues({ ...formValues, invoiceStatus: e.target.value })}
          className="border border-gray-500 p-2 rounded-lg">
           <option value="">Select Status</option>
           {invoiceStatus.map((status) => {

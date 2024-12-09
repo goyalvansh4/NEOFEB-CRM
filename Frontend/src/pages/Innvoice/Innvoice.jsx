@@ -19,28 +19,9 @@ import AddInvoice from './AddInnvoice';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 
 const Invoice = () => {
-  const data = React.useMemo(
-    () => [
-      {
-        id: '#RT3080',
-        dueDate: '19 Aug 2021',
-        client: 'Jensen Huang',
-        amount: '800.9Rs',
-        status: 'Paid',
-      },
-      {
-        id: '#XM9141',
-        dueDate: '20 Sep 2021',
-        client: 'Alex Grim',
-        amount: '556Rs',
-        status: 'Pending',
-      },
-      // Add more dummy data here
-    ],
-    []
-  );
+  
 
-  const [invoices, setInvoices] = useState([]);
+  const [data, setData] = useState([]);
   const [hideForm, setHideForm] = useState(true);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [statusText, setStatusText] = useState('');
@@ -51,7 +32,8 @@ const Invoice = () => {
     const fetchInvoices = async () => {
       try {
         const response = await GlobalAxios.get('/invoice');
-        setInvoices(response.data.data);
+        console.log(response.data.data);
+        setData(response.data.data);
       } catch (error) {
         console.error(error);
       }
@@ -129,27 +111,27 @@ const Invoice = () => {
   const columns = React.useMemo(
     () => [
       {
-        accessorKey: 'id',
+        accessorKey: '',
         header: 'ID',
-        cell: (info) => info.getValue(),
+        cell: (info) => `${info.row.index + 1}`,
       },
       {
-        accessorKey: 'dueDate',
+        accessorKey: 'invoice_date',
         header: 'Due Date',
-        cell: (info) => `Due ${info.getValue()}`,
+        cell: (info) => `${info.getValue()}`,
       },
       {
-        accessorKey: 'client',
+        accessorKey: 'client_name',
         header: 'Client',
         cell: (info) => info.getValue(),
       },
       {
-        accessorKey: 'amount',
+        accessorKey: 'total',
         header: 'Amount',
         cell: (info) => info.getValue(),
       },
       {
-        accessorKey: 'status',
+        accessorKey: 'invoiceStatus.invoiceStatus',
         header: 'Status',
         cell: (info) => (
           <span
@@ -158,7 +140,7 @@ const Invoice = () => {
                 ? 'bg-green-100 text-green-800'
                 : info.getValue() === 'Pending'
                 ? 'bg-yellow-100 text-yellow-800'
-                : ''
+                : 'bg-red-100 text-red-800'
             }`}
           >
             {info.getValue()}

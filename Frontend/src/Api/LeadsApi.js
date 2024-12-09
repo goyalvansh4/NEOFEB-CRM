@@ -9,8 +9,8 @@ export const fetchLeads = async () => {
 };
 
 export const fetchLeadById = async (id) => {
-const response = await GlobalAxios.get(`/lead${id}`);
-const data = await response.json();
+const response = await GlobalAxios.get(`/lead/${id}`);
+console.log(response.data.data);
 // console.log(data);
 return data;
 };

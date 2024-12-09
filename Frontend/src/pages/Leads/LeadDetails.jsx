@@ -14,24 +14,25 @@ function LeadDetails() {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [formData, setFormData] = useState({}); // Form data state
 
-  const fetchLead = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchLeadById(id);
-      const filteredData = data.filter((lead) => parseInt(lead.id) == parseInt(id));
-      setLead(filteredData[0]);
-      setFormData(filteredData[0]); // Pre-fill form with the fetched lead data
-    } catch (error) {
-      setError('Failed to fetch lead data');
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
   useEffect(() => {
-    fetchLead(id);
-  }, [id]);
+    const fetchLead = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchLeadById(id);
+        const filteredData = data.filter((lead) => parseInt(lead.id) == parseInt(id));
+        setLead(filteredData[0]);
+        setFormData(filteredData[0]); // Pre-fill form with the fetched lead data
+      } catch (error) {
+        setError('Failed to fetch lead data');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLead();
+  }, []);
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -67,7 +68,6 @@ function LeadDetails() {
         <FaExclamationCircle className="text-supporting-two text-4xl mb-4" />
         <p className="text-red-600 mb-4">{error}</p>
         <button
-          onClick={fetchLead}
           className="flex items-center bg-primary text-white px-4 py-2 rounded hover:bg-primary-light transition"
         >
           <FaRedo className="mr-2" /> Retry

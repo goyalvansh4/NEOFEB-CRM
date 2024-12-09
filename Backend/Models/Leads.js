@@ -7,10 +7,11 @@ const leadSchema = new mongoose.Schema({
   phone: { type: String, required: true },         
   source: { type: String, required: true },       
   sourceDetails: { type: String },                 
-  notes: { type: String },                         
-  createdAt: { type: Date, default: Date.now }, 
-  status:{type:mongoose.Schema.Types.ObjectId,ref:'Status', required : true},
-});
+  notes: { type: String },
+  follow_up_date: { type: String, required: true },
+  remarks: { type: String },
+  leadStatus:{type:mongoose.Schema.Types.ObjectId,ref:'LeadStatus', required : true},
+}, { timestamps: true });
 
 const Leads = mongoose.model('Lead', leadSchema);
 module.exports = Leads;

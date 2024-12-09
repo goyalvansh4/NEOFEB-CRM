@@ -1,7 +1,7 @@
 import { Skeleton } from "primereact/skeleton";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTable, usePagination } from "react-table";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -47,7 +47,7 @@ export function Leads() {
       { Header: "Email", accessor: "email" },
       { Header: "Phone", accessor: "phone" },
       { Header: "Lead Source", accessor: "source" },
-      { Header: "Status", accessor: "status.name" },
+      { Header: "Status", accessor: "leadStatus.leadStatus" },
     ],
     []
   );
@@ -200,7 +200,9 @@ export function Leads() {
                       {...cell.getCellProps()}
                       className="px-4 py-2 text-sm text-gray-800"
                     >
-                      {cell.render("Cell")}
+                      {(cell.render("Cell").props.column.Header === "Name") ? <NavLink to={`${cell.render("Cell").props.data[0]._id}`}>
+                        {cell.render("Cell")}
+                      </NavLink> : cell.render("Cell")}
                     </td>
                   ))}
                   <td className="px-4 flex gap-2 text-sm text-gray-800">
