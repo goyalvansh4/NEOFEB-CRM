@@ -15,6 +15,9 @@ const SourceRoute = require("./Routes/SourceRoute")
 const StatusRoute = require("./Routes/StatusRoute")
 const InvoiceRoute = require("./Routes/InvoiceRoute");
 const InvoiceStatusRoute = require("./Routes/InvoiceStatusRoute");
+const HsnRoute = require("./Routes/HsnRoute");
+const CompanyBillRoute = require("./Routes/CompanyBillRoute");
+
 
 
 app.use(cors());
@@ -30,6 +33,8 @@ app.use(`${baseURL}/source`,SourceRoute);
 app.use(`${baseURL}/leadStatus`,StatusRoute);
 app.use(`${baseURL}/invoice`, InvoiceRoute);
 app.use(`${baseURL}/invoiceStatus`, InvoiceStatusRoute);
+app.use(`${baseURL}/hsn`, HsnRoute);
+app.use(`${baseURL}/companyBill`, CompanyBillRoute);
 
 
 app.listen(PORT,'0.0.0.0', () => {

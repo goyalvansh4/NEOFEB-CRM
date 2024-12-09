@@ -3,12 +3,13 @@ import { useParams } from 'react-router-dom';
 import { fetchLeadById } from '../../Api/LeadsApi';
 import { FaSpinner, FaExclamationCircle, FaRedo, FaPhone, FaEdit } from 'react-icons/fa'; // Added FaEdit for edit icon
 import Modal from 'react-modal'; // Import a modal library or use your own modal
+import GlobalAxios from '../../../Global/GlobalAxios';
 
 Modal.setAppElement('#root'); // Set the root element for accessibility
 
 function LeadDetails() {
   const { id } = useParams(); // Get the lead ID from the URL
-  const [lead, setLead] = useState(null);
+  const [lead, setLead] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
@@ -21,10 +22,9 @@ function LeadDetails() {
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchLeadById(id);
-        const filteredData = data.filter((lead) => parseInt(lead.id) == parseInt(id));
-        setLead(filteredData[0]);
-        setFormData(filteredData[0]); // Pre-fill form with the fetched lead data
+        const response = await GlobalAxios.get(`/lead/${id}`); // Fetch lead data by ID
+        setLead(response.data.data);
+        setFormData(response.data.data); // Pre-fill form with the fetched lead data
       } catch (error) {
         setError('Failed to fetch lead data');
       } finally {
@@ -93,21 +93,18 @@ function LeadDetails() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <p className="mb-4"><span className="font-semibold text-gray-700">Lead Owner:</span> {lead.leadName}</p>
-                <p className="mb-4"><span className="font-semibold text-gray-700">Title:</span> {lead.title}</p>
                 <p className="mb-4 flex items-center">
                   <FaPhone className="mr-2 text-green-500" /> 
                   <span className="font-semibold text-gray-700">Phone:</span> {lead.phone}
                 </p>
-                <p className="mb-4"><span className="font-semibold text-gray-700">Lead Source:</span> {lead.leadSource}</p>
-                <p className="mb-4"><span className="font-semibold text-gray-700">Industry:</span> {lead.industry}</p>
-                <p className="mb-4"><span className="font-semibold text-gray-700">Annual Revenue:</span> ${lead.annualRevenue}</p>
+                <p className="mb-4"><span className="font-semibold text-gray-700">Lead Source:</span> {lead.source}</p>
+                <p className="mb-4"><span className="font-semibold text-gray-700">Industry:</span> {lead.source}</p>
+                {/* <p className="mb-4"><span className="font-semibold text-gray-700">Annual Revenue:</span> ${lead.annualRevenue}</p> */}
               </div>
               <div>
-                <p className="mb-4"><span className="font-semibold text-gray-700">Company:</span> {lead.company}</p>
+                <p className="mb-4"><span className="font-semibold text-gray-700">Company:</span> {lead.companyName}</p>
                 <p className="mb-4"><span className="font-semibold text-gray-700">Email:</span> <a href={`mailto:${lead.email}`} className="text-blue-500">{lead.email}</a></p>
-                <p className="mb-4"><span className="font-semibold text-gray-700">Website:</span> <a href={lead.website} target="_blank" rel="noopener noreferrer" className="text-blue-500">{lead.website}</a></p>
-                <p className="mb-4"><span className="font-semibold text-gray-700">Lead Status:</span> {lead.leadStatus}</p>
-                <p className="mb-4"><span className="font-semibold text-gray-700">Rating:</span> {lead.rating || '—'}</p>
+                <p className="mb-4"><span className="font-semibold text-gray-700">Lead Status:</span> {lead.leadStatus.leadStatus}</p>
               </div>
             </div>
           </div>
@@ -132,6 +129,7 @@ function LeadDetails() {
                 type="text"
                 name="leadName"
                 value={formData.leadName || ''}
+           
                 onChange={handleInputChange}
                 className="border px-3 py-2 rounded w-full"
               />

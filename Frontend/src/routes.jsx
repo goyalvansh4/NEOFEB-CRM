@@ -14,6 +14,7 @@ import { SignIn} from "@/pages/auth";
 import Clients from "./pages/dashboard/Clients";
 import Innvoice from "./pages/Innvoice/Innvoice";
 import Employees from "./pages/employees/Employees";
+import ManageBillFrom from "./pages/Account/ManageBillFrom";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -52,6 +53,13 @@ export const routes = [
         name: "innvoice",
         path: "/innvoice",
         element: <Innvoice />,
+        
+      },
+      {
+        icon: <FaReceipt {...icon} />,
+        name: "billFrom",
+        path: "/bill",
+        element: <ManageBillFrom/>,
         
       },
       {

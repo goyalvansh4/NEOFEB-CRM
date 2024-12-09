@@ -15,8 +15,8 @@ const getLeads = async (req, res) => {
 // Get a single lead
 
 const getLead = async (req, res) => {
-  console.log(mongoose.modelNames()); 
   const { id } = req.params;
+  // console.log("id",id);
   try {
     const lead = await Leads.findById(id).populate('leadStatus');
     if (!lead) return res.status(404).json({ message: 'Lead not found' });

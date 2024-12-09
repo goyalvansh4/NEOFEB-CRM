@@ -8,7 +8,7 @@ const leadSchema = new mongoose.Schema({
   source: { type: String, required: true },       
   sourceDetails: { type: String },                 
   notes: { type: String },
-  follow_up_date: { type: String, required: true },
+  follow_up_date: { type: String },
   remarks: { type: String },
   leadStatus:{type:mongoose.Schema.Types.ObjectId,ref:'LeadStatus', required : true},
 }, { timestamps: true });
