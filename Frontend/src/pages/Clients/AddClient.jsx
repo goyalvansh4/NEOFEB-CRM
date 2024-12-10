@@ -15,8 +15,6 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import GlobalAxios from "../../../Global/GlobalAxios";
-import { GetCountries, GetState } from "react-country-state-city";
-import axios from "axios";
 
 const AddClient = () => {
   const [loading, setLoading] = useState(false);
@@ -24,7 +22,7 @@ const AddClient = () => {
     name: "",
     companyName: "",
     address: "",
-    country: "IN",
+    country: "",
     state: "",
     city: "",
     pincode: "",
@@ -44,19 +42,49 @@ const AddClient = () => {
     upiId: "",
   });
 
-  const [countriesList, setCountriesList] = useState([]);
-  const [statesList, setStatesList] = useState([]);
+  const [statesList, setStatesList] = useState([
+    { id: 1, name: "Andhra Pradesh" },
+    { id: 2, name: "Arunachal Pradesh" },
+    { id: 3, name: "Assam" },
+    { id: 4, name: "Bihar" },
+    { id: 5, name: "Chhattisgarh" },
+    { id: 6, name: "Goa" },
+    { id: 7, name: "Gujarat" },
+    { id: 8, name: "Haryana" },
+    { id: 9, name: "Himachal Pradesh" },
+    { id: 10, name: "Jharkhand" },
+    { id: 11, name: "Karnataka" },
+    { id: 12, name: "Kerala" },
+    { id: 13, name: "Madhya Pradesh" },
+    { id: 14, name: "Maharashtra" },
+    { id: 15, name: "Manipur" },
+    { id: 16, name: "Meghalaya" },
+    { id: 17, name: "Mizoram" },
+    { id: 18, name: "Nagaland" },
+    { id: 19, name: "Odisha" },
+    { id: 20, name: "Punjab" },
+    { id: 21, name: "Rajasthan" },
+    { id: 22, name: "Sikkim" },
+    { id: 23, name: "Tamil Nadu" },
+    { id: 24, name: "Telangana" },
+    { id: 25, name: "Tripura" },
+    { id: 26, name: "Uttar Pradesh" },
+    { id: 27, name: "Uttarakhand" },
+    { id: 28, name: "West Bengal" },
+    { id: 29, name: "Andaman and Nicobar Islands" },
+    { id: 30, name: "Chandigarh" },
+    { id: 31, name: "Dadra and Nagar Haveli" },
+    { id: 32, name: "Daman and Diu" },
+    { id: 33, name: "Lakshadweep" },
+    { id: 34, name: "Delhi" },
+    { id: 35, name: "Jammu and Kashmir" },
+    { id: 36, name: "Ladakh" },
+    { id: 37, name: "Puducherry" },
+  ]);
 
   const navigate = useNavigate();
 
-  // Fetch countries on component mount
-  useEffect(() => {
-    const fetchCountries = async () => {
-      const result = await GetCountries();
-      setCountriesList(result);
-    };
-    fetchCountries();
-  }, []);
+
 
   const handleCountryChange = async (value) => {
     const selectedCountry = countriesList[value];
@@ -99,7 +127,7 @@ const AddClient = () => {
         name: "",
         companyName: "",
         address: "",
-        country: "IN",
+        country: "",
         state: "",
         city: "",
         pincode: "",
@@ -239,21 +267,15 @@ const AddClient = () => {
             Address Details:
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <Select
+            <Input
+              type="text"
               label="Country"
               name="country"
-              onChange={(e) => {
-                handleCountryChange(e);
-              }}
+              value={"India"}
+              onChange={handleClientChange}
               required
-            >
-              {countriesList.map((country, index) => (
-                <Option key={country.id} value={index}>
-                  {country.name}
-                </Option>
-              ))}
-            </Select>
-
+              readOnly
+            />
             <select
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3c3c3c]"
               label="State"

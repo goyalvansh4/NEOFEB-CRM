@@ -1,8 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Button, Input, IconButton } from "@material-tailwind/react";
+import { Typography, Button, Input, IconButton, Select } from "@material-tailwind/react";
 import GlobalAxios from "../../../Global/GlobalAxios";
 
 const ManageBillFrom = () => {
+  const [states, setStates] = useState([
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal",
+    "Andaman and Nicobar Islands",
+    "Chandigarh",
+    "Dadra and Nagar Haveli",
+    "Daman and Diu",
+    "Lakshadweep",
+    "Delhi",
+    "Jammu and Kashmir",
+    "Ladakh",
+    "Puducherry",
+  ]);
   const [companies, setCompanies] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -14,12 +53,15 @@ const ManageBillFrom = () => {
     state: "",
     country: "",
   });
+
+
   const [isEditing, setIsEditing] = useState(false);
+
 
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await GlobalAxios.get("/companies");
+        const response = await GlobalAxios.get("/companyBill");
         setCompanies(response.data.data);
       } catch (error) {
         console.error("Error fetching companies:", error);
@@ -47,7 +89,7 @@ const ManageBillFrom = () => {
 
   const handleDeleteCompany = async (id) => {
     try {
-      await GlobalAxios.delete(`/companies/${id}`);
+      await GlobalAxios.delete(`/companyBill/${id}`);
       setCompanies(companies.filter((company) => company.id !== id));
     } catch (error) {
       console.error("Error deleting company:", error);
@@ -57,12 +99,12 @@ const ManageBillFrom = () => {
   const handleSubmit = async () => {
     try {
       if (isEditing) {
-        await GlobalAxios.put(`/companies/${formValues.id}`, formValues);
+        await GlobalAxios.put(`/companyBill/${formValues._id}`, formValues);
         setCompanies((prev) =>
           prev.map((company) => (company.id === formValues.id ? formValues : company))
         );
       } else {
-        const response = await GlobalAxios.post("/companies", formValues);
+        const response = await GlobalAxios.post("/companyBill", formValues);
         setCompanies([...companies, response.data.data]);
       }
       setIsModalOpen(false);
@@ -98,7 +140,7 @@ const ManageBillFrom = () => {
                   <Typography variant="body2" className="font-bold">
                     {company.name}
                   </Typography>
-                  <Typography variant="body2">{company.address}</Typography>
+                  <Typography variant="body2">{company.email}</Typography>
                   <Typography variant="body2">
                     {company.city}, {company.state}, {company.country}
                   </Typography>
@@ -126,7 +168,7 @@ const ManageBillFrom = () => {
             <Typography variant="h6" className="mb-4 text-lg font-medium">
               {isEditing ? "Edit Company" : "Add Company"}
             </Typography>
-            <div className="grid gap-4">
+            <form className="grid gap-4">
               <Input
                 label="Name"
                 name="name"
@@ -162,21 +204,28 @@ const ManageBillFrom = () => {
                 onChange={handleInputChange}
                 required
               />
-              <Input
-                label="State"
-                name="state"
-                value={formValues.state}
+              <select
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+              label="State"
+              name="state"
                 onChange={handleInputChange}
                 required
-              />
+              >
+               {states.map((state) => (
+                <option key={state} value={state}>
+                  {state}
+                </option>
+               ))}
+              </select>
               <Input
                 label="Country"
                 name="country"
-                value={formValues.country}
-                onChange={handleInputChange}
+                value={"India"}
+                //onChange={handleInputChange}
+                readOnly
                 required
               />
-            </div>
+            </form>
             <div className="flex justify-between mt-6">
               <Button color="gray" onClick={() => setIsModalOpen(false)}>
                 Cancel

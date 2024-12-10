@@ -20,7 +20,7 @@ const getAllInvoices = async (req, res) => {
   console.log("Get all invoices");
   try {
     const invoices = await Invoice.find()
-    .populate('invoiceStatus')
+    .populate('invoiceStatus').populate('client_id').populate('companyBill_id')
     .then((invoices) => console.log(invoices))
     .catch((error) => console.error(error));
     res.status(200).json({
@@ -38,7 +38,7 @@ const getAllInvoices = async (req, res) => {
 // Get a single invoice
 const getInvoice = async (req, res) => {
   try {
-    const invoice = await Invoice.findById(req.params.id)
+    const invoice = await Invoice.findById(req.params.id).populate('invoiceStatus').populate('client_id').populate('companyBill_id');
     if (!invoice) {
       return res.status(404).json({ status: 'error', msg: 'Invoice not found' });
     }
@@ -49,8 +49,27 @@ const getInvoice = async (req, res) => {
   }
 }
 
+
+const deleteinvoice = async (req, res) => {
+  try {
+    const invoice = await Invoice.findByIdAndDelete(req.params.id)  
+    if (!invoice) {
+      return res.status(404).json({ status: 'error', msg: 'Invoice not found' });
+    }
+    res.status(200).json({ status: 'success', msg: 'Invoice deleted' });
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500
+    ).send
+    (error);
+  }
+}
+
+
 module.exports = {
   createInvoice,
   getAllInvoices,
-  getInvoice
+  getInvoice,
+  deleteinvoice
 }

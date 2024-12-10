@@ -18,9 +18,11 @@ import GlobalAxios from '../../../Global/GlobalAxios';
 import AddInvoice from './AddInnvoice';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 
+
+
 const Invoice = () => {
   
-
+  const [length, setLength] = useState(0);
   const [data, setData] = useState([]);
   const [hideForm, setHideForm] = useState(true);
   const [showStatusModal, setShowStatusModal] = useState(false);
@@ -32,8 +34,9 @@ const Invoice = () => {
     const fetchInvoices = async () => {
       try {
         const response = await GlobalAxios.get('/invoice');
-        console.log(response.data.data);
+        console.log(response.data);
         setData(response.data.data);
+        setLength(data.length);
       } catch (error) {
         console.error(error);
       }
@@ -168,7 +171,7 @@ const Invoice = () => {
                   Invoices
                 </Typography>
                 <Typography variant="small" className="text-gray-900">
-                  There are {data.length} total invoices
+                  {/* There are {data.length} total invoices */}
                 </Typography>
               </div>
               <div className="flex gap-2">
@@ -230,7 +233,7 @@ const Invoice = () => {
           </div>
         </div>
       ) : (
-        <AddInvoice setHideForm={setHideForm} />
+        <AddInvoice length={length} setHideForm={setHideForm} />
       )}
 
       {/* Modal for Adding/Editing Status */}

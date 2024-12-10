@@ -1,4 +1,4 @@
-const CompanyBill = require('../Model/CompanyBill');
+const CompanyBill = require('../Models/CompanyBill');
 
 
 const createCompanyBill = async (req, res) => {
@@ -10,10 +10,6 @@ const createCompanyBill = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-
-
-
-
 
 
 const getCompanyBills = async (req, res) => {

@@ -57,7 +57,7 @@ export const routes = [
       },
       {
         icon: <FaReceipt {...icon} />,
-        name: "billFrom",
+        name: "bill From",
         path: "/bill",
         element: <ManageBillFrom/>,
         

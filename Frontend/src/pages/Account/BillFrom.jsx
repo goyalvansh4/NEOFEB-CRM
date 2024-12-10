@@ -34,7 +34,7 @@ const BillFrom = ({ selectedCompany, setSelectedCompany }) => {
         required
       >
         {companies.map((company) => (
-          <Option key={company.id} value={company.name}>
+          <Option key={company._id} value={company.name}>
             {company.name}
           </Option>
         ))}
