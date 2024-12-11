@@ -16,6 +16,7 @@ import AddLead from "../pages/Leads/AddLead";
 import ManageSource from "../pages/Leads/ManageSource";
 import FollowUp from "../pages/Leads/FollowUp";
 import { ProtectedRoute } from "../../ProtectedRoute/ProtectedRoute";
+import InvoiceDetails from "../pages/Innvoice/InvoiceDetails";
 
 
 export function Dashboard() {
@@ -52,6 +53,7 @@ export function Dashboard() {
                   <Route path="/followUp" element={<FollowUp />} />
                   <Route path="/addClient" element={<AddClient />} />
                   <Route path="/client/:id" element={<ClientDetails />} />
+                  <Route path="/invoice/:id" element={<InvoiceDetails />} />
                   <Route path="/addlead/add-source" element={<ManageSource />} />
                 </Routes>
               </ProtectedRoute>

@@ -21,9 +21,8 @@ const schema=new mongoose.Schema({
     "ifsc_code" : {type:String,require:true},
     "upi_id" : {type:String,require:true},
     "status" : {type:String,require:true},
-})
-
-
+    "invoice":{type:mongoose.Schema.Types.ObjectId,ref:"Invoice"},
+},{timestamps:true})
 
 const Client =mongoose.model("Client",schema)
 

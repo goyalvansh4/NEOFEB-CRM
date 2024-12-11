@@ -21,7 +21,7 @@ export default function AddInvoice({ length, setHideForm }) {
     invoice_date: "",
     payment_terms: "",
     items: [],
-    total: 0,
+    totalAmount: 0,
     invoiceStatus: "",
   });
 
@@ -247,11 +247,14 @@ export default function AddInvoice({ length, setHideForm }) {
   const handleSubmit = async () => {
     console.log(formValues);
     const total = calculateGrandTotal();
+    if(formValues.invoice_date === ""){
+      formValues.invoice_date = new Date().toISOString().split('T')[0];
+    }
     formValues.invoice_number = length + 1;
+    formValues.totalAmount = total;
     const invoiceData = {
       ...formValues,
       items: updateAllItemTotals(items),
-      total,
     };
     setLoading(true);
     try {
@@ -266,7 +269,7 @@ export default function AddInvoice({ length, setHideForm }) {
           invoice_date: "",
           payment_terms: "",
           items: [],
-          total: 0,
+          totalAmount: 0,
           invoiceStatus: "",
         });
       }

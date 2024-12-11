@@ -17,17 +17,19 @@ const createInvoice = async (req, res) => {
 
 // Get all invoices
 const getAllInvoices = async (req, res) => {
-  console.log("Get all invoices");
+ 
   try {
     const invoices = await Invoice.find()
     .populate('invoiceStatus').populate('client_id').populate('companyBill_id')
-    .then((invoices) => console.log(invoices))
+    .then(invoices => invoices)
     .catch((error) => console.error(error));
     res.status(200).json({
       data: invoices,
       status: "success",
       msg: "Get all invoices successfully",
-    });
+    }); 
+
+
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
@@ -42,7 +44,12 @@ const getInvoice = async (req, res) => {
     if (!invoice) {
       return res.status(404).json({ status: 'error', msg: 'Invoice not found' });
     }
-    res.status(200).json({ status: 'success', msg: 'Invoice found', data: invoice });
+
+      const totalAmount = invoice.items.reduce((sum, item) => sum + item.total, 0);
+      
+      const response = { ...invoice._doc, totalAmount };
+      return res.status(200).json({ status: 'success', msg: 'Invoice found', data: response });  
+
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
@@ -72,4 +79,4 @@ module.exports = {
   getAllInvoices,
   getInvoice,
   deleteinvoice
-}
+};

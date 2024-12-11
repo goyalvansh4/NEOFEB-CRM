@@ -17,6 +17,8 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 import GlobalAxios from '../../../Global/GlobalAxios';
 import AddInvoice from './AddInnvoice';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
+import { DateTime } from "luxon";
+import { NavLink } from 'react-router-dom';
 
 
 
@@ -111,6 +113,11 @@ const Invoice = () => {
     }
   };
 
+  const modifyDate = (date) => {
+   const formattedDate = DateTime.fromISO(date).toFormat("dd-MM-yyyy");
+   return formattedDate;
+  }
+
   const columns = React.useMemo(
     () => [
       {
@@ -121,17 +128,17 @@ const Invoice = () => {
       {
         accessorKey: 'invoice_date',
         header: 'Due Date',
-        cell: (info) => `${info.getValue()}`,
+        cell: (info) => `${modifyDate(info.getValue())}`,
       },
       {
-        accessorKey: 'client_name',
+        accessorKey: 'client_id.name',
         header: 'Client',
         cell: (info) => info.getValue(),
       },
       {
-        accessorKey: 'total',
+        accessorKey: 'totalAmount',
         header: 'Amount',
-        cell: (info) => info.getValue(),
+        cell: (info) => `${info.getValue()}`,
       },
       {
         accessorKey: 'invoiceStatus.invoiceStatus',
@@ -217,12 +224,20 @@ const Invoice = () => {
                     {table.getRowModel().rows.map((row) => (
                       <tr key={row.id}>
                         {row.getVisibleCells().map((cell) => (
-                          <td
+                          (cell.column.id === "ID") ?
+                            <td
+                            key={cell.id}
+                            className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                          >
+                            <NavLink to={`/dashboard/invoice/${cell.row.original._id}`} className="text-blue-500 hover:underline">{flexRender(cell.column.columnDef.cell, cell.getContext())}</NavLink>
+                          </td>
+                             : 
+                             <td
                             key={cell.id}
                             className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                           >
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </td>
+                          </td>  
                         ))}
                       </tr>
                     ))}

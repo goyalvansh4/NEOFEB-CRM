@@ -4,13 +4,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { FaEdit, FaTrash, FaDownload, FaSpinner } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Tabs,
-  TabsHeader,
-  Tab,
   Card,
   CardBody,
   Typography,
-  Badge,
   Button,
   Dialog,
   DialogHeader,
@@ -20,18 +16,23 @@ import {
   Select,
   Option,
 } from "@material-tailwind/react";
+import { Tabs, Tab, Box } from "@mui/material";
 import GlobalAxios from "../../../Global/GlobalAxios";
 
 const ClientDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("overview");
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [clientDetails, setClientDetails] = useState({});
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
 
   // Fetch client details using @tanstack/query
-  const { data: client, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["clientDetails", id],
     queryFn: async () => {
       const response = await GlobalAxios.get(`/client/${id}`);
@@ -39,6 +40,8 @@ const ClientDetails = () => {
     },
     onSuccess: (data) => setClientDetails(data), // Set clientDetails on successful fetch
   });
+
+  const { client, invoices } = data || {};
 
   const handleEditModalOpen = () => {
     setClientDetails(client); // Pre-fill fields with the current client data
@@ -63,7 +66,7 @@ const ClientDetails = () => {
   const handleDeleteClient = () => {
     setDeleteModalOpen(true);
   };
-  
+
   const handleDeleteModalOpen = () => setDeleteModalOpen(!deleteModalOpen);
 
   const handleDelete = async () => {
@@ -95,9 +98,10 @@ const ClientDetails = () => {
     );
   }
 
-  const getStatusBadgeColor = (status) =>
-    status === "manually" ? "bg-green-500" : "bg-blue-500";
-
+  const getStatusBadgeColor = (status) => {
+    console.log(status === "active" ? "bg-green-500" : "bg-red-500");
+    return status === "active" ? "bg-green-500" : "bg-red-500";
+  }
   return (
     <div className="container mx-auto p-6 space-y-8 bg-gray-50">
       {/* Profile Card */}
@@ -115,15 +119,6 @@ const ClientDetails = () => {
             </Typography>
           </div>
           <div className="flex space-x-4">
-            <Button
-              variant="gradient"
-              color="blue"
-              onClick={() => toast.info("Download clicked")}
-              className="flex items-center space-x-2"
-            >
-              <FaDownload />
-              <span>Download</span>
-            </Button>
             <Button
               variant="gradient"
               color="green"
@@ -156,91 +151,184 @@ const ClientDetails = () => {
 
       {/* Tab System */}
       <div className="bg-white shadow-xl rounded-lg p-6">
-        <Tabs value={activeTab} onChange={(value) => setActiveTab(value)}>
-          <TabsHeader className="flex gap-6">
-            <Tab value="overview">Overview</Tab>
-            <Tab value="notes">Notes</Tab>
-            <Tab value="invoice">Invoice</Tab>
-            <Tab value="quotes">Quotes</Tab>
-          </TabsHeader>
+        <Box>
+          {/* Tabs Header */}
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            textColor="primary"
+            indicatorColor="primary"
+            aria-label="client details tabs"
+          >
+            <Tab label="Overview" />
+            <Tab label="Notes" />
+            <Tab label="Invoice" />
+            <Tab label="Quotes" />
+          </Tabs>
 
-          <div className="mt-6">
-            {activeTab === "overview" && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                  <Typography variant="subtitle1" className="text-purple-600">
-                    Address
-                  </Typography>
-                  <Typography className="text-gray-700">
-                    {client?.address}, {client?.city}, {client?.state},{" "}
-                    {client?.country}
-                  </Typography>
-                </div>
-                <div>
-                  <Typography variant="subtitle1" className="text-purple-600">
-                    Bank Details
-                  </Typography>
-                  <Typography className="text-gray-700">
-                    Bank Name: {client?.bank_name}
-                  </Typography>
-                  <Typography className="text-gray-700">
-                    Account Number: {client?.bank_account}
-                  </Typography>
-                  <Typography className="text-gray-700">
-                    IFSC Code: {client?.ifsc_code}
-                  </Typography>
-                </div>
-                <div>
-                  <Typography variant="subtitle1" className="text-purple-600">
-                    PAN / GST / CIN
-                  </Typography>
-                  <Typography className="text-gray-700">
-                    PAN: {client?.pan}
-                  </Typography>
-                  <Typography className="text-gray-700">
-                    GST: {client?.gst_number}
-                  </Typography>
-                  <Typography className="text-gray-700">
-                    CIN: {client?.cin}
-                  </Typography>
-                </div>
-                <div>
-                  <Typography variant="subtitle1" className="text-purple-600">
-                    Status
-                  </Typography>
-                  <Badge color="green" className="text-sm">
-                    {client?.status}
-                  </Badge>
-                  <Badge
-                    className={`text-sm ml-2 ${getStatusBadgeColor(
-                      client?.added_from
-                    )}`}
-                  >
-                    {client?.added_from}
-                  </Badge>
-                  <div className="flex space-x-2 mt-2">
-                    <Badge color="blue" className="text-xs">
-                      Created: {client?.created_at_human}
-                    </Badge>
-                    <Badge color="indigo" className="text-xs">
-                      Updated: {client?.updated_at_human}
-                    </Badge>
+          {/* Tab Content */}
+          <Box sx={{ mt: 4 }}>
+            {activeTab === 0 && (
+              <Box>
+                <Typography variant="h6" color="primary">
+                  Overview
+                </Typography>
+                <Box className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <Box>
+                    <Typography variant="subtitle1" color="secondary">
+                      Address
+                    </Typography>
+                    <Typography>
+                      {client?.address}, {client?.city}, {client?.state}, {client?.country}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle1" color="secondary">
+                      Bank Details
+                    </Typography>
+                    <Typography>Bank Name: {client?.bank_name}</Typography>
+                    <Typography>Account Number: {client?.bank_account}</Typography>
+                    <Typography>IFSC Code: {client?.ifsc_code}</Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle1" color="secondary">
+                      PAN / GST / CIN
+                    </Typography>
+                    <Typography>PAN: {client?.pan}</Typography>
+                    <Typography>GST: {client?.gst_number}</Typography>
+                    <Typography>CIN: {client?.cin}</Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle1" color="secondary">
+                      Status
+                    </Typography>
+                    {/* Status Badge */}
+                    <a
+                      className={`text-sm text-white ${getStatusBadgeColor(client.status)} px-2 py-1 rounded-md`}
+                    >
+                      {(client?.status).toUpperCase()}
+                    </a>
+                  </Box>
+                </Box>
+              </Box>
+            )}
+
+            {activeTab === 1 && (
+              <Box>
+                <Typography variant="h6" color="primary">
+                  Notes
+                </Typography>
+                {client?.notes?.length > 0 ? (
+                  <ul>
+                    {client.notes.map((note, index) => (
+                      <li key={index}>
+                        <Typography>{note}</Typography>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <Typography>No notes available.</Typography>
+                )}
+              </Box>
+            )}
+
+            {activeTab === 2 && (
+              <Box>
+                {invoices?.length > 0 ? (
+          <div className="space-y-6">
+            {invoices.map((invoice) => (
+              <div
+                key={invoice._id}
+                className="bg-white shadow-md rounded-lg border border-gray-200 p-6"
+              >
+                {/* Invoice Header */}
+                <div className="flex justify-between items-center border-b pb-4 mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-blue-500">
+                      Invoice #{invoice.invoice_number}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Invoice Date:{" "}
+                      {new Date(invoice.invoice_date).toLocaleDateString()}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Payment Terms: {invoice.payment_terms} days
+                    </p>
+                  </div>
+                  <div>
+                    {invoice.invoiceStatus === "Paid" ? (
+                      <span className="text-green-800 font-medium px-2 py-1 rounded-md">{invoice.invoiceStatus}</span>
+                    ) : (
+                      <span className="text-red-500 font-medium px-2 py-1 rounded-md">{invoice.invoiceStatus}</span>
+                    )}
                   </div>
                 </div>
+
+                {/* Invoice Items */}
+                <div>
+                  <h4 className="text-md font-bold text-gray-700 mb-2">Items:</h4>
+                  <ul className="space-y-4">
+                    {invoice.items.map((item) => (
+                      <li
+                        key={item.id}
+                        className="p-4 bg-gray-100 rounded-md shadow-sm"
+                      >
+                        <div className="flex justify-between">
+                          <span className="font-semibold text-gray-800">
+                            {item.itemName} - {item.description}
+                          </span>
+                          <span className="text-gray-600">₹{item.total}</span>
+                        </div>
+                        <div className="text-sm text-gray-500 mt-1">
+                          Qty: {item.qty}, Price: ₹{item.price}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          Taxes: CGST {item.cgst}%, SGST {item.sgst}%, IGST {item.igst}%
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Total Amount */}
+                <div className="mt-4 flex justify-between items-center">
+                  <p className="text-xl font-bold text-blue-600">
+                    Total Amount: ₹{invoice.totalAmount}
+                  </p>
+                </div>
               </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500 text-lg">
+            No invoices available.
+          </p>
+        )}
+              </Box>
             )}
 
-            {activeTab === "notes" && (
-              <Typography>Notes content goes here</Typography>
+
+            {activeTab === 3 && (
+              <Box>
+                <Typography variant="h6" color="primary">
+                  Quotes
+                </Typography>
+                {client?.quotes?.length > 0 ? (
+                  <ul>
+                    {client.quotes.map((quote, index) => (
+                      <li key={index}>
+                        <Typography>{quote}</Typography>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <Typography>No quotes available.</Typography>
+                )}
+              </Box>
             )}
-            {activeTab === "invoice" && (
-              <Typography>Invoice content goes here</Typography>
-            )}
-            {activeTab === "quotes" && (
-              <Typography>Quotes content goes here</Typography>
-            )}
-          </div>
-        </Tabs>
+          </Box>
+        </Box>
+
       </div>
 
       {/* Edit Modal */}
@@ -375,7 +463,6 @@ const ClientDetails = () => {
                 <Option value="active">Active</Option>
                 <Option value="inactive">Inactive</Option>
                 <Option value="pending">Pending</Option>
-                <Option value="manually">Manually Added</Option>
               </Select>
             </div>
           </div>
@@ -384,7 +471,7 @@ const ClientDetails = () => {
           <Button variant="text" color="red" onClick={handleEditModalOpen}>
             Cancel
           </Button>
-          <Button variant="gradient" color="green" onClick={()=>{handleSaveChanges(clientDetails._id)}}>
+          <Button variant="gradient" color="green" onClick={() => { handleSaveChanges(clientDetails._id) }}>
             Save Changes
           </Button>
         </DialogFooter>

@@ -8,7 +8,7 @@ const invoiceSchema = new mongoose.Schema({
   invoiceStatus: { type: mongoose.Types.ObjectId, ref: 'invoiceStatus', required: true },
   invoice_date: { type: String, required: true },
   payment_terms: { type: String, required: true },
-  
+  totalAmount: { type: Number, required: true },
 });
 
 module.exports = mongoose.model('Invoice', invoiceSchema);

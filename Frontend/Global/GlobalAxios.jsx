@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 // Base URL setup
 // const apiUrl = "https://neofeb-crm.onrender.com/api/v1";
-const apiUrl = "http://43.204.116.38:3000/api/v1";
+const apiUrl = "http://65.1.95.92:3000/api/v1";
 
 const GlobalAxios = axios.create({
   baseURL: apiUrl,
