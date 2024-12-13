@@ -6,6 +6,8 @@ import {
   ServerStackIcon,
   RectangleStackIcon,
 } from "@heroicons/react/24/solid";
+import { FaFolderPlus } from "react-icons/fa";
+
 import { FaReceipt, FaPeopleLine  } from "react-icons/fa6";
 import { FaUsers } from "react-icons/fa";
 import { Home,  Deals  } from "@/pages/dashboard";
@@ -15,6 +17,7 @@ import Clients from "./pages/dashboard/Clients";
 import Innvoice from "./pages/Innvoice/Innvoice";
 import Employees from "./pages/employees/Employees";
 import ManageBillFrom from "./pages/Account/ManageBillFrom";
+import Projects from "./pages/Projects/Projects";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -67,6 +70,13 @@ export const routes = [
         name: "employees",
         path: "/employees",
         element: <Employees />,
+        
+      },
+      {
+        icon: <FaFolderPlus {...icon} />,
+        name: "projects",
+        path: "/projects",
+        element: <Projects />,
         
       },
     ],

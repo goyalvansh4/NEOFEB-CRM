@@ -244,7 +244,7 @@ const ClientDetails = () => {
                 {/* Invoice Header */}
                 <div className="flex justify-between items-center border-b pb-4 mb-4">
                   <div>
-                    <h3 className="text-lg font-bold text-blue-500">
+                    <h3 className="text-lg font-bold text-purple-500">
                       Invoice #{invoice.invoice_number}
                     </h3>
                     <p className="text-sm text-gray-500">
@@ -256,10 +256,10 @@ const ClientDetails = () => {
                     </p>
                   </div>
                   <div>
-                    {invoice.invoiceStatus === "Paid" ? (
-                      <span className="text-green-800 font-medium px-2 py-1 rounded-md">{invoice.invoiceStatus}</span>
+                    {invoice.invoiceStatus.invoiceStatus === "Paid" ? (
+                      <span className="text-green-800 font-medium px-2 py-1 rounded-md">{invoice.invoiceStatus.invoiceStatus}</span>
                     ) : (
-                      <span className="text-red-500 font-medium px-2 py-1 rounded-md">{invoice.invoiceStatus}</span>
+                      <span className="text-red-500 font-medium px-2 py-1 rounded-md">{invoice.invoiceStatus.invoiceStatus}</span>
                     )}
                   </div>
                 </div>
@@ -292,7 +292,7 @@ const ClientDetails = () => {
 
                 {/* Total Amount */}
                 <div className="mt-4 flex justify-between items-center">
-                  <p className="text-xl font-bold text-blue-600">
+                  <p className="text-xl font-bold text-purple-600">
                     Total Amount: ₹{invoice.totalAmount}
                   </p>
                 </div>
@@ -449,7 +449,7 @@ const ClientDetails = () => {
             </div>
             {/* Status */}
             <div>
-              <Typography variant="small" color="blue-gray" className="mb-2">
+              <Typography variant="small" color="purple-gray" className="mb-2">
                 Status
               </Typography>
               <Select

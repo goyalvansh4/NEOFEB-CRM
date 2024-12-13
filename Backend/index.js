@@ -1,4 +1,5 @@
 require('dotenv').config();
+import Employees from './../Frontend/src/pages/employees/Employees';
 const express = require('express');
 const app = express();
 const cors = require("cors");
@@ -7,7 +8,7 @@ const PORT=process.env.PORT || 3000
 
 const baseURL = process.env.BASE_URL;
 
-const EmployeeRoute = require("./Routes/EmployeeRoute");
+
 const ClientRoute=require("./Routes/ClientRoute")
 const adminRoute = require("./Routes/AdminRoute");
 const LeadRoute = require("./Routes/LeadsRoute")
@@ -17,6 +18,10 @@ const InvoiceRoute = require("./Routes/InvoiceRoute");
 const InvoiceStatusRoute = require("./Routes/InvoiceStatusRoute");
 const HsnRoute = require("./Routes/HsnRoute");
 const CompanyBillRoute = require("./Routes/CompanyBillRoute");
+const ProjectRoute = require("./Routes/ProjectRoute");
+const EmployeesRoute = require("./Routes/EmployeesRoute");
+
+
 
 
 
@@ -25,7 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.use(`${baseURL}/employee`, EmployeeRoute);
+
 app.use(`${baseURL}/client`,ClientRoute)
 app.use(`${baseURL}/admin`, adminRoute);
 app.use(`${baseURL}/lead`, LeadRoute);
@@ -35,6 +40,8 @@ app.use(`${baseURL}/invoice`, InvoiceRoute);
 app.use(`${baseURL}/invoiceStatus`, InvoiceStatusRoute);
 app.use(`${baseURL}/hsn`, HsnRoute);
 app.use(`${baseURL}/companyBill`, CompanyBillRoute);
+app.use(`${baseURL}/project`, ProjectRoute);
+app.use(`${baseURL}/employees`, EmployeesRoute);
 
 
 app.listen(PORT,'0.0.0.0', () => {

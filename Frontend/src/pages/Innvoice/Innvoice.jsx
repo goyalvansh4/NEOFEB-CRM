@@ -36,9 +36,10 @@ const Invoice = () => {
     const fetchInvoices = async () => {
       try {
         const response = await GlobalAxios.get('/invoice');
-        console.log(response.data);
+         if(response.data.status === 'success') {
         setData(response.data.data);
-        setLength(data.length);
+        setLength(Number(response.data.data.length));
+        }
       } catch (error) {
         console.error(error);
       }

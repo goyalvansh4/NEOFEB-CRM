@@ -125,7 +125,7 @@ export default function AddInvoice({ length, setHideForm }) {
       });
     }
   };
-
+console.log(length);
   const handleClientChange = (e) => {
     const selectedClient = client.filter((c) => c.name === e);
     if (selectedClient) {
@@ -299,7 +299,7 @@ export default function AddInvoice({ length, setHideForm }) {
             label="Invoice No"
             name="invoice_number"
             type="number"
-            value={length + 1}
+            value={(length) ? length + 1 : 1}
             required
             readOnly
           />

@@ -2,26 +2,19 @@ import React, { useEffect, useState } from "react";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa"; // Import the icons
 import GlobalAxios from "../../../Global/GlobalAxios";
 import Swal from 'sweetalert2';
+import { FaFolderPlus } from "react-icons/fa";
+import { NavLink, useNavigate } from 'react-router-dom';
 
 
 const Employees = () => {
   const [employees, setEmployees] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [newEmployee, setNewEmployee] = useState({
-    name: "",
-    position: "",
-    email: "",
-    status: "",
-  });
   const [loading, setLoading] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchEmployees = async () => {
       setLoading(true);
       try {
-        const response = await GlobalAxios.get("/employee");
+        const response = await GlobalAxios.get("/employees");
         setEmployees(response.data.data);
         setLoading(false);
       } catch (error) {
@@ -33,12 +26,10 @@ const Employees = () => {
 
 
   const handleAdd = () => {
-    setIsModalOpen(true);
+    navigate('addEmployee');
   };
 
   const handleEdit = (employee) => {
-    setSelectedEmployee(employee);
-    setIsEditModalOpen(true);
   };
 
   const handleDelete = async (id) => {
@@ -54,7 +45,7 @@ const Employees = () => {
       });
   
       if (result.isConfirmed) {
-        const response = await GlobalAxios.delete(`/employee/${id}`);
+        const response = await GlobalAxios.delete(`/employees/${id}`);
         if (response.data.status === "success") {
           setEmployees(employees.filter((emp) => emp._id !== id));
           Swal.fire({
@@ -75,49 +66,8 @@ const Employees = () => {
     }
   };  
 
-  const handleModalChange = (e) => {
-    const { name, value } = e.target;
-    if (isEditModalOpen) {
-      setSelectedEmployee((prev) => ({ ...prev, [name]: value }));
-    } else {
-      setNewEmployee((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleSubmit = async () => {
-    const newEmp = { ...newEmployee };
-    try {
-      const response = await GlobalAxios.post("/employee", newEmp);
-      console.log(response.data);
-      if (response.data.status === "success") {
-        setEmployees([...employees, newEmp]);
-        setNewEmployee({ name: "", position: "", email: "", status: "" });
-        setIsModalOpen(false)
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleEditSubmit = async () => {
-    try {
-      const response = await GlobalAxios.put(`/employee/${selectedEmployee._id}`, selectedEmployee);
-      if (response.data.status === "success") {
-        console.log(response.data);
-        setEmployees(
-          employees.map((emp) => (emp._id === selectedEmployee._id ? selectedEmployee : emp))
-        );
-        setIsEditModalOpen(false);
-        setSelectedEmployee(null);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <>
-
       <div className="space-y-6 my-4">
         <div className="w-full flex justify-between px-3">
           <h1 className="text-2xl font-semibold text-[#4BCBEB]">Employees</h1>
@@ -135,20 +85,28 @@ const Employees = () => {
             <table className="w-full border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-[#1BCFB4] text-white">
+                  <th className="border border-gray-300 p-2">S.No</th>
                   <th className="border border-gray-300 p-2">Name</th>
                   <th className="border border-gray-300 p-2">Position</th>
                   <th className="border border-gray-300 p-2">Email</th>
                   <th className="border border-gray-300 p-2">Status</th>
+                  <th className="border border-gray-300 p-2">Department</th>
                   <th className="border border-gray-300 p-2">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {employees?.map((employee) => (
-                  <tr key={employee.id} className="hover:bg-gray-100">
-                    <td className="border border-gray-300 p-2">{employee.name}</td>
-                    <td className="border border-gray-300 p-2">{employee.position}</td>
-                    <td className="border border-gray-300 p-2">{employee.email}</td>
-                    <td className="border border-gray-300 p-2">{employee.status}</td>
+                  <tr key={employee._id} className="hover:bg-gray-100">
+                    <td className="border border-gray-300 p-2">{employee.employee_id}</td>
+                    <td className="border border-gray-300 p-2">
+                      <NavLink to={`${employee._id}`} className="text-[#1BCFB4] hover:text-[#0E7490]">
+                      {employee.employee_name}
+                      </NavLink>
+                      </td>
+                    <td className="border border-gray-300 p-2">{employee.designation}</td>
+                    <td className="border border-gray-300 p-2">{employee.employee_email}</td>
+                    <td className="border border-gray-300 p-2">{employee.employee_status}</td>
+                    <td className="border border-gray-300 p-2">{employee.department}</td>
                     <td className="border border-gray-300 p-2 text-center">
                       <button
                         onClick={() => handleEdit(employee)}
@@ -172,72 +130,8 @@ const Employees = () => {
             </table>
           )
         }
-        {isModalOpen && (
-          <EmployeeModal
-            employee={newEmployee}
-            onClose={() => setIsModalOpen(false)}
-            onSubmit={handleSubmit}
-            onChange={handleModalChange}
-          />
-        )}
-        {isEditModalOpen && (
-          <EmployeeModal
-            employee={selectedEmployee}
-            onClose={() => setIsEditModalOpen(false)}
-            onSubmit={handleEditSubmit}
-            onChange={handleModalChange}
-          />
-        )}
       </div>
     </>
-  );
-};
-
-const EmployeeModal = ({ employee, onClose, onSubmit, onChange }) => {
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg space-y-4 max-w-lg w-full">
-        <h2 className="text-xl font-semibold text-[#4BCBEB]">
-          {employee._id ? "Edit Employee" : "Add New Employee"}
-        </h2>
-        <div className="space-y-3">
-          {["name", "position", "email"].map((field) => (
-            <input
-              key={field}
-              type="text"
-              name={field}
-              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-              value={employee[field] || ""}
-              onChange={onChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
-            />
-          ))}
-          <select
-            name="status"
-            value={employee.status || ""}
-            onChange={onChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#A05AFF]">
-            <option value="" disabled>Select Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            </select>
-        </div>
-        <div className="flex justify-end space-x-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onSubmit}
-            className="px-4 py-2 bg-[#1BCFB4] text-white rounded hover:bg-[#4BCBEB]"
-          >
-            Submit
-          </button>
-        </div>
-      </div>
-    </div>
   );
 };
 
