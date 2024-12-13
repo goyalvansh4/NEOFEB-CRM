@@ -70,10 +70,10 @@ const Employees = () => {
     <>
       <div className="space-y-6 my-4">
         <div className="w-full flex justify-between px-3">
-          <h1 className="text-2xl font-semibold text-[#4BCBEB]">Employees</h1>
+          <h1 className="text-2xl font-semibold text-[#1BCFB4]">Employees</h1>
           <button
             onClick={handleAdd}
-            className="px-4 py-2 bg-[#A05AFF] text-white rounded-lg hover:bg-[#9E58FF] flex items-center"
+            className="px-4 py-2 bg-[#1BCFB4] text-white rounded-lg hover:bg-[#1BCFB4] flex items-center"
           >
             <FaPlus className="mr-2" /> Add New
           </button>
@@ -82,7 +82,7 @@ const Employees = () => {
           employees.length === 0 ? (
             <p className="text-xl text-center text-gray-500">No Data Found</p>
           ) : (
-            <table className="w-full border-collapse border border-gray-300">
+            <table className="w-full border-collapse rounded-lg overflow-hidden shadow-md">
               <thead>
                 <tr className="bg-[#1BCFB4] text-white">
                   <th className="border border-gray-300 p-2">S.No</th>
@@ -107,20 +107,20 @@ const Employees = () => {
                     <td className="border border-gray-300 p-2">{employee.employee_email}</td>
                     <td className="border border-gray-300 p-2">{employee.employee_status}</td>
                     <td className="border border-gray-300 p-2">{employee.department}</td>
-                    <td className="border border-gray-300 p-2 text-center">
+                    <td className="flex gap-2 justify-center border-b border-gray-300 px-2 py-4 text-center">
                       <button
                         onClick={() => handleEdit(employee)}
                         className="text-[#A05AFF] hover:text-[#9E58FF] text-xl mr-2"
                         aria-label="Edit"
                       >
-                        <FaEdit />
+                        <FaEdit size={20} />
                       </button>
                       <button
                         onClick={() => handleDelete(employee._id)}
                         className="text-[#FE9496] hover:text-red-700 text-xl"
                         aria-label="Delete"
                       >
-                        <FaTrash />
+                        <FaTrash size={20} />
                       </button>
                     </td>
 

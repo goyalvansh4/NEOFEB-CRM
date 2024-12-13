@@ -20,6 +20,7 @@ const HsnRoute = require("./Routes/HsnRoute");
 const CompanyBillRoute = require("./Routes/CompanyBillRoute");
 const ProjectRoute = require("./Routes/ProjectRoute");
 const EmployeesRoute = require("./Routes/EmployeesRoute");
+const AssignProjectRoute = require("./Routes/AssignProjectRoute");
 
 
 
@@ -42,6 +43,7 @@ app.use(`${baseURL}/hsn`, HsnRoute);
 app.use(`${baseURL}/companyBill`, CompanyBillRoute);
 app.use(`${baseURL}/project`, ProjectRoute);
 app.use(`${baseURL}/employees`, EmployeesRoute);
+app.use(`${baseURL}/assignProject`, AssignProjectRoute);
 
 
 app.listen(PORT,'0.0.0.0', () => {

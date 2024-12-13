@@ -23,7 +23,7 @@ const getProjects = async (req, res) => {
 const getProject = async (req, res) => {
     const { id: _id } = req.params;
     try {
-        const project = await project.findById(_id);
+        const project = await project.findById(_id).populate('client_id').populate('assigned_to');
         res.status(200).json({ status: "success", msg: "Project Fetched SuccessFully", data: project });
     } catch (error) {
         res.status(404).json({ message: error.message });

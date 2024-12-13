@@ -4,11 +4,11 @@ const Schema = mongoose.Schema;
 const projectSchema = new Schema({
   project_name: {type: String,required: true},
   project_status: {type: String,required: true},
-  client_id: {type: String,required: true},
-  assigned_to: {type: Array,required: true},
-  price: {type:Number },
+  client_id: {type:mongoose.Schema.Types.ObjectId, ref: 'Client'},
+  assigned_to: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Employee' }],
+  price: {type:Number,required: true},
   start_date: {type:String},
-  deadline: {type:String,required: true},
+  deadline: {type:String},
   duration: {type:String},
 
 },{timestamps:true});
