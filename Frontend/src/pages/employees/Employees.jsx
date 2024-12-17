@@ -4,6 +4,7 @@ import GlobalAxios from "../../../Global/GlobalAxios";
 import Swal from 'sweetalert2';
 import { FaFolderPlus } from "react-icons/fa";
 import { NavLink, useNavigate } from 'react-router-dom';
+import { CgSpinner } from "react-icons/cg";
 
 
 const Employees = () => {
@@ -78,7 +79,10 @@ const Employees = () => {
             <FaPlus className="mr-2" /> Add New
           </button>
         </div>
-        {loading ? <p className="text-xl text-center text-gray-500">Loading...</p> :
+        {loading ? 
+          <div className="min-h-screen  flex items-center justify-center">
+            <CgSpinner className="text-4xl text-gray-800 animate-spin" />
+            </div>:
           employees.length === 0 ? (
             <p className="text-xl text-center text-gray-500">No Data Found</p>
           ) : (
@@ -95,9 +99,9 @@ const Employees = () => {
                 </tr>
               </thead>
               <tbody>
-                {employees?.map((employee) => (
+                {employees?.map((employee,index) => (
                   <tr key={employee._id} className="hover:bg-gray-100">
-                    <td className="border border-gray-300 p-2">{employee.employee_id}</td>
+                    <td className="border border-gray-300 p-2">{index+1}</td>
                     <td className="border border-gray-300 p-2">
                       <NavLink to={`${employee._id}`} className="text-[#1BCFB4] hover:text-[#0E7490]">
                       {employee.employee_name}

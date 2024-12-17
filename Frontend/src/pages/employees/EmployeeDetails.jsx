@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import GlobalAxios from "../../../Global/GlobalAxios";
+import { CgSpinner } from "react-icons/cg";
 import { useParams } from "react-router-dom";
 import {
   FaUserTie,
@@ -13,11 +14,14 @@ import {
   FaMapMarkerAlt,
   FaRegCalendarCheck,
 } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const EmployeeDetails = () => {
   const { id } = useParams();
   const [employee, setEmployee] = useState({});
   const [projects, setProjects] = useState([]);
+  const [showMessage, setShowMessage] = useState(false);
+
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -29,7 +33,7 @@ const EmployeeDetails = () => {
       }
     };
     fetchEmployee();
-  }, [id]);
+  }, [id,employee]);
 
 
   useEffect(() => {
@@ -47,7 +51,7 @@ const EmployeeDetails = () => {
   if (!employee) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg font-semibold text-purple-600">Loading Employee Details...</p>
+        <CgSpinner className="text-4xl text-gray-800 animate-spin" />
       </div>
     );
   }
@@ -156,16 +160,25 @@ const EmployeeDetails = () => {
   <form
     onSubmit={async (e) => {
       e.preventDefault();
-      const {value } = e.target.project;
-      console.log(value);
-      // return;
-      
-      employee.projects.push(value);
+      const { value } = e.target.project;
+      if(employee.projects && employee.projects.find((project) => project._id === value)){
+        setShowMessage(true);
+        return;
+      }
+      else{
+        setShowMessage(false);
+      }
       try {
-        await GlobalAxios.put(`/employees/${id}`, employee);
+        const res = await GlobalAxios.post(`/assignProject/assignProject`, {
+          empId: id,
+          projectId: value,
+        });
+        if(res.data.status === "success"){
+          toast.success("Project assigned successfully");
+          const response = await GlobalAxios.get(`/employees/${id}`);
+          setEmployee(response.data.data);
+        }
         // Fetch the updated employee details
-        const response = await GlobalAxios.get(`/employees/${id}`);
-        setEmployee(response.data.data);
       } catch (error) {
         console.error(error);
       }
@@ -188,6 +201,7 @@ const EmployeeDetails = () => {
       </button>
     </div>
   </form>
+  {showMessage && <p className="text-red-500 mt-2">Project already assigned to the employee.Please select another one.</p>}
 </div>
 
     {/* Assign project to the employee */}
@@ -197,9 +211,10 @@ const EmployeeDetails = () => {
         {employee.projects && employee.projects.length > 0 ? (
           employee.projects.map((project) => (
             <div key={project._id} className="border rounded-lg p-4 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-800">{project.name}</h3>
-              <p className="text-sm text-gray-500">{project.description}</p>
+              <h3 className="text-lg font-semibold text-gray-800">{project.project_name}</h3>
+              <p className="text-sm text-gray-500">Start Date: {new Date(project.start_date).toLocaleDateString()}</p>
               <p className="text-sm text-gray-500">Deadline: {new Date(project.deadline).toLocaleDateString()}</p>
+              <p className="text-sm text-gray-500">Duration: {project.duration}</p>
             </div>
           ))
         ) : (

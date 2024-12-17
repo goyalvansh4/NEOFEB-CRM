@@ -3,20 +3,25 @@ import { useParams } from "react-router-dom";
 import GlobalAxios from "../../../Global/GlobalAxios";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { CgSpinner } from "react-icons/cg";
 
 const InvoiceDetails = () => {
   const [invoice, setInvoice] = useState(null);
   const { id } = useParams();
   const printRef = useRef();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchInvoiceDetails = async () => {
       try {
+        setLoading(true);
         const response = await GlobalAxios.get(`/invoice/${id}`);
         if (response.data.status === "success") {
+          setLoading(false);
           setInvoice(response.data.data);
         }
       } catch (error) {
+        setLoading(false);
         console.error(error);
       }
     };
@@ -67,6 +72,7 @@ const InvoiceDetails = () => {
         </button>
       </div>
 
+   {loading ? <CgSpinner className="text-4xl text-purple-600 mx-auto mt-8 animate-spin" /> : 
     <div ref={printRef} className="max-w-4xl mx-auto bg-white p-8 shadow-lg border border-gray-200 mt-8">
       {/* Header Section */}
       <div className="flex justify-between items-center border-b pb-4 mb-6">
@@ -147,12 +153,13 @@ const InvoiceDetails = () => {
           </tbody>
         </table>
       </div>
-
+  
       {/* Total Amount */}
       <div className="text-right">
         <h3 className="text-lg font-semibold text-gray-800">Total Amount: ₹{totalAmount}</h3>
       </div>
     </div>
+}
   </>
   );
 };

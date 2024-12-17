@@ -15,6 +15,7 @@ import {
   getCoreRowModel,
   flexRender,
 } from "@tanstack/react-table";
+import { CgSpinner } from "react-icons/cg";
 import { NavLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
@@ -201,7 +202,7 @@ export function Clients() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-96">
-        <Spinner className="h-12 w-12 text-indigo-500" />
+        <CgSpinner className="text-4xl text-purple-600 animate-spin" />
       </div>
     );
   }

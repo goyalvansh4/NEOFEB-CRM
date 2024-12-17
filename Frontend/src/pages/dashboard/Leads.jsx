@@ -14,6 +14,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { fetchLeads } from "../../Api/LeadsApi";
 import GlobalAxios from "../../../Global/GlobalAxios";
 import Swal from "sweetalert2";
+import { CgSpinner } from "react-icons/cg";
 
 export function Leads() {
 

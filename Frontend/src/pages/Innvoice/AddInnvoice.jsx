@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast, Toaster } from 'react-hot-toast';
 import GlobalAxios from '../../../Global/GlobalAxios';
-
+import { CgSpinner } from "react-icons/cg";
 import {
   Button,
   Input,
@@ -42,6 +42,7 @@ export default function AddInvoice({ length, setHideForm }) {
     gstNumber: '',
   });
   const [loading, setLoading] = useState(false);
+  const [btnloading, setBtnLoading] = useState(false);
   const [HSN, setHSN] = useState([]);
   const [hsnCode, setHsnCode] = useState({
     hsn: "",
@@ -125,7 +126,8 @@ export default function AddInvoice({ length, setHideForm }) {
       });
     }
   };
-console.log(length);
+
+
   const handleClientChange = (e) => {
     const selectedClient = client.filter((c) => c.name === e);
     if (selectedClient) {
@@ -170,14 +172,17 @@ console.log(length);
   };
 
   const handleHsnSubmit = async (e) => {
+    
     e.preventDefault();
     try {
       const response = await GlobalAxios.post("/hsn", hsnCode);
       if (response.data.status === 'success') {
+        setBtnLoading(false);
         toast.success(response.data.msg);
         setOpen(false);
       }
     } catch (error) {
+      setBtnLoading(false);
       console.log(error);
     }
   }
@@ -245,7 +250,6 @@ console.log(length);
   };
 
   const handleSubmit = async () => {
-    console.log(formValues);
     const total = calculateGrandTotal();
     if(formValues.invoice_date === ""){
       formValues.invoice_date = new Date().toISOString().split('T')[0];
@@ -425,7 +429,7 @@ console.log(length);
             <Input
               label="Client's Country"
               name="clientCountry"
-              value={clientDetails.country}
+              value={clientDetails.country ? clientDetails.country : "India"}
               onChange={handleClientChange}
               required
             />
@@ -485,11 +489,12 @@ console.log(length);
                   ))}
                 </select>
 
-
+                
                 <button
                   onClick={handleClickOpen}
+                  disabled={btnloading}
                   className="rounded-xl text-[12px] py-1 px-2 bg-green-500 text-white">
-                  Add HSN
+                 {btnloading ? <CgSpinner /> : "Add HSN"} 
                 </button>
               </div>
               <Input
@@ -575,13 +580,7 @@ console.log(length);
             Discard
           </Button>
           <div className="flex gap-6">
-            <Button
-              style={{ backgroundColor: "#1BCFB4" }}
-              onClick={() => handleSubmit("Draft")}
-            >
-              Save as Draft
-            </Button>
-            {loading ? <i className="fas fa-spinner fa-spin"></i> :
+            {loading ? <CgSpinner className="text-2xl text-puple-800 animate-spin" /> :
               <Button
                 style={{ backgroundColor: "#4BCBEB" }}
                 onClick={() => handleSubmit()}
@@ -628,6 +627,25 @@ console.log(length);
               </select>
               <button type="submit" className="rounded-xl text-[18px] py-1 px-2 bg-green-500 text-white">Add HSN</button>
             </form>
+
+            <ul className="mt-4">
+              {HSN.map((hsn) => 
+              <div className="flex justify-between border-b py-2 gap-2">
+               <li className=" text-black">{hsn.hsn} - {hsn.percent}%</li>
+               <button className="bg-red-500 text-sm text-white rounded-xl py-1 px-2" onClick={() => {
+                  setBtnLoading(true);
+                  GlobalAxios.delete(`/hsn/${hsn._id}`).then((response) => {
+                    if(response.data.status === 'success'){
+                      setBtnLoading(false);
+                      toast.success(response.data.msg);
+                    }
+                  }).catch((error) => {
+                    console.log(error);
+                  })
+               }}>Delete</button>
+               </div>
+                )}
+            </ul>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="secondary">

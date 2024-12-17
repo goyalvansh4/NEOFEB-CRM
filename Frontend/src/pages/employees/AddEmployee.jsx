@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import toast, {Toaster} from 'react-hot-toast';
 import { FaUserTie, FaEnvelope, FaMobileAlt} from "react-icons/fa";
 import GlobalAxios from "../../../Global/GlobalAxios";
+import { CgSpinner } from "react-icons/cg";
 
 
 
@@ -24,19 +25,23 @@ const AddEmployee = () => {
     feedback: "",
     skills: [],
   });
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  
   const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
+    // console.log("Form Data Submitted:", formData);
+    setLoading(true);
     try {
       const response = await GlobalAxios.post("/employees", formData);
       if (response.data.status === "success") {
         toast.success("Employee added successfully");
+        setLoading(false);
         setFormData({
           employee_id: "",
           employee_name: "",
@@ -57,9 +62,12 @@ const AddEmployee = () => {
         });
       }
     } catch (error) {
+      toast.error("Error adding employee");
+      setLoading(false);
       console.error(error);
     }
   };
+  
 
   return (
     <div className="min-h-screen  flex items-center justify-center">
@@ -236,12 +244,17 @@ const AddEmployee = () => {
 
           {/* Submit Button */}
           <div className="col-span-1 md:col-span-2">
-            <button
-              type="submit"
-              className="w-full bg-purple-500 text-white font-semibold py-3 rounded-lg shadow-md hover:bg-purple-600 transition duration-300"
-            >
-              Add Employee
-            </button>
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <CgSpinner className="animate-spin h-6 w-6 mr-2 text-purple-600" />
+                <span className="text-purple-600">Adding Employee...</span>
+              </div>
+            ) : <button
+            type="submit"
+            className="w-full bg-purple-500 text-white font-semibold py-3 rounded-lg shadow-md hover:bg-purple-600 transition duration-300"
+          >
+            Add Employee
+          </button>}
           </div>
         </form>
       </div>

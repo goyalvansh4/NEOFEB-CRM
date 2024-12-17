@@ -20,6 +20,7 @@ import InvoiceDetails from "../pages/Innvoice/InvoiceDetails";
 import AddEmployee from "../pages/employees/AddEmployee";
 import EmployeeDetails from "../pages/employees/EmployeeDetails";
 import AddProject from "../pages/Projects/AddProject";
+import ProjectDetails from "../pages/Projects/ProjectDetails";
 
 
 export function Dashboard() {
@@ -61,6 +62,7 @@ export function Dashboard() {
                   <Route path="employees/addEmployee" element={<AddEmployee />} />
                   <Route path="employees/:id" element={<EmployeeDetails />} />
                   <Route path="/projects/addProject" element={<AddProject />} />
+                  <Route path="/projects/:id" element={<ProjectDetails />} />
                 </Routes>
               </ProtectedRoute>
             }

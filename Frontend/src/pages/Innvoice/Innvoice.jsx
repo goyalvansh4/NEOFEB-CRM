@@ -19,12 +19,16 @@ import AddInvoice from './AddInnvoice';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import { DateTime } from "luxon";
 import { NavLink } from 'react-router-dom';
+import { CgSpinner } from 'react-icons/cg';
 
 
 
 const Invoice = () => {
   
   const [length, setLength] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [addBtnLoading, setAddBtnLoading] = useState(false);
+  const [editBtnLoading, setEditBtnLoading] = useState(false);
   const [data, setData] = useState([]);
   const [hideForm, setHideForm] = useState(true);
   const [showStatusModal, setShowStatusModal] = useState(false);
@@ -34,13 +38,16 @@ const Invoice = () => {
 
   useEffect(() => {
     const fetchInvoices = async () => {
+      setLoading(true);
       try {
         const response = await GlobalAxios.get('/invoice');
          if(response.data.status === 'success') {
+        setLoading(false);
         setData(response.data.data);
         setLength(Number(response.data.data.length));
         }
       } catch (error) {
+        setLoading(false);
         console.error(error);
       }
     };
@@ -77,19 +84,26 @@ const Invoice = () => {
   const handleAddStatus = async () => {
     if (statusText.trim() === '') return;
     try {
+      setAddBtnLoading(true);
       const response = await GlobalAxios.post('/invoiceStatus', { invoiceStatus: statusText }); // Assuming there's an API endpoint to add status
-      setStatusList((prevStatuses) => [...prevStatuses, response.data.data]);
-      setStatusText('');
+      if(response.data.status === 'success') {
+        console.log('Status added successfully');
+        setStatusList((prevStatuses) => [...prevStatuses, response.data.data]);
+        setStatusText('');
+        setAddBtnLoading(false);
+      }
     } catch (error) {
+      setAddBtnLoading(false);
       console.error(error);
     }
   };
 
   const handleEditStatus = async (id, newStatus) => {
     try {
+      setEditBtnLoading(true);
       const response = await GlobalAxios.put(`/invoiceStatus/${id}`, { invoiceStatus: newStatus }); // Assuming there's an API endpoint to update status
       if(response.data.status === 'success') {
-        console.log('Status updated successfully');
+        setEditBtnLoading(false);
         setStatusList((prevStatuses) =>
           prevStatuses.map((status) =>
             status._id === id ? { ...status, invoiceStatus: newStatus } : status
@@ -99,6 +113,7 @@ const Invoice = () => {
         setEditingStatusId(null);
       }
     } catch (error) {
+      setEditBtnLoading(false);
       console.error(error);
     }
   };
@@ -179,7 +194,7 @@ const Invoice = () => {
                   Invoices
                 </Typography>
                 <Typography variant="small" className="text-gray-900">
-                  {/* There are {data.length} total invoices */}
+                  There are {data.length} total invoices
                 </Typography>
               </div>
               <div className="flex gap-2">
@@ -206,6 +221,7 @@ const Invoice = () => {
                     <Option value="pending">Pending</Option>
                   </Select>
                 </div>
+                {loading ? <CgSpinner className="text-4xl text-purple-800 animate-spin" /> : 
                 <table className="min-w-full divide-y divide-[#4BCBEB]">
                   <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -243,7 +259,7 @@ const Invoice = () => {
                       </tr>
                     ))}
                   </tbody>
-                </table>
+                </table>}
               </CardBody>
             </Card>
           </div>
@@ -272,12 +288,15 @@ const Invoice = () => {
               onChange={handleStatusChange}
               required
             />
-            <Button
+            <div className="flex justify-end gap-3">
+              {(addBtnLoading || editBtnLoading) ? <CgSpinner className="text-purple-600 animate-spin" /> : <Button
               type="submit"
               className="bg-[#9E58FF] text-white mt-5"
             >
               {editingStatusId ? 'Update Status' : 'Submit'}
-            </Button>
+            </Button>}
+              </div>
+            
           </form>
           <div className="mt-4">
             <Typography variant="h6">Previous Statuses:</Typography>

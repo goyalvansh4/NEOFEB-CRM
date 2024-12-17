@@ -15,6 +15,9 @@ import {
   XMarkIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/solid";
+import { CgSpinner } from "react-icons/cg";
+
+
 
 export function  Deals () {
   const dealsData = [
