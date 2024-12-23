@@ -1,5 +1,4 @@
 require('dotenv').config();
-import Employees from './../Frontend/src/pages/employees/Employees';
 const express = require('express');
 const app = express();
 const cors = require("cors");

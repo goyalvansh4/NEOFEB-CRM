@@ -1,42 +1,46 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-// Base URL setup
-// const apiUrl = "https://neofeb-crm.onrender.com/api/v1";
-const apiUrl = "http://192.168.0.121:3000/api/v1";
+
+// Base URL setup for ngrok backend
+const apiUrl = "https://room-answering-attending-deaths.trycloudflare.com/api/v1";
+
+
 
 const GlobalAxios = axios.create({
   baseURL: apiUrl,
   headers: {
-    Authorization: `Bearer ${Cookies.get("token")}`, 
-    Accept: "application/json",
-    "Content-Type": "application/json", // Ensuring JSON content type
+    Accept: "application/json", // Ensuring JSON content type
+    "Content-Type": "application/json",
   },
 });
 
-// Adding a request interceptor to log errors or track requests
+// Adding a request interceptor to dynamically attach the token
 GlobalAxios.interceptors.request.use(
   (config) => {
-    // You can log or modify request before it is sent
-    //console.log("Request made with: ", config);
+    const token = Cookies.get("token"); // Dynamically fetch token
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
-    // Handle request error
-    //console.error("Request error: ", error);
+    console.error("Request error: ", error);
     return Promise.reject(error);
   }
 );
 
-// Adding a response interceptor to handle errors
+// Adding a response interceptor to handle responses and errors
 GlobalAxios.interceptors.response.use(
   (response) => {
-    // Log successful responses
-    //console.log("Response received: ", response);
     return response;
   },
   (error) => {
-    // Handle response error
-    //console.error("Response error: ", error.response || error.message);
+    if (error.response) {
+      // Debugging error response
+      console.error("Response error: ", error.response.data);
+    } else {
+      console.error("Request failed: ", error.message);
+    }
     return Promise.reject(error);
   }
 );
