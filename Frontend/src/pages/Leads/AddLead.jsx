@@ -29,7 +29,9 @@ export function AddLead() {
     source: "",
     sourceDetails: "",
     notes: "",
-    moreAboutSource: "",
+    follow_up_date: "",
+    remarks: "",
+    leadStatus: "",
   });
 
   useEffect(() => {
@@ -84,7 +86,18 @@ export function AddLead() {
     mutationFn: addLead,
     onSuccess: () => {
       queryClient.invalidateQueries(["leadsData"]);
-      setFormData({ name: "", companyName: "", email: "", phone: "", source: "", notes: "", moreAboutSource: "" });
+      setFormData({
+        leadName: "",
+        companyName: "",
+        email: "",
+        phone: "",
+        source: "",
+        sourceDetails: "",
+        notes: "",
+        follow_up_date: "",
+        remarks: "",
+        leadStatus: "",
+      });
     },
   });
 
@@ -284,7 +297,7 @@ export function AddLead() {
               >
                 <option value="">Select Source</option>
                 {sources?.map((source) => (
-                  <option key={source.id} value={source.id}>
+                  <option key={source._id} value={source._id}>
                     {source.name}
                   </option>
                 ))}

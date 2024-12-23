@@ -29,6 +29,7 @@ const Projects = () => {
       setLoading(true);
       try {
         const response = await GlobalAxios.get("/project");
+        // console.log(response.data.data);
         setProjects(response.data.data);
         setLoading(false);
       } catch (error) {

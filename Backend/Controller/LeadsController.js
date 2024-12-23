@@ -60,12 +60,11 @@ const addLead = async (req, res) => {
 // Update an existing lead
 const updateLead = async (req, res) => {
   const { id } = req.params;
-  const { leadName, companyName, email, phone, source, sourceDetails, notes } = req.body;
-
+  const leadData = req.body;
   try {
     const updatedLead = await Leads.findByIdAndUpdate(
       id,
-      { leadName, companyName, email, phone, source, sourceDetails, notes },
+      { ...leadData },
       { new: true }
     );
     if (!updatedLead) return res.status(404).json({ message: 'Lead not found' });

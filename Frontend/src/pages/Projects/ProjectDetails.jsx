@@ -82,8 +82,6 @@ const ProjectDetails = () => {
             <ul className="list-disc list-inside text-gray-600">
               {project.assigned_to.map((member) => (
                 <li key={member._id} className="mb-2">Team Member: {member.employee_name}</li>
-                
-                
               ))}
             </ul>
           ) : (
