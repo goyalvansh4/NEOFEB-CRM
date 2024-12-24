@@ -7,8 +7,12 @@ const FollowUp = () => {
   useEffect(() => {
     const fetchFollowUpLeads = async () => {
       try {
-        const response = await GlobalAxios.get('/leads-follow-up');
-        setFollowUpLeads(response.data.data);
+        const response = await GlobalAxios.get('/lead');
+        if(response.data.status === 'success') {
+          const leads = response.data.data;
+          const followUpLeads = leads.filter(lead => lead.follow_up_date === new Date().toISOString().split('T')[0]);
+          setFollowUpLeads(followUpLeads);
+        }
       } catch (error) {
         console.error('Error fetching follow-up leads:', error);
       }
@@ -25,7 +29,7 @@ const FollowUp = () => {
           <th className="border border-gray-200 px-4 py-2 font-semibold text-left">S.No</th>
             <th className="border border-gray-200 px-4 py-2 font-semibold text-left">Name</th>
             <th className="border border-gray-200 px-4 py-2 font-semibold text-left">Company Name</th>
-            <th className="border border-gray-200 px-4 py-2 font-semibold text-left">Lead Source</th>
+            <th className="border border-gray-200 px-4 py-2 font-semibold text-left">Email</th>
             <th className="border border-gray-200 px-4 py-2 font-semibold text-left">Lead Status</th>
             
           </tr>
@@ -35,10 +39,10 @@ const FollowUp = () => {
             followUpLeads.map((lead,index) => (
               <tr key={lead.id} className="hover:bg-gray-50">
                 <td className="border border-gray-200 px-4 py-2">{index+1}</td>
-                <td className="border border-gray-200 px-4 py-2">{lead.name}</td>
-                <td className="border border-gray-200 px-4 py-2">{lead.company_name}</td>
+                <td className="border border-gray-200 px-4 py-2">{lead.leadName}</td>
+                <td className="border border-gray-200 px-4 py-2">{lead.companyName}</td>
                 <td className="border border-gray-200 px-4 py-2">{lead.email}</td>
-                <td className="border border-gray-200 px-4 py-2">{lead.mobile}</td>
+                <td className="border border-gray-200 px-4 py-2">{lead.leadStatus.leadStatus}</td>
               </tr>
             ))
           ) : (

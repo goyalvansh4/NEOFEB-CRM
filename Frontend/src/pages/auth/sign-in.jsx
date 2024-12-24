@@ -7,6 +7,7 @@ export function SignIn() {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false); // State for loading spinner
 
   const [otp, setOtp] = useState(""); // State for OTP
   const [isOtpSent, setIsOtpSent] = useState(false); // State to toggle OTP field
@@ -15,18 +16,22 @@ export function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); // Clear errors
-    console.log("Sending OTP to user email");
+    setLoading(true); // Enable loading spinner
     try {
       const response = await GlobalAxios.post("/admin/login", formData);
       if (response.data.status === "success") {
         console.log(response.data);
         setIsOtpSent(true); // Enable OTP input field
+        setError(""); // Clear errors
+        setLoading(false); // Disable loading spinner
       } else {
         setError("Failed to send OTP. Please try again.");
+        setLoading(false); // Disable loading spinner
       }
     } catch (err) {
       console.error(err);
       setError("An error occurred. Please try again.");
+      setLoading(false); // Disable loading spinner
     }
   };
 
@@ -119,6 +124,7 @@ export function SignIn() {
             <input
               type="checkbox"
               id="terms"
+              required
               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
             <label
@@ -133,9 +139,10 @@ export function SignIn() {
           </div>
           <button
             type="submit"
+             disabled={loading}
             className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
           >
-            {isOtpSent ? "Verify OTP" : "Send OTP"}
+            {isOtpSent ? "Verify OTP" : (loading) ? "Sending" : "Send OTP"}
           </button>
           <div className="text-center mt-4">
             <a

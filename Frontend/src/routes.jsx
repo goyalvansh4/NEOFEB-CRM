@@ -2,10 +2,9 @@ import {
   HomeIcon,
   UserCircleIcon,
   TableCellsIcon,
-  InformationCircleIcon,
   ServerStackIcon,
-  RectangleStackIcon,
 } from "@heroicons/react/24/solid";
+import { RiBillFill } from "react-icons/ri";
 import { FaFolderPlus } from "react-icons/fa";
 
 import { FaReceipt, FaPeopleLine  } from "react-icons/fa6";
@@ -18,6 +17,7 @@ import Innvoice from "./pages/Innvoice/Innvoice";
 import Employees from "./pages/employees/Employees";
 import ManageBillFrom from "./pages/Account/ManageBillFrom";
 import Projects from "./pages/Projects/Projects";
+import Statements from "./pages/Statements/Statements";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -77,6 +77,13 @@ export const routes = [
         name: "projects",
         path: "/projects",
         element: <Projects />,
+        
+      },
+      {
+        icon: <RiBillFill {...icon} />,
+        name: "statements",
+        path: "/statements",
+        element: <Statements />,
         
       },
     ],

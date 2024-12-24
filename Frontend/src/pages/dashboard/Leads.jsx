@@ -209,7 +209,7 @@ export function Leads() {
                   <td className="px-4 flex gap-2 text-sm text-gray-800">
                     <button
                       className="text-[18px] text-blue-500 px-2 py-1 rounded-lg"
-                      onClick={() => navigate(`/dashboard/editLead/${row.original._id}`)}
+                      onClick={() => navigate(`editLead/${row.original._id}`)}
                     >
                       <MdEdit />
                     </button>

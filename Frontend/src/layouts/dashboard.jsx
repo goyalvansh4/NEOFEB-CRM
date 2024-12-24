@@ -21,6 +21,7 @@ import AddEmployee from "../pages/employees/AddEmployee";
 import EmployeeDetails from "../pages/employees/EmployeeDetails";
 import AddProject from "../pages/Projects/AddProject";
 import ProjectDetails from "../pages/Projects/ProjectDetails";
+import EditLead from "../pages/Leads/EditLead";
 
 
 export function Dashboard() {
@@ -53,6 +54,7 @@ export function Dashboard() {
                       ))
                   )}
                   <Route path="/leads/:id" element={<LeadDetails />} />
+                  <Route path="/leads/editLead/:id" element={<EditLead />} />
                   <Route path="/addlead" element={<AddLead />} />
                   <Route path="/followUp" element={<FollowUp />} />
                   <Route path="/addClient" element={<AddClient />} />
