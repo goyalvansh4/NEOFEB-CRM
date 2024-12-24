@@ -221,7 +221,7 @@ const Invoice = () => {
                     <Option value="pending">Pending</Option>
                   </Select>
                 </div>
-                {loading ? <CgSpinner className="text-4xl text-purple-800 animate-spin" /> : 
+                {loading ? <div className='w-full flex justify-center'><CgSpinner className="text-4xl text-center text-purple-800 animate-spin" /></div> : 
                 <table className="min-w-full divide-y divide-[#4BCBEB]">
                   <thead>
                     {table.getHeaderGroups().map((headerGroup) => (

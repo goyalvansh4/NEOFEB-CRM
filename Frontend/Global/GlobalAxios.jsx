@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 // Base URL setup for ngrok backend
-const apiUrl = "https://evaluate-clearly-solo-near.trycloudflare.com/api/v1";
+const apiUrl = "https://loc-albany-princess-fp.trycloudflare.com/api/v1";
 
 
 

@@ -76,7 +76,7 @@ export default function AddInvoice({ length, setHideForm }) {
     fetchClients();
     fetchHSN();
     fetchCompanies();
-  }, []);
+  }, [hsnCode]);
 
   useEffect(() => {
     const fetchInvoiceStatus = async () => {
@@ -94,21 +94,21 @@ export default function AddInvoice({ length, setHideForm }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if(name === 'invoice_date'){
-      if(!value){
+    if (name === 'invoice_date') {
+      if (!value) {
         setFormValues({
           ...formValues,
           [name]: new Date().toISOString().split('T')[0],
         });
       }
-      else{
+      else {
         setFormValues({
           ...formValues,
           [name]: value,
         });
       }
     }
-    else{
+    else {
       setFormValues({
         ...formValues,
         [name]: value,
@@ -160,7 +160,7 @@ export default function AddInvoice({ length, setHideForm }) {
       );
     }
   };
-  
+
 
 
   const handleClickOpen = () => {
@@ -172,13 +172,14 @@ export default function AddInvoice({ length, setHideForm }) {
   };
 
   const handleHsnSubmit = async (e) => {
-    
+
     e.preventDefault();
     try {
       const response = await GlobalAxios.post("/hsn", hsnCode);
       if (response.data.status === 'success') {
         setBtnLoading(false);
         toast.success(response.data.msg);
+        setHSN([...HSN, response.data.data]);
         setOpen(false);
       }
     } catch (error) {
@@ -251,7 +252,7 @@ export default function AddInvoice({ length, setHideForm }) {
 
   const handleSubmit = async () => {
     const total = calculateGrandTotal();
-    if(formValues.invoice_date === ""){
+    if (formValues.invoice_date === "") {
       formValues.invoice_date = new Date().toISOString().split('T')[0];
     }
     formValues.invoice_number = length + 1;
@@ -312,7 +313,7 @@ export default function AddInvoice({ length, setHideForm }) {
             name="invoice_date"
             type="date"
             value={formValues.invoice_date || new Date().toISOString().split('T')[0]} // Default to today's date
-            onChange={(e)=>{
+            onChange={(e) => {
               handleInputChange(e)
             }}
             required
@@ -489,12 +490,12 @@ export default function AddInvoice({ length, setHideForm }) {
                   ))}
                 </select>
 
-                
+
                 <button
                   onClick={handleClickOpen}
                   disabled={btnloading}
                   className="rounded-xl text-[12px] py-1 px-2 bg-green-500 text-white">
-                 {btnloading ? <CgSpinner /> : "Add HSN"} 
+                  {btnloading ? <CgSpinner /> : "Add HSN"}
                 </button>
               </div>
               <Input
@@ -594,25 +595,35 @@ export default function AddInvoice({ length, setHideForm }) {
 
       <div>
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Add HSN</DialogTitle>
+          <DialogTitle style={{ color: '#A05AFF', fontWeight: 'bold', textAlign: 'center' }}>Add HSN</DialogTitle>
           <DialogContent>
-            <form onSubmit={handleHsnSubmit} className="flex gap-2 px-2">
-              <input className="rounded-xl border border-gray-500 py-1 px-2" type="text" name="hsn" onChange={(e) => {
-                setHsnCode((prev) => ({
-                  ...prev,
-                  [e.target.name]: e.target.value
-                }))
-              }}
+            <form
+              onSubmit={handleHsnSubmit}
+              className="flex flex-col gap-4 p-4"
+              style={{ backgroundColor: '#F9F9FF', borderRadius: '12px' }}
+            >
+              <input
+                className="rounded-xl border py-2 px-3"
+                style={{ borderColor: '#1BCFB4', outline: 'none', fontSize: '16px' }}
+                type="text"
+                name="hsn"
+                onChange={(e) => {
+                  setHsnCode((prev) => ({
+                    ...prev,
+                    [e.target.name]: e.target.value,
+                  }));
+                }}
                 placeholder="Enter HSN Code"
                 required
               />
               <select
-                className="rounded-xl border border-gray-500 py-1 px-2"
+                className="rounded-xl border py-2 px-3"
+                style={{ borderColor: '#4BCBEB', fontSize: '16px' }}
                 onChange={(e) => {
                   setHsnCode((prev) => ({
                     ...prev,
-                    [e.target.name]: e.target.value
-                  }))
+                    [e.target.name]: e.target.value,
+                  }));
                 }}
                 name="percent"
                 required
@@ -625,34 +636,59 @@ export default function AddInvoice({ length, setHideForm }) {
                 <option value="18">18%</option>
                 <option value="28">28%</option>
               </select>
-              <button type="submit" className="rounded-xl text-[18px] py-1 px-2 bg-green-500 text-white">Add HSN</button>
+              <button
+                type="submit"
+                className="rounded-xl py-2 px-3 text-white"
+                style={{ backgroundColor: '#9E58FF', fontSize: '18px', fontWeight: 'bold' }}
+              >
+                Add HSN
+              </button>
             </form>
 
-            <ul className="mt-4">
-              {HSN.map((hsn) => 
-              <div className="flex justify-between border-b py-2 gap-2">
-               <li className=" text-black">{hsn.hsn} - {hsn.percent}%</li>
-               <button className="bg-red-500 text-sm text-white rounded-xl py-1 px-2" onClick={() => {
-                  setBtnLoading(true);
-                  GlobalAxios.delete(`/hsn/${hsn._id}`).then((response) => {
-                    if(response.data.status === 'success'){
-                      setBtnLoading(false);
-                      toast.success(response.data.msg);
-                    }
-                  }).catch((error) => {
-                    console.log(error);
-                  })
-               }}>Delete</button>
-               </div>
-                )}
+            <ul className="mt-6" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+              {HSN.map((hsn) => (
+                <div
+                  className="flex justify-between items-center border-b py-2 px-3 rounded-lg"
+                  style={{ backgroundColor: '#EFEFFF', borderColor: '#A05AFF' }}
+                  key={hsn._id}
+                >
+                  <li className="text-black font-medium" style={{ fontSize: '16px' }}>
+                    {hsn.hsn} - {hsn.percent}%
+                  </li>
+                  <button
+                    className="rounded-xl text-white py-1 px-3"
+                    style={{ backgroundColor: '#FE9496', fontSize: '14px', fontWeight: 'bold' }}
+                    onClick={() => {
+                      setBtnLoading(true);
+                      GlobalAxios.delete(`/hsn/${hsn._id}`)
+                        .then((response) => {
+                          if (response.data.status === 'success') {
+                            setBtnLoading(false);
+                            setHSN((prev) => prev.filter((item) => item._id !== hsn._id));
+                            toast.success(response.data.msg);
+                          }
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        });
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
             </ul>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="secondary">
+          <DialogActions style={{ justifyContent: 'center' }}>
+            <Button
+              onClick={handleClose}
+              style={{ color: '#A05AFF', fontWeight: 'bold' }}
+            >
               Close
             </Button>
           </DialogActions>
         </Dialog>
+
       </div>
     </>
   );
