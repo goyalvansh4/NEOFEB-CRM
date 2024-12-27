@@ -214,6 +214,31 @@ function LeadDetails() {
           </div>
         </div>
       </div>
+
+
+
+      {/* Convert To Deals */}
+
+      <div>
+         <div className='mx-auto p-8'>
+            <h1 className="text-2xl font-bold text-gray-800" style={{ color: '#A05AFF' }}>
+              Convert To Deals
+            </h1>
+            <div className="bg-white rounded-lg p-6 shadow-md">
+              <form>
+                <input type="text" placeholder="Deal Name" className="border px-3 py-2 rounded w-full mb-4" />
+                <input type="text" placeholder="Deal Source" className="border px-3 py-2 rounded w-full mb-4" />
+                <input type="text" placeholder="Deal Price" className="border px-3 py-2 rounded w-full mb-4" />
+                <button
+                  className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-light transition"
+                  style={{ backgroundColor: '#1BCFB4' }}
+                >
+                  Make Deal
+                </button>
+              </form>
+              </div>
+         </div>
+       </div>
     </div>
   );
 }
