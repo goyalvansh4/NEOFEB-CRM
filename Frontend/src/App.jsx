@@ -7,6 +7,7 @@ import {
 
 // Create a client
 const queryClient = new QueryClient();
+import "./App.css";
 
 function App() {
   return (

@@ -134,7 +134,10 @@ const InvoiceDetails = () => {
               <th className="border border-gray-200 px-4 py-2 text-left text-sm text-gray-700">Description</th>
               <th className="border border-gray-200 px-4 py-2 text-center text-sm text-gray-700">Quantity</th>
               <th className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">Price</th>
-              <th className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">GST(%)</th>
+              <th className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">SubTotal</th>
+              <th className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">IGST</th>
+              <th className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">SGST</th>
+              <th className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">CGST</th>
               <th className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">Total</th>
             </tr>
           </thead>
@@ -146,7 +149,10 @@ const InvoiceDetails = () => {
                 <td className="border border-gray-200 px-4 py-2 text-sm text-gray-700">{item.description}</td>
                 <td className="border border-gray-200 px-4 py-2 text-center text-sm text-gray-700">{item.qty}</td>
                 <td className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">₹{item.price}</td>
-                <td className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">{item.igst ? item.igst : item.sgst+item.cgst}%</td>
+                <td className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">₹{item.price * item.qty}</td>
+                <td className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">₹{(item.igst * (item.price * item.qty))/100} ({item.igst}%)</td>
+                <td className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">₹{(item.sgst * (item.price * item.qty))/100} ({item.sgst}%)</td>
+                <td className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">₹{(item.cgst * (item.price * item.qty))/100} ({item.cgst}%)</td>
                 <td className="border border-gray-200 px-4 py-2 text-right text-sm text-gray-700">₹{item.total}</td>
               </tr>
             ))}
@@ -156,7 +162,7 @@ const InvoiceDetails = () => {
   
       {/* Total Amount */}
       <div className="text-right">
-        <h3 className="text-lg font-semibold text-gray-800">Total Amount: ₹{totalAmount}</h3>
+        <h3 className="text-lg font-semibold text-gray-800">Final Amount: ₹{totalAmount}</h3>
       </div>
     </div>
 }

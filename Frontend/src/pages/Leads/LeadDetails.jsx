@@ -239,6 +239,9 @@ function LeadDetails() {
               </div>
          </div>
        </div>
+
+
+
     </div>
   );
 }

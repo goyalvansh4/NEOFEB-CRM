@@ -1,0 +1,9 @@
+.custom-input {
+  width: 100%; /* Ensure consistent width */
+  transition: none; /* Disable animations on width */
+}
+
+.custom-input:focus-within {
+  outline: none; /* No focus outline */
+  box-shadow: none; /* No shadow changes */
+}

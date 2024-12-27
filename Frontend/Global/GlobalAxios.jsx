@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 const apiUrl = "http://35.223.220.77/api/v1";
 
 
-
 const GlobalAxios = axios.create({
   baseURL: apiUrl,
   headers: {
