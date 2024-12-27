@@ -51,6 +51,10 @@ export default function AddInvoice({ length, setHideForm }) {
   const [selectedHSN, setSelectedHSN] = useState({
     hsn: "",
   });
+  const [showMsg, setShowMsg] = useState({
+    show: false,
+    msg: "",
+  });
 
   useEffect(() => {
 
@@ -190,6 +194,31 @@ export default function AddInvoice({ length, setHideForm }) {
 
   const calculateItemTotal = (item) => {
     const selectedHSN = HSN.find((hsn) => hsn._id === item.hsn);
+    if(!selectedCompany){
+      setShowMsg({
+        show: true,
+        msg: "Please select Company details",
+      });
+    }
+    else if(!clientDetails.id){
+      setShowMsg({
+        show: true,
+        msg: "Please select Client details",
+      });
+    }
+    else if (!selectedHSN){
+      setShowMsg({
+        show: true,
+        msg: "Please select HSN details",
+      });
+    }
+    else{
+      setShowMsg({
+        show: false,
+        msg: "",
+      });
+    }
+
     console.log(selectedHSN);
     const hsnPercent = selectedHSN ? parseFloat(selectedHSN.percent) : 0;
 
@@ -405,9 +434,9 @@ export default function AddInvoice({ length, setHideForm }) {
               required
             />
             <Input
-              label="Client's Street Address"
+              label="Client GST Number"
               name="clientStreet"
-              value={clientDetails.address}
+              value={clientDetails.gstNumber}
               onChange={handleClientChange}
               required
             />
@@ -421,9 +450,9 @@ export default function AddInvoice({ length, setHideForm }) {
               required
             />
             <Input
-              label="Client's Post Code"
+              label="Client's State"
               name="clientPost"
-              value={clientDetails.pincode}
+              value={clientDetails.state}
               onChange={handleClientChange}
               required
             />
@@ -446,6 +475,7 @@ export default function AddInvoice({ length, setHideForm }) {
 
         {/* Service Details Section */}
         <section className="mb-10">
+          <div className="flex justify-between items-center">
           <Typography
             variant="h6"
             className="mb-4 text-lg font-medium"
@@ -453,30 +483,39 @@ export default function AddInvoice({ length, setHideForm }) {
           >
             Service Details
           </Typography>
+          <button
+                  onClick={handleClickOpen}
+                  disabled={btnloading}
+                  className="rounded-xl text-[12px] py-2 px-3 bg-green-500 text-white">
+                  {btnloading ? <CgSpinner /> : "Add HSN"}
+          </button>
+          </div>
+          {showMsg.show && <p className="text-red-500">{showMsg.msg}</p>}
           {items.map((item) => (
             <div
               key={item.id}
-              className="grid grid-cols-3 gap-4 items-center p-4 bg-gray-50 shadow rounded-lg mb-4"
+              className="flex gap-4 items-center p-4 bg-gray-50 shadow rounded-lg mb-4"
             >
-              <Input
-                label="Item Name"
+              <div className="w-[20%] flex flex-col gap-2">
+              <label className="text-[12px] font-medium" style={{ color: "#A05AFF" }}>
+                Item Name
+              </label>
+              <input
+                type="text"
+                className="w-[full] border border-gray-500 p-2 rounded-lg"
                 value={item.itemName}
                 onChange={(e) =>
                   handleItemChange(item.id, "itemName", e.target.value)
                 }
                 required
               />
-              <Input
-                label="Description"
-                value={item.description}
-                onChange={(e) =>
-                  handleItemChange(item.id, "description", e.target.value)
-                }
-                required
-              />
-              <div className="flex gap-1">
+              </div>
+              <div className="w-[15%] flex flex-col gap-2">
+                <label className="text-[12px] font-medium" style={{ color: "#A05AFF" }}>
+                  HSN
+                </label>
                 <select
-                  className="border border-gray-500 p-2 rounded-lg"
+                  className="w-[full] border border-gray-500 p-2 rounded-lg"
                   name="hsn"
                   value={item.hsn}
                   onChange={(e) => handleHsnChange(e.target.value, item.id)}
@@ -489,62 +528,88 @@ export default function AddInvoice({ length, setHideForm }) {
                     </option>
                   ))}
                 </select>
-
-
-                <button
-                  onClick={handleClickOpen}
-                  disabled={btnloading}
-                  className="rounded-xl text-[12px] py-1 px-2 bg-green-500 text-white">
-                  {btnloading ? <CgSpinner /> : "Add HSN"}
-                </button>
               </div>
-              <Input
-                label="Qty"
+              <div className="w-[8%] flex flex-col gap-2">
+              <label className="text-[12px] font-medium" style={{ color: "#A05AFF" }}>
+                Qty
+              </label>
+              <input
                 type="number"
+                className="w-full border border-gray-500 p-2 rounded-lg"
                 value={item.qty}
                 onChange={(e) =>
                   handleItemChange(item.id, "qty", e.target.value)
                 }
                 required
               />
-              <Input
-                label="Price"
+              </div>
+              <div className="w-[12%] flex flex-col gap-2">
+              <label className="text-[12px] font-medium" style={{ color: "#A05AFF" }}>
+                Price
+              </label>
+              <input
                 type="number"
+                className="w-full border border-gray-500 p-2 rounded-lg"
                 value={item.price}
                 onChange={(e) =>
                   handleItemChange(item.id, "price", e.target.value)
                 }
                 required
               />
-              <Input
-                label="CGST%"
+              </div>
+              <div className="w-[5%] flex flex-col gap-2">
+              <label className="text-[12px] font-medium" style={{ color: "#A05AFF" }}>
+              CGST%
+              </label>
+              <input
                 type="number"
+                className="w-full border border-gray-500 p-2 rounded-lg"
                 value={item.cgst}
                 readOnly
               />
-              <Input
-                label="SGST%"
+              </div>
+              <div className="w-[5%]  flex flex-col gap-2">
+              <label className="text-[12px] font-medium" style={{ color: "#A05AFF" }}>
+              SGST%
+              </label>
+              <input
                 type="number"
+                className="w-full border border-gray-500 p-2 rounded-lg"
                 value={item.sgst}
                 readOnly
               />
-              <Input
-                label="IGST%"
+              </div>
+              <div className="w-[5%] flex flex-col gap-2">
+              <label className="text-[12px] font-medium" style={{ color: "#A05AFF" }}>
+              IGST%
+              </label>
+              <input
                 type="number"
+                className="w-full border border-gray-500 p-2 rounded-lg"
                 value={item.igst}
                 readOnly
               />
-              <Input
-                label="Amount"
+              </div>
+              <div className="w-[15%]  flex flex-col gap-2">
+              <label className="text-[12px] font-medium" style={{ color: "#A05AFF" }}>
+                Amount
+              </label>
+              <input
+                type="number"
+                className="w-full border border-gray-500 p-2 rounded-lg"
                 value={Math.round(item.total)}
                 readOnly
               />
+              </div>
+              <div className="w-[5%] flex flex-col items-center gap-4">
+                <div></div>
               <IconButton
                 onClick={() => handleDeleteItem(item.id)}
-                style={{ color: "#FE9496" }}
+                style={{ color: "#FE9496", backgroundColor: "#FEE2E2", padding: "8px" }}
               >
                 <i className="fas fa-trash"></i>
               </IconButton>
+              </div>
             </div>
           ))}
           <Button

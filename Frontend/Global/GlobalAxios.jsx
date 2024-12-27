@@ -2,8 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 // Base URL setup for ngrok backend
-const apiUrl = "https://loc-albany-princess-fp.trycloudflare.com/api/v1";
-
+const apiUrl = "http://35.223.220.77/api/v1";
 
 
 const GlobalAxios = axios.create({
