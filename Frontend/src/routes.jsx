@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { RiBillFill } from "react-icons/ri";
 import { FaFolderPlus } from "react-icons/fa";
-
+import { BsBank2 } from "react-icons/bs";
 import { FaReceipt, FaPeopleLine  } from "react-icons/fa6";
 import { FaUsers } from "react-icons/fa";
 import { Home,  Deals  } from "@/pages/dashboard";
@@ -18,6 +18,8 @@ import Employees from "./pages/employees/Employees";
 import ManageBillFrom from "./pages/Account/ManageBillFrom";
 import Projects from "./pages/Projects/Projects";
 import Statements from "./pages/Statements/Statements";
+import Transactions from "./pages/Transactions/Transactions";
+import Bank from "./pages/Bank/Bank";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -80,10 +82,17 @@ export const routes = [
         
       },
       {
+        icon: <BsBank2 {...icon} />,
+        name: "bank",
+        path: "/bank",
+        element: <Bank />,
+        
+      },
+      {
         icon: <RiBillFill {...icon} />,
-        name: "statements",
-        path: "/statements",
-        element: <Statements />,
+        name: "transactions",
+        path: "/transactions",
+        element: <Transactions />,
         
       },
     ],
