@@ -122,7 +122,7 @@ const AddTransaction = () => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">Transaction Type <span className="text-red-500">*</span></label>
+              <label className="block text-gray-700 mb-2">Amount Type <span className="text-red-500">*</span></label>
               <div className='flex gap-4 items-center mt-2'>
               <div className='flex items-center gap-2'>
               <input

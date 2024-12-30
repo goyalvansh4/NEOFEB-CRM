@@ -32,6 +32,7 @@ const BankCard = ({ bank, onEdit, onDelete }) => {
         )}
         {bank.status}
       </p>
+      <div className="flex justify-between border-t border-white mt-4 pt-4">
       <div className="flex gap-2 mt-2 justify-end">
         <button
           onClick={() => onEdit(bank)}
@@ -46,6 +47,14 @@ const BankCard = ({ bank, onEdit, onDelete }) => {
           Delete
         </button>
       </div>
+      <div className="flex gap-2 mt-2 justify-end">
+        <button onClick={()=>{
+          navigate(`${bank._id}`)
+        }} className='bg-white text-[#A05AFF] px-4 py-2 rounded-lg hover:bg-[#4BCBEB] transition duration-200'>
+          Show Details
+        </button>
+      </div>
+      </div>
     </div>
   );
 };
@@ -59,6 +68,8 @@ const Bank = () => {
     bank_account: '',
     ifsc_code: '',
     status: '',
+    branch: '',
+    balance: 0,
   });
   const [bankDetails, setBankDetails] = useState([]);
 
@@ -144,6 +155,8 @@ const Bank = () => {
               setBankData({
                 bank_name: '',
                 account_holder_name: '',
+                branch: '',
+                balance: 0,
                 bank_account: '',
                 ifsc_code: '',
                 status: '',
@@ -185,6 +198,16 @@ const Bank = () => {
               type="text"
               className="border border-gray-500 rounded-md px-2 py-2"
               placeholder="Bank Name"
+              required
+            />
+             <input
+              value={bankData.branch}
+              onChange={(e) => {
+                setBankData({ ...bankData, branch: e.target.value })}
+              }
+              type="text"
+              className="border border-gray-500 rounded-md px-2 py-2"
+              placeholder="Bank Branch"
               required
             />
             <input

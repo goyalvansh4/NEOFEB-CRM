@@ -23,6 +23,7 @@ import AddProject from "../pages/Projects/AddProject";
 import ProjectDetails from "../pages/Projects/ProjectDetails";
 import EditLead from "../pages/Leads/EditLead";
 import AddTransaction from "../pages/Transactions/AddTransaction";
+import BankDetails from "../pages/Bank/BankDetails";
 
 
 export function Dashboard() {
@@ -66,6 +67,7 @@ export function Dashboard() {
                   <Route path="employees/:id" element={<EmployeeDetails />} />
                   <Route path="/projects/addProject" element={<AddProject />} />
                   <Route path="/projects/:id" element={<ProjectDetails />} />
+                  <Route path="/bank/:id" element={<BankDetails />} />
                   <Route path="/bank/transactions/:id" element={<AddTransaction />} />
                 </Routes>
               </ProtectedRoute>
