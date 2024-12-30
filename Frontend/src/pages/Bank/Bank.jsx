@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import GlobalAxios from '../../../Global/GlobalAxios';
+import { useNavigate } from 'react-router-dom';
 
 const BankCard = ({ bank, onEdit, onDelete }) => {
+  const navigate = useNavigate();
   return (
     <div className="bg-gradient-to-r from-[#A05AFF] to-[#9348fc] shadow-lg rounded-lg p-6 mb-4 relative">
-      <button className="absolute top-4 right-4 bg-[#FE9496] text-white px-4 py-2 rounded-full hover:bg-red-500 transition duration-200">
+      <button onClick={()=>{
+        navigate(`transactions/${bank._id}`)
+      }} className="absolute top-4 right-4 bg-[#FE9496] text-white px-4 py-2 rounded-full hover:bg-red-500 transition duration-200">
         Add Transaction
       </button>
       <h2 className="text-2xl font-bold text-white mb-2">{bank.bank_name}</h2>
