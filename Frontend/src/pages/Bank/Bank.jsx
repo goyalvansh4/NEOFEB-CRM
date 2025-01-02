@@ -8,7 +8,7 @@ const BankCard = ({ bank, onEdit, onDelete }) => {
   const navigate = useNavigate();
   return (
     <div className="bg-gradient-to-r from-[#A05AFF] to-[#9348fc] shadow-lg rounded-lg p-6 mb-4 relative">
-      <button onClick={()=>{
+      <button onClick={() => {
         navigate(`transactions/${bank._id}`)
       }} className="absolute top-4 right-4 bg-[#FE9496] text-white px-4 py-2 rounded-full hover:bg-red-500 transition duration-200">
         Add Transaction
@@ -33,27 +33,27 @@ const BankCard = ({ bank, onEdit, onDelete }) => {
         {bank.status}
       </p>
       <div className="flex justify-between border-t border-white mt-4 pt-4">
-      <div className="flex gap-2 mt-2 justify-end">
-        <button
-          onClick={() => onEdit(bank)}
-          className="bg-white text-[#A05AFF] px-4 py-2 rounded-lg hover:bg-[#4BCBEB] transition duration-200"
-        >
-          Edit
-        </button>
-        <button
-          onClick={() => onDelete(bank)}
-          className="bg-white text-[#FE9496] px-4 py-2 rounded-lg hover:bg-red-500 transition duration-200"
-        >
-          Delete
-        </button>
-      </div>
-      <div className="flex gap-2 mt-2 justify-end">
-        <button onClick={()=>{
-          navigate(`${bank._id}`)
-        }} className='bg-white text-[#A05AFF] px-4 py-2 rounded-lg hover:bg-[#4BCBEB] transition duration-200'>
-          Show Details
-        </button>
-      </div>
+        <div className="flex gap-2 mt-2 justify-end">
+          <button
+            onClick={() => onEdit(bank)}
+            className="bg-white text-[#A05AFF] px-4 py-2 rounded-lg hover:bg-[#4BCBEB] transition duration-200"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => onDelete(bank)}
+            className="bg-white text-[#FE9496] px-4 py-2 rounded-lg hover:bg-red-500 transition duration-200"
+          >
+            Delete
+          </button>
+        </div>
+        <div className="flex gap-2 mt-2 justify-end">
+          <button onClick={() => {
+            navigate(`${bank._id}`)
+          }} className='bg-white text-[#A05AFF] px-4 py-2 rounded-lg hover:bg-[#4BCBEB] transition duration-200'>
+            Show Details
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -70,6 +70,8 @@ const Bank = () => {
     status: '',
     branch: '',
     balance: 0,
+    creditAmount: 0,
+    debitAmount: 0,
   });
   const [bankDetails, setBankDetails] = useState([]);
 
@@ -125,12 +127,12 @@ const Bank = () => {
 
       if (response.data.status === 'success') {
         Swal.fire({
-           title:'Success!',
-           confirmButtonColor: '#A05AFF',
-           text:`Bank ${isEditing ? 'updated' : 'added'} successfully!`,
-           icon:'success',
-           confirmButtonText: 'Ok',
-          });
+          title: 'Success!',
+          confirmButtonColor: '#A05AFF',
+          text: `Bank ${isEditing ? 'updated' : 'added'} successfully!`,
+          icon: 'success',
+          confirmButtonText: 'Ok',
+        });
         setBankDetails((prevDetails) => {
           if (isEditing) {
             return prevDetails.map((item) => (item._id === bankData._id ? bankData : item));
@@ -160,6 +162,8 @@ const Bank = () => {
                 bank_account: '',
                 ifsc_code: '',
                 status: '',
+                creditAmount: 0,
+                debitAmount: 0,
               });
               setIsEditing(false);
               setShowModal(true);
@@ -200,10 +204,11 @@ const Bank = () => {
               placeholder="Bank Name"
               required
             />
-             <input
+            <input
               value={bankData.branch}
               onChange={(e) => {
-                setBankData({ ...bankData, branch: e.target.value })}
+                setBankData({ ...bankData, branch: e.target.value })
+              }
               }
               type="text"
               className="border border-gray-500 rounded-md px-2 py-2"

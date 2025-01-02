@@ -31,7 +31,7 @@ const Transactions = () => {
               <th className="border border-gray-300 px-4 py-2">Type</th>
               <th className="border border-gray-300 px-4 py-2">Description</th>
               <th className="border border-gray-300 px-4 py-2">Status</th>
-              <th className="border border-gray-300 px-4 py-2">Remarks</th>
+              <th className="border border-gray-300 px-4 py-2">Assign</th>
             </tr>
           </thead>
           <tbody>

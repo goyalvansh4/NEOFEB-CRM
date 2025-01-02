@@ -23,9 +23,9 @@ const BankDetails = () => {
           branch: data.branch,
         });
         setBalances({
-          totalCredit: data.total_credit,
-          totalDebit: data.total_debit,
-          clearBalance: data.clear_balance,
+          totalCredit: data.creditAmount,
+          totalDebit: data.debitAmount,
+          clearBalance: data.balance + data.creditAmount - data.debitAmount,
         });
       } catch (error) {
         console.error('Error fetching bank details:', error);
@@ -49,16 +49,16 @@ const BankDetails = () => {
         <Grid item xs={12} sm={4}>
           <Card sx={{ backgroundColor: '#fff', color: TextColor, boxShadow: 3 }}>
             <CardContent>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', color: SecondaryColor }}>Total Credit</Typography>
-              <Typography variant="body1">${balances.totalCredit || '0.00'}</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', color: "green" }}>Total Credit</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 'bold', color: "green" }} >₹ {balances.totalCredit || '0.00'}</Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={4}>
           <Card sx={{ backgroundColor: '#fff', color: TextColor, boxShadow: 3 }}>
             <CardContent>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', color: SecondaryColor }}>Total Debit</Typography>
-              <Typography variant="body1">${balances.totalDebit || '0.00'}</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', color: "red" }}>Total Debit</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 'bold', color: "red" }} >₹ {balances.totalDebit || '0.00'}</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -66,7 +66,7 @@ const BankDetails = () => {
           <Card sx={{ backgroundColor: '#fff', color: TextColor, boxShadow: 3 }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 'bold', color: SecondaryColor }}>Clear Balance</Typography>
-              <Typography variant="body1">${balances.clearBalance || '0.00'}</Typography>
+              <Typography variant="body1">₹ {balances.clearBalance || '0.00'}</Typography>
             </CardContent>
           </Card>
         </Grid>

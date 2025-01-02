@@ -17,7 +17,7 @@ const AddTransaction = () => {
     transaction_description: '',
     transaction_status: '',
     transaction_remarks: '',
-    client_id: '',
+    transaction_client: '',
   });
 
   useEffect(() => {
@@ -41,13 +41,46 @@ const AddTransaction = () => {
     }
   };
 
+  const handleTransactionValidation = () => {
+    console.log(transaction);
+    const { transaction_type, transaction_amount } = transaction;
+    const amount = parseInt(transaction_amount);
+   console.log(transaction_type, amount);
+    if (!transaction_type || isNaN(amount)) {
+      toast.error('Please provide valid transaction type and amount');
+      return false;
+    }
+
+    if (transaction_type === 'debit') {
+      if (amount > balance) {
+        toast.error(`Bank balance is low. Current balance: ₹${balance}`);
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setTransaction({ ...transaction, transaction_bank: id });
-    GlobalAxios.post('/transaction', transaction)
+
+    handleTransactionValidation();
+       
+    const { transaction_type, transaction_amount } = transaction;
+    const amount = parseInt(transaction_amount);
+
+    // Update balance based on transaction type
+    if (transaction_type === 'credit') {
+      setBalance((prev) => prev + amount);
+    } else if (transaction_type === 'debit') {
+      setBalance((prev) => prev - amount);
+    }
+
+    GlobalAxios.post('/transaction', { ...transaction, transaction_bank: id })
       .then(() => toast.success('Transaction added successfully'))
       .catch(() => toast.error('Error adding transaction'));
   };
+  
 
   return (
     <div className="container mx-auto p-4">
@@ -97,6 +130,7 @@ const AddTransaction = () => {
                 placeholder="Transaction Number"
                 value={transaction.transaction_number}
                 onChange={handleChange}
+                required
                 className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary"
               />
             </div>
@@ -107,53 +141,59 @@ const AddTransaction = () => {
                 name="transaction_date"
                 value={transaction.transaction_date}
                 onChange={handleChange}
+                required
                 className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary"
               />
             </div>
             <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
               <label className="block text-gray-700 mb-2">Transaction Amount <span className="text-red-500">*</span></label>
               <input
                 type="number"
                 name="transaction_amount"
                 placeholder="Transaction Amount"
+                required
                 value={transaction.transaction_amount}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary"
               />
+              <p className="text-sm text-gray-500 mt-1">Current Balance: ₹{bankDetails.balance}</p>
             </div>
             <div>
               <label className="block text-gray-700 mb-2">Amount Type <span className="text-red-500">*</span></label>
               <div className='flex gap-4 items-center mt-2'>
-              <div className='flex items-center gap-2'>
-              <input
-                type="radio"
-                name="transaction_type"
-                placeholder="Transaction Type"
-                value={transaction.transaction_type}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-600 rounded" 
-              />
-               <label className='text-lg text-green-500'>Credit</label>
-              </div>
-              <div className='flex items-center gap-2'>
-              <input
-                type="radio"
-                name="transaction_type"
-                placeholder="Transaction Type"
-                value={transaction.transaction_type}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-600 rounded"
-              />
-              <label className='text-lg text-red-500'>Debit</label>
-              </div>
+                <label className='flex items-center gap-2'>
+                  <input
+                    type="radio"
+                    required
+                    name="transaction_type"
+                    value="credit"
+                    onChange={handleChange}
+                  />
+                  <span className='text-lg text-green-500'>Credit</span>
+                </label>
+                <label className='flex items-center gap-2'>
+                  <input
+                    type="radio"
+                    required
+                    name="transaction_type"
+                    value="debit"
+                    onChange={handleChange}
+                  />
+                  <span className='text-lg text-red-500'>Debit</span>
+                </label>
               </div>
             </div>
+            </div>
+            </div>
             <div className="col-span-2">
-              <label className="block text-gray-700 mb-2">Transaction Description</label>
+              <label className="block text-gray-700 mb-2">Transaction Description <span className="text-red-500">*</span></label>
               <textarea
                 name="transaction_description"
                 placeholder="Transaction Description"
                 value={transaction.transaction_description}
+                required
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary"
               ></textarea>
@@ -162,6 +202,7 @@ const AddTransaction = () => {
               <label className="block text-gray-700 mb-2">Transaction Status <span className="text-red-500">*</span></label>
               <select name="transaction_status"
                 onChange={handleChange}
+                required
                 className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary">
                 <option value="">Select Status</option>
                 <option value="active">Active</option>
@@ -169,11 +210,12 @@ const AddTransaction = () => {
               </select>
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">Transaction Remarks</label>
+              <label className="block text-gray-700 mb-2">Transaction Remarks <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 name="transaction_remarks"
                 placeholder="Transaction Remarks"
+                required
                 value={transaction.transaction_remarks}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary"
@@ -181,19 +223,18 @@ const AddTransaction = () => {
             </div>
           </div>
         </div>
-
         <div>
-          <h3 className="text-xl font-semibold mb-4 text-purple-600">Clients</h3>
+          <h3 className="text-xl font-semibold mb-4 text-purple-600">Assign To</h3>
           <div>
             <label className="block text-gray-700 mb-2">Client <span className="text-red-500">*</span></label>
             <select
-              name="client_id"
+              name="transaction_client"
               onChange={handleChange}
               className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary"
             >
               <option value="">Select Client</option>
               {clients.map(client => (
-                <option key={client.id} value={client.id}>{client.name}</option>
+                <option key={client._d} value={client._id}>{client.name}</option>
               ))}
             </select>
           </div>
