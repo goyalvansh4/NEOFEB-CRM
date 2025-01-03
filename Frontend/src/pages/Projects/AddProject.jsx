@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlobalAxios from '../../../Global/GlobalAxios';
 import { Button } from "@material-tailwind/react";
+import { Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 const AddProject = () => {
   const [clients, setClients] = useState([]);
@@ -25,7 +27,7 @@ const AddProject = () => {
       try {
         const clientResponse = await GlobalAxios.get('/client');
         setClients(clientResponse.data.data);
-
+        
         const employeeResponse = await GlobalAxios.get('/employees');
         setEmployees(employeeResponse.data.data);
       } catch (error) {
@@ -55,8 +57,8 @@ const AddProject = () => {
     e.preventDefault();
     try {
       await GlobalAxios.post('/project', projectData);
-      alert('Project added successfully!');
-      navigate('/projects');
+       toast.success('Project added successfully');
+       setProjectData({}); // Clear form data
     } catch (error) {
       console.error('Error adding project:', error);
       alert('Failed to add project');
@@ -65,6 +67,7 @@ const AddProject = () => {
 
   return (
     <div className="flex items-center justify-center bg-gray-100">
+      <Toaster />
       <div className="w-full  bg-white p-8 rounded shadow">
         <h1 className="text-2xl font-bold mb-6 text-center text-purple-600">Add New Project</h1>
 

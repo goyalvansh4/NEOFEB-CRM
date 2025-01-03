@@ -21,11 +21,12 @@ const BankDetails = () => {
           accountNumber: data.bank_account,
           bankName: data.bank_name,
           branch: data.branch,
+          account_holder_name: data.account_holder_name,
         });
         setBalances({
           totalCredit: data.creditAmount,
           totalDebit: data.debitAmount,
-          clearBalance: data.balance + data.creditAmount - data.debitAmount,
+          clearBalance: data.creditAmount - data.debitAmount,
         });
       } catch (error) {
         console.error('Error fetching bank details:', error);
@@ -38,11 +39,12 @@ const BankDetails = () => {
   return (
     <Box sx={{ padding: '20px', backgroundColor: '#fff' }}>
       <Card sx={{ backgroundColor: '#fff', color: TextColor, marginBottom: '20px', boxShadow: 3 }}>
-        <CardContent>
-          <Typography variant="h5" sx={{ fontWeight: 'bold', color: PrimaryColor }}>Bank Details</Typography>
-          <Typography variant="body1">Account Number: {bankDetails.accountNumber || 'Loading...'}</Typography>
+        <CardContent sx={{ padding: '20px',display: 'flex', flexDirection: 'column',gap: '10px'}}>
+          <Typography variant="h5" sx={{ fontWeight: 'bolder', color: PrimaryColor }}>Bank Details</Typography>
           <Typography variant="body1">Bank Name: {bankDetails.bankName || 'Loading...'}</Typography>
           <Typography variant="body1">Branch: {bankDetails.branch || 'Loading...'}</Typography>
+          <Typography variant="body1">Account Holder Name: {bankDetails.account_holder_name}</Typography>
+          <Typography variant="body1">Account Number: {bankDetails.accountNumber || 'Loading...'}</Typography>
         </CardContent>
       </Card>
       <Grid container spacing={2}>

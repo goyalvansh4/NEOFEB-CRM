@@ -355,15 +355,7 @@ const AddClient = () => {
 
           {/* Submit and Back Buttons */}
           <div className="flex justify-between mt-6">
-            <Button
-              type="submit"
-              className="bg-gradient-to-r from-[#1BCFB4] to-[#4BCBEB] text-white"
-              size="lg"
-              disabled={loading}
-            >
-              {loading ? <Spinner className="h-5 w-5" /> : "Submit"}
-            </Button>
-            <Button
+          <Button
               type="button"
               className="bg-red-500 text-white"
               size="lg"
@@ -373,6 +365,15 @@ const AddClient = () => {
             >
               Back
             </Button>
+            <Button
+              type="submit"
+              className="bg-gradient-to-r from-[#1BCFB4] to-[#4BCBEB] text-white"
+              size="lg"
+              disabled={loading}
+            >
+              {loading ? <Spinner className="h-5 w-5" /> : "Submit"}
+            </Button>
+            
           </div>
         </form>
         <ToastContainer />

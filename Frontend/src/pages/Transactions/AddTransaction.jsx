@@ -17,45 +17,46 @@ const AddTransaction = () => {
     transaction_description: '',
     transaction_status: '',
     transaction_remarks: '',
-    transaction_client: '',
   });
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     GlobalAxios.get(`/bank/${id}`)
-      .then(response => setBankDetails(response.data.data))
+      .then((response) => {
+        const data = response.data.data;
+        setBankDetails(data);
+        setBalance(data.balance || 0);
+      })
       .catch(() => toast.error('Error fetching bank details'));
 
     GlobalAxios.get('/client')
-      .then(response => setClients(response.data.data))
+      .then((response) => setClients(response.data.data))
       .catch(() => toast.error('Error fetching clients'));
   }, [id]);
 
   const handleChange = (e) => {
+    
     const { name, value } = e.target;
-    if(name === 'transaction_type'){
-      setTransaction({ ...transaction, transaction_type: e.target.nextElementSibling.innerText });
-      console.log(e.target.nextElementSibling.innerText,transaction);
+    if(name === "transaction_client" && value === !null){
+      setTransaction({ ...transaction, [name]: value });
     }
-    else{
+    else if(!(name === "transaction_client")){
       setTransaction({ ...transaction, [name]: value });
     }
   };
 
   const handleTransactionValidation = () => {
-    console.log(transaction);
     const { transaction_type, transaction_amount } = transaction;
-    const amount = parseInt(transaction_amount);
-   console.log(transaction_type, amount);
+    const amount = parseFloat(transaction_amount);
+
     if (!transaction_type || isNaN(amount)) {
-      toast.error('Please provide valid transaction type and amount');
+      toast.error('Please provide a valid transaction type and amount');
       return false;
     }
 
-    if (transaction_type === 'debit') {
-      if (amount > balance) {
-        toast.error(`Bank balance is low. Current balance: ₹${balance}`);
-        return false;
-      }
+    if (transaction_type === 'debit' && amount > balance) {
+      toast.error(`Bank balance is low. Current balance: ₹${balance}`);
+      return false;
     }
 
     return true;
@@ -64,10 +65,12 @@ const AddTransaction = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    handleTransactionValidation();
-       
-    const { transaction_type, transaction_amount } = transaction;
-    const amount = parseInt(transaction_amount);
+    if (!handleTransactionValidation()) {
+      return;
+    }
+
+    const { transaction_type, transaction_amount,transaction_client } = transaction;
+    const amount = parseFloat(transaction_amount);
 
     // Update balance based on transaction type
     if (transaction_type === 'credit') {
@@ -75,17 +78,19 @@ const AddTransaction = () => {
     } else if (transaction_type === 'debit') {
       setBalance((prev) => prev - amount);
     }
-
+    if(transaction_client === null){
+      delete transaction.transaction_client;
+    }
     GlobalAxios.post('/transaction', { ...transaction, transaction_bank: id })
       .then(() => toast.success('Transaction added successfully'))
       .catch(() => toast.error('Error adding transaction'));
   };
-  
 
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-3xl font-bold mb-6 text-purple-600">Add Transaction</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Bank Details */}
         <div>
           <h3 className="text-xl font-semibold mb-4 text-purple-600">Bank Details</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -119,11 +124,14 @@ const AddTransaction = () => {
           </div>
         </div>
 
+        {/* Transaction Details */}
         <div>
           <h3 className="text-xl font-semibold mb-4 text-purple-600">Transaction Details</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-gray-700 mb-2">Transaction Number <span className="text-red-500">*</span></label>
+              <label className="block text-gray-700 mb-2">
+                Transaction Number <span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 name="transaction_number"
@@ -135,7 +143,9 @@ const AddTransaction = () => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">Transaction Date <span className="text-red-500">*</span></label>
+              <label className="block text-gray-700 mb-2">
+                Transaction Date <span className="text-red-500">*</span>
+              </label>
               <input
                 type="date"
                 name="transaction_date"
@@ -146,100 +156,87 @@ const AddTransaction = () => {
               />
             </div>
             <div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-              <label className="block text-gray-700 mb-2">Transaction Amount <span className="text-red-500">*</span></label>
+              <label className="block text-gray-700 mb-2">
+                Transaction Amount <span className="text-red-500">*</span>
+              </label>
               <input
                 type="number"
                 name="transaction_amount"
                 placeholder="Transaction Amount"
-                required
                 value={transaction.transaction_amount}
                 onChange={handleChange}
+                required
                 className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary"
               />
-              <p className="text-sm text-gray-500 mt-1">Current Balance: ₹{bankDetails.balance}</p>
+              <p className="text-sm text-gray-500 mt-1">Current Balance: ₹{balance}</p>
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">Amount Type <span className="text-red-500">*</span></label>
-              <div className='flex gap-4 items-center mt-2'>
-                <label className='flex items-center gap-2'>
+              <label className="block text-gray-700 mb-2">
+                Transaction Type <span className="text-red-500">*</span>
+              </label>
+              <div className="flex gap-4 items-center mt-2">
+                <label className="flex items-center gap-2">
                   <input
                     type="radio"
-                    required
                     name="transaction_type"
                     value="credit"
                     onChange={handleChange}
+                    required
                   />
-                  <span className='text-lg text-green-500'>Credit</span>
+                  <span className="text-lg text-green-500">Credit</span>
                 </label>
-                <label className='flex items-center gap-2'>
+                <label className="flex items-center gap-2">
                   <input
                     type="radio"
-                    required
                     name="transaction_type"
                     value="debit"
                     onChange={handleChange}
+                    required
                   />
-                  <span className='text-lg text-red-500'>Debit</span>
+                  <span className="text-lg text-red-500">Debit</span>
                 </label>
               </div>
             </div>
-            </div>
-            </div>
             <div className="col-span-2">
-              <label className="block text-gray-700 mb-2">Transaction Description <span className="text-red-500">*</span></label>
+              <label className="block text-gray-700 mb-2">
+                Transaction Description <span className="text-red-500">*</span>
+              </label>
               <textarea
                 name="transaction_description"
                 placeholder="Transaction Description"
                 value={transaction.transaction_description}
-                required
                 onChange={handleChange}
+                required
                 className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary"
               ></textarea>
             </div>
-            <div>
-              <label className="block text-gray-700 mb-2">Transaction Status <span className="text-red-500">*</span></label>
-              <select name="transaction_status"
-                onChange={handleChange}
-                required
-                className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary">
-                <option value="">Select Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-gray-700 mb-2">Transaction Remarks <span className="text-red-500">*</span></label>
-              <input
-                type="text"
-                name="transaction_remarks"
-                placeholder="Transaction Remarks"
-                required
-                value={transaction.transaction_remarks}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary"
-              />
-            </div>
           </div>
         </div>
+
+        {/* Assign To */}
         <div>
           <h3 className="text-xl font-semibold mb-4 text-purple-600">Assign To</h3>
           <div>
-            <label className="block text-gray-700 mb-2">Client <span className="text-red-500">*</span></label>
+            <label className="block text-gray-700 mb-2">
+              Client <span className="text-red-500">*</span>
+            </label>
             <select
               name="transaction_client"
+              value={transaction.transaction_client}
               onChange={handleChange}
               className="w-full p-2 border border-gray-600 rounded focus:ring-2 focus:ring-primary"
             >
-              <option value="">Select Client</option>
-              {clients.map(client => (
-                <option key={client._d} value={client._id}>{client.name}</option>
+              <option value={null}>Select Client</option>
+              {clients.map((client) => (
+                <option key={client._id} value={client._id}>
+                  {client.name}
+                </option>
               ))}
             </select>
           </div>
         </div>
 
+        {/* Submit Button */}
         <div>
           <button
             type="submit"

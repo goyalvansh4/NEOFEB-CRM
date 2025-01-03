@@ -38,7 +38,7 @@ const AddEmployee = () => {
     // console.log("Form Data Submitted:", formData);
     setLoading(true);
     try {
-      const response = await GlobalAxios.post("/employees", formData);
+      const response = await GlobalAxios.post("/employees/create", formData);
       if (response.data.status === "success") {
         toast.success("Employee added successfully");
         setLoading(false);

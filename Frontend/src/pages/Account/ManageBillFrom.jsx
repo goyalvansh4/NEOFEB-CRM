@@ -51,7 +51,7 @@ const ManageBillFrom = () => {
     address: "",
     city: "",
     state: "",
-    country: "",
+    country: "India",
   });
 
 
@@ -76,7 +76,7 @@ const ManageBillFrom = () => {
   };
 
   const handleAddCompany = () => {
-    setFormValues({ id: null, name: "", address: "", city: "", state: "", country: "" });
+    setFormValues({ id: null, name: "", address: "", city: "", state: "", country: "India" });
     setIsEditing(false);
     setIsModalOpen(true);
   };
@@ -104,6 +104,7 @@ const ManageBillFrom = () => {
           prev.map((company) => (company.id === formValues.id ? formValues : company))
         );
       } else {
+        formValues.country = "India";
         const response = await GlobalAxios.post("/companyBill", formValues);
         setCompanies([...companies, response.data.data]);
       }
