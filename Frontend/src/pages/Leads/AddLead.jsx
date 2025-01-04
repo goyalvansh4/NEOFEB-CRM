@@ -5,6 +5,8 @@ import { MdOutlineFileDownload } from "react-icons/md";
 import { MdEdit, MdDelete } from "react-icons/md";
 import GlobalAxios from "../../../Global/GlobalAxios";
 import { useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const addLead = async (leadData) => {
   const response = await GlobalAxios.post("/lead", leadData);
@@ -86,6 +88,7 @@ export function AddLead() {
     mutationFn: addLead,
     onSuccess: () => {
       queryClient.invalidateQueries(["leadsData"]);
+      toast.success("Lead added successfully!");
       setFormData({
         leadName: "",
         companyName: "",
@@ -142,6 +145,7 @@ export function AddLead() {
 
   return (
     <>
+    <Toaster />
       <div className="flex justify-end gap-2 px-5">
         <button>
           <MdOutlineFileDownload size={20} color="#1BCFB4" />
@@ -153,9 +157,6 @@ export function AddLead() {
           Manage Status
         </button>
       </div>
-
-
-
       {showModal && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
           <div className="w-[400px] p-5 bg-white rounded-lg shadow-md space-y-4">
