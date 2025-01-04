@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.1.0",
   "type": "module",
+  "homepage":"/dashboard",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
