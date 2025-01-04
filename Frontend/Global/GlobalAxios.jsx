@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 // Base URL setup for 
-const apiUrl = "http://34.131.228.215/api/v1";
+const apiUrl = "https://34.131.228.215/api/v1";
 
 
 const GlobalAxios = axios.create({
