@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import GlobalAxios from "../../../Global/GlobalAxios";
 import Cookies from "js-cookie";
 
@@ -8,56 +9,38 @@ export function SignIn() {
     password: "",
   });
   const [loading, setLoading] = useState(false); // State for loading spinner
-
+  const navigate = useNavigate();
   const [otp, setOtp] = useState(""); // State for OTP
   const [isOtpSent, setIsOtpSent] = useState(false); // State to toggle OTP field
   const [error, setError] = useState(""); // State for error messages
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(""); // Clear errors
-    setLoading(true); // Enable loading spinner
-    try {
-      const response = await GlobalAxios.post("/admin/login", formData);
-      if (response.data.status === "success") {
-        console.log(response.data);
-        setIsOtpSent(true); // Enable OTP input field
-        setError(""); // Clear errors
-        setLoading(false); // Disable loading spinner
-      } else {
-        setError("Failed to send OTP. Please try again.");
-        setLoading(false); // Disable loading spinner
-      }
-    } catch (err) {
-      console.error(err);
-      setError("An error occurred. Please try again.");
-      setLoading(false); // Disable loading spinner
-    }
+    navigate("/dashboard/home");
   };
 
   const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-    setError(""); // Clear errors
-    console.log("Verifying OTP");
-    try {
-      const response = await GlobalAxios.post("/admin/verify-otp", {
-        email: formData.email,
-        otp,
-      });
-      if (response.data.status === "success") {
-        console.log("OTP verified successfully", response.data);
-        Cookies.set("token", response.data.token);
-        if (Cookies.get("token")) {
-          // Navigate to dashboard
-          window.location.href = "/dashboard/home";
-        }
-      } else {
-        setError("Invalid OTP. Please try again.");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("An error occurred while verifying OTP.");
-    }
+    // e.preventDefault();
+    // setError(""); // Clear errors
+    // console.log("Verifying OTP");
+    // try {
+    //   const response = await GlobalAxios.post("/admin/verify-otp", {
+    //     email: formData.email,
+    //     otp,
+    //   });
+    //   if (response.data.status === "success") {
+    //     console.log("OTP verified successfully", response.data);
+    //     Cookies.set("token", response.data.token);
+    //     if (Cookies.get("token")) {
+    //       // Navigate to dashboard
+    //       window.location.href = "/dashboard/home";
+    //     }
+    //   } else {
+    //     setError("Invalid OTP. Please try again.");
+    //   }
+    // } catch (err) {
+    //   console.error(err);
+    //   setError("An error occurred while verifying OTP.");
+    // }
   };
 
   return (
@@ -68,7 +51,8 @@ export function SignIn() {
           Enter your email and password to sign in.
         </p>
         <form
-          onSubmit={isOtpSent ? handleVerifyOtp : handleSubmit}
+          // onSubmit={isOtpSent ? handleVerifyOtp : handleSubmit}
+          onSubmit={handleSubmit}
           className="mt-6 space-y-6"
         >
           <div>
@@ -142,7 +126,8 @@ export function SignIn() {
              disabled={loading}
             className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
           >
-            {isOtpSent ? "Verify OTP" : (loading) ? "Sending" : "Send OTP"}
+            {/* {isOtpSent ? "Verify OTP" : (loading) ? "Sending" : "Send OTP"} */}
+            Login
           </button>
           <div className="text-center mt-4">
             <a

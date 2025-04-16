@@ -46,7 +46,7 @@ export function Dashboard() {
           <Route
             path="/*"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <Routes>
                   {routes.map(
                     ({ layout, pages }) =>
@@ -70,7 +70,7 @@ export function Dashboard() {
                   <Route path="/bank/:id" element={<BankDetails />} />
                   <Route path="/bank/transactions/:id" element={<AddTransaction />} />
                 </Routes>
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
         </Routes>
